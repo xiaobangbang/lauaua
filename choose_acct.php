@@ -21,7 +21,7 @@ function check_submit(cName)
 	if (valid==1){		
 		//document.getElementsByName("myform").submit();
 		//alert(document.getElementsByName("myform"));	
-		//document.getElementsById("myform").submit()
+		document.getElementById("myform").submit()
 	}else{
 		alert("没有选择账号");
 	}

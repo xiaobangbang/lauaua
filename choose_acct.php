@@ -69,7 +69,7 @@ $db = new MyDB();
 
 
 /**
-$db->exec('CREATE TABLE foo (bar STRING)');
+*$db->exec('CREATE TABLE foo (bar STRING)');
 */
 $v_acct = $db->generate_password(9);
 //echo $v_acct;
@@ -77,7 +77,7 @@ $v_acct = $db->generate_password(9);
 
 $result = $db->query('SELECT * FROM excel_acct_info');
 /**
-var_dump();
+*var_dump();
 */
 echo "<TABLE border='1' bgcolor='yellow'>";
 while($row= $result->fetchArray()){

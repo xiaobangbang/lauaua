@@ -3,9 +3,9 @@ header("Content-type: text/html; charset=utf-8");
 require_once 'Classes\PHPExcel.php';
 require_once 'Classes\PHPExcel\IOFactory.php';
 require_once 'Classes\PHPExcel\Reader\Excel2007.php';
-$csv_data_path = 'D:\\XXT_Lan_2.5.5.0\\data\\';
 
-$excel_upload_path = 'C:\\xampp\\htdocs\\PHPExcel-1.8\\upload\\';
+$csv_data_path = 'D:\\XXT_Lan_2.5.5.0\\data\\running\\';
+$excel_upload_path = 'C:\\xampp\\htdocs\\PHPExcel\\upload\\';
 
 if (! empty($_FILES['file_stu']['name'])) {
     $tmp_file = $_FILES['file_stu']['tmp_name'];
@@ -59,6 +59,7 @@ if (! empty($_FILES['file_stu']['name'])) {
     $objPHPExcel = $objReader->load($filename);
     $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
     $objWriter->save($csv_data_path . str_replace('.' . $file_type, '.csv', $file_name));
+	//$objWriter->save($csv_data_path .'running_acct.csv');
     
     echo "上传成功!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
 
@@ -74,7 +75,8 @@ if (! empty($_FILES['file_stu']['name'])) {
     if (! $db) {
         echo $db->lastErrorMsg();
     } else {
-        echo "Opened database successfully\n";
+        //echo "Opened database successfully\n";
+		echo "<br/>";
     }
     echo '<br>';
     $uploadfile = $filename;
@@ -98,14 +100,15 @@ if (! empty($_FILES['file_stu']['name'])) {
                 ->getCell("$k$j")
                 ->getValue() . '||||||'; // 读取单元格
         }
+		
         // explode:函数把字符串分割为数组。
         $strs = explode("||||||", $str);
         // $sql = "INSERT INTO te() VALUES ( '{$strs[0]}','{$strs[1]}')";
         // echo $sql.'<br>';
         
         $sql1 = "insert into excel_acct_info(acct_user,user_pwd) select '{$strs[0]}','{$strs[1]}' where not exists(select acct_user from excel_acct_info where acct_user = '{$strs[0]}') ";
-        echo '<br>';
-        echo $sql1 . '<br>';
+        //echo '<br>';
+        //echo $sql1 . '<br>';
         $result2 = $db->exec($sql1);
     }
     
@@ -123,12 +126,13 @@ if (! empty($_FILES['file_stu']['name'])) {
         }
         // print_r($strs);
     }
-    
+    /**
     $results = $db->query('SELECT * FROM excel_acct_info');
     while ($row = $results->fetchArray()) {
         var_dump($row);
         echo '<br>';
     }
+	*/
 } else {
     echo "没有选择文件，请返回'";
 }

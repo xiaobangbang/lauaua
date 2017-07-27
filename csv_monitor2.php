@@ -11,13 +11,13 @@ date_default_timezone_set('Europe/London');
 <meta http-equiv="refresh" content="60">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<title>PHPExcel Reader Example #13</title>
+<title>运行完成的账号列表</title>
 
 </head>
 <body>
 
-<h1>PHPExcel Reader Example #13</h1>
-<h2>Simple File Reader for Multiple CSV Files</h2>
+<h1>运行完成的账号列表</h1>
+<h2></h2>
 <?php
 
 /** Include path **/
@@ -29,7 +29,7 @@ include 'Classes/PHPExcel/IOFactory.php';
 
 $inputFileType = 'CSV';
 
-$dir="D:\\XXT_Lan_2.5.5.0\\data\\running\\";
+$dir="D:\\XXT_Lan_2.5.5.0\\data\\complete\\";
 $files=scandir($dir);
 $arr1 = array();
 for($i=0;$i<count($files);++$i){ 
@@ -40,7 +40,7 @@ for($i=0;$i<count($files);++$i){
 		array_push($arr1,$acct_file);
 	}
 }
-//echo count($arr1);
+echo count($arr1);
 if (count($arr1) >0) {
 	
 
@@ -69,14 +69,16 @@ foreach($loadedSheetNames as $sheetIndex => $loadedSheetName) {
 	$sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
 	//echo count($sheetData);
 	//var_dump($sheetData);
+	if (count($sheetData) >1){
 	for($i=1;$i<=count($sheetData);$i++){
 		echo $sheetData[$i]['A'].'/'.$sheetData[$i]['B'];
 		echo '<br />';
-	}	
+	}
+	}
 	echo '<br /><br />';
 }
 }else{
-	echo "没有待运行账号文件...<br />";
+	echo "没有运行完成的账号文件...<br />";
 }
 echo '<a href="javascript:history.go(-1);"  title="返回">返回</a></br></br>';
 ?>

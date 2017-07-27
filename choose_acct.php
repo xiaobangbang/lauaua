@@ -19,8 +19,7 @@ function check_submit(cName)
 	}
 	
 	if (valid==1){		
-		//document.getElementsByName("myform").submit();
-		//alert(document.getElementsByName("myform"));	
+		
 		document.getElementById("myform").submit()
 	}else{
 		alert("没有选择账号");
@@ -69,7 +68,7 @@ $db = new MyDB();
 
 
 /**
-*$db->exec('CREATE TABLE foo (bar STRING)');
+$db->exec('CREATE TABLE foo (bar STRING)');
 */
 $v_acct = $db->generate_password(9);
 //echo $v_acct;
@@ -77,7 +76,7 @@ $v_acct = $db->generate_password(9);
 
 $result = $db->query('SELECT * FROM excel_acct_info');
 /**
-*var_dump();
+var_dump();
 */
 echo "<TABLE border='1' bgcolor='yellow'>";
 while($row= $result->fetchArray()){
@@ -101,6 +100,8 @@ echo "</TABLE>";
 ?> 
  <input type="submit" value="提交" onclick="check_submit('hobby[]')"/>
  <input type="button" value="刷新当前页面" onclick="javascript:location.reload();" />
+ </br></br>
+ <a href="javascript:history.go(-1);"  title="返回">返回</a>
  </form>  
  </body>
 </html>

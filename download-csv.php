@@ -1,5 +1,5 @@
 <?php
-$csv_data_path = 'D:\\XXT_Lan_2.5.5.0\\data\\';
+$csv_data_path = 'D:\\XXT_Lan_2.5.5.0\\data\\running\\';
 /**
  * PHPExcel
  *

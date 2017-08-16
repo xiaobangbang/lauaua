@@ -68,38 +68,7 @@ tab_left ={
 -- @param: level 递归的层数，默认不用传值进来
 -- @param: filteDefault 是否过滤打印构造函数，默认为是
 -- @return: return
-function PrintTable( tbl , level, filteDefault)
-  local msg = ""
-  filteDefault = filteDefault or true --默认过滤关键字（DeleteMe, _class_type）
-  level = level or 1
-  local indent_str = ""
-  for i = 1, level do
-    indent_str = indent_str.."  "
-  end
 
-  print(indent_str .. "{")
-  for k,v in pairs(tbl) do
-    if filteDefault then
-      if k ~= "_class_type" and k ~= "DeleteMe" then
-        local item_str = string.format("%s%s = %s", indent_str .. " ",tostring(k), tostring(v))
-        print(item_str)
-        if type(v) == "table" then
-          PrintTable(v, level + 1)
-        end
-      end
-    else
-      local item_str = string.format("%s%s = %s", indent_str .. " ",tostring(k), tostring(v))
-      print(item_str)
-      if type(v) == "table" then
-        PrintTable(v, level + 1)
-      end
-    end
-  end
-  print(indent_str .. "}")
-end
-
-local x = {a = 20,20,60,{a = {a = 1,2323},2323}}
-PrintTable(x)
 --PrintTable(tab_10)
 
 function print_r ( t )  
@@ -153,7 +122,30 @@ print_r(tab_left[idx_left])
 
 print_r(tab_left[idx_left][1])
 
-tap(tab_left[idx_left][1],tab_left[idx_left][2])
+if tonumber(fuwuqi) > 50 then
+	moveTo(205,  560,205,  490)
+	mSleep(2000)
+end
+
+local x1,y1 = tab_left[idx_left][1],tab_left[idx_left][2]
+if multiColor({
+	{  165,  197, 0x765122},
+	{  186,  214, 0x63431c},
+	{  191,  208, 0xd7ae78},
+	{  219,  208, 0xe9c089},
+	{  240,  211, 0xd5ae7a},
+	{  209,  207, 0x835924},
+}) or ({
+	{  164,  198, 0x493f2f},
+	{  182,  208, 0xceac7d},
+	{  243,  208, 0xae916c},
+	{  221,  209, 0xcdab7e},
+	{  210,  209, 0x4a3e31},
+}) then
+	y1 = y1 + 70
+end
+
+tap(x1,y1)
 
 mSleep(2000)
 

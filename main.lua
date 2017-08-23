@@ -1,3765 +1,1389 @@
-local CC = require('CC')
+DEBUG_MODE =false
+TOUCH_MODE= true
+XXT_MODE =false
+XXT_DAQU = 1
 
-tab1= {'式','刑','动','扛','寺','吉','扣','老','执','巩','圾','扩','扫','地','扬','场','耳','共','芒','亚','芝','朽','朴','机','权','过','臣','再','协','在','有','百','存','而','页','匠','夸','夺','灰','达','列','死','轨','邪','划','迈','毕','至','此','贞','师','尘','尖','劣','光','当','早','吐','团','同','吊','吃','因','吸','吗','屿','帆','岁','回','岂','刚','则','肉','网','年','朱','先','竹','迁','乔','伟','传','乒','乓','休','伍','伏','件','任','伤','价','份','华','仰','仿','伙','伪','自','血','向','似','后','行','舟','全','会','杀','合','兆','企','众','爷','肌','朵','杂','危','各','名','多','争','色','壮','冲','冰','庄','庆','亦','刘','齐','交','次','衣','产','决','充','妄','闭','问','闯','羊','并','关','米','灯','州','汗','忙','兴','宇','守','宅','字','安','讲','军','许','论','农','讽','设','访','寻','那','迅','尽','导','异','孙','阵','阳','收','阶','阴','防','奸','如','妇','戏','羽','观','红','纤','级','约','纪','驰','巡','寿','弄','麦','形','进','戒','吞','运','扶','抚','坛','技','坏','扰','拒','找','批','扯','址','走','抄','坝','贡','攻','赤','折','抓','扮','抢','投','坟','抗','坑','坊','抖','护','壳','志','扭','块','声','把','劫','芽','花','芹','芬','苍','芳','严','芦','劳','克','苏','杆','杠','杜','材','李','杨','求','更','束','豆','两','丽','医','辰','励','否','还','歼','来','连','步','坚','旱','时','吴','助','县','里','呆','园','旷','围','呀','男','困','吵','串','员','听','吩','吹','呜','吧','吼','别','岗','帐','财','针','钉','告','我','乱','利','秃','秀','私','每','体','何','但','伸','佣','低','你','住','位','伴','身','皂','佛','近','彻','役','返','余','希','坐','谷','妥','含','邻','岔','肝','肚','肠','龟','免','狂','犹','角','删','饭','饮','系','言','冻','状','亩','况','床','库','疗','应','冷','这','序','辛','弃','冶','忘','闲','间','闷','判','灶','灿','弟','汪','沙','汽','沃','泛','沉','怀','忧','宋','宏','牢','究','穷','灾','良','证','启','评','补','初','社','识','诉','诊','词','译','君','灵','即','层','尿','尾','迟','局','际','陆','阿','陈','阻','附','妙','妖','妨','劲','鸡','驱','纯','纱','纳','纲','驳','纵','纷'}
-tab2 ={'纸','纹','纺','纽','奉','玩','环','武','青','责','现','抹','拢','拔','拣','担','坦','押','抽','拐','拖','拍','者','顶','拆','拥','抵','拘','势','抱','垃','拉','拦','坡','披','拨','择','抬','其','取','苦','若','茂','苹','苗','英','茄','茎','茅','林','枝','杯','柜','析','板','松','枪','构','杰','述','枕','丧','事','刺','枣','雨','卖','矿','码','厕','奔','奇','奋','态','欧','垄','妻','轰','顷','转','斩','到','非','叔','肯','齿','些','虎','虏','肾','贤','果','味','昆','国','昌','畅','明','易','昂','典','固','忠','咐','呼','鸣','咏','呢','岸','岩','帖','罗','帜','岭','凯','败','图','钓','制','知','乖','刮','秆','和','季','委','佳','侍','供','使','例','版','侄','侦','侧','凭','侨','佩','货','依','的','迫','质','欣','征','往','爬','彼','径','所','爸','采','受','乳','贪','念','贫','肤','肺','肢','肿','胀','朋','股','肥','服','胁','周','昏','鱼','兔','狐','忽','狗','备','饰','饱','饲','变','京','享','府','底','剂','净','盲','放','刻','育','闸','闹','郑','券','卷','单','炒','炊','炕','炎','炉','沫','浅','法','泄','河','沾','泪','油','泊','沿','泳','泥','沸','波','泼','泽','治','怖','性','怪','学','宝','宗','定','宜','审','宙','官','空','帘','实','试','郎','诗','肩','房','诚','衬','衫','询','该','详','建','肃','录','隶','奏','春','帮','珍','玻','毒','型','持','项','垮','挎','城','挠','政','赴','赵','挡','挺','括','拴','拾','挑','指','垫','挣','挤','拼','挖','按','甚','革','荐','巷','带','草','茧','茶','荒','茫','荡','荣','故','药','标','枯','柄','栋','相','查','柏','柳','柱','柿','栏','树','要','咸','威','厘','厚','砌','砍','面','耐','耍','牵','残','殃','轻','鸦','皆','背','战','点','临','览','竖','尝','是','盼','眨','哄','显','哑','冒','映','星','胃','贵','界','虹','虾','蚁','思','蚂','虽','品','咽','骂','哗','咱','响','哈','咬','咳','哪','炭','峡','罚','贱','贴','骨','钢','钥','钩','卸','矩','怎','牲','选','适','秒','香','种','秋','科','重','复','竿','段','便','俩','贷','顺','修','保','促','侮','俭','俗','俘','信','皇','泉','鬼','侵','律','很','须','叙','剑','逃','食','盆','胆','胜','胞','胖','脉','勉','狭','狮','独','狡','狱','狠'}
-tab3={'贸','怨','急','饶','蚀','饺','饼','弯','将','奖','哀','迹','庭','疮','疤','姿','亲','音','帝','施','闻','阀','阁','差','养','美','姜','叛','送','类','迷','前','首','逆','总','炼','炸','炮','烂','剃','浇','浊','洞','测','洗','活','派','洽','染','洲','浑','浓','津','恒','恢','恰','恼','恨','举','觉','宣','室','宫','宪','突','穿','窃','客','冠','祖','神','祝','误','诱','说','诵','耕','耗','艳','泰','珠','班','素','盏','匪','捞','栽','捕','振','载','赶','起','盐','捎','捏','埋','捉','捆','捐','损','都','哲','逝','捡','换','壶','挨','耻','耽','恭','莲','莫','荷','获','晋','恶','真','框','桐','株','桥','桃','格','校','核','样','根','索','哥','速','逗','栗','配','翅','础','破','原','套','逐','烈','殊','顾','轿','较','顿','毙','致','柴','桌','虑','监','紧','党','晓','鸭','晃','晌','晕','蚊','哨','哭','恩','唤','峰','圆','贼','贿','钱','钳','钻','铁','铃','铅','缺','氧','特','牺','造','乘','敌','秤','租','积','秧','秩','称','秘','透','笋','债','借','值','倘','俱','倡','候','俯','倍','倦','健','臭','射','躬','息','徒','徐','舰','舱','般','航','途','拿','爹','爱','颂','翁','脆','脂','胸','胳','脏','胶','留','皱','饿','恋','桨','浆','衰','高','席','准','座','脊','症','病','疾','疼','疲','效','离','唐','资','凉','站','剖','竞','部','旁','旅','畜','阅','羞','料','益','兼','烦','烧','烛','烟','递','涛','浙','涝','酒','涉','消','浩','海','涂','浴','浮','流','润','浪','浸','涨','烫','涌','悟','悄','悔','家','宵','宴','宾','窄','容','宰','案','请','读','扇','袜','袖','袍','被','祥','课','谁','调','冤','谅','谈','谊','剥','恳','展','剧','屑','弱','陪','娱','娘','通','能','难','预','球','理','捧','堵','描','域','掩','掉','堆','推','掀','授','教','掏','掠','培','接','控','探','据','掘','职','基','著','勒','黄','萌','萝','菌','萍','菠','营','械','梦','梢','梅','检','梳','梯','桶','救','副','爽','聋','袭','盛','雪','辅','辆','虚','雀','堂','常','匙','晨','睁','眯','眼','晚','啄','距','跃','略','蛇','累','唱','患','唯','崖','崭','崇','圈','铜','铲','银','甜','梨','笨','笼','笛','符','第','敏','做','袋','悠','偿','售','停','偏','假','得','衔','盘'}
-tab4={'船','斜','盒','鸽','悉','欲','彩','领','脚','脖','脸','脱','象','够','猜','猪','猎','猫','馆','凑','减','毫','廊','康','庸','鹿','盗','章','竟','商','族','旋','望','率','着','盖','粘','粗','粒','断','剪','兽','清','添','淋','淹','渠','渐','混','渔','淘','液','渗','情','惜','惭','悼','惧','惕','惊','惨','惯','寇','寄','宿','窑','密','谋','谎','祸','谜','逮','敢','屠','弹','随','蛋','隆','隐','婚','婶','颈','绩','绳','维','绵','琴','斑','替','款','堪','搭','塔','趋','超','提','堤','博','揭','喜','插','揪','搜','煮','援','裁','搁','搂','搅','握','揉','斯','期','欺','联','葛','董','葡','敬','葱','落','朝','辜','葵','棒','棋','植','森','棵','棍','棉','棚','棕','惠','惑','逼','厨','厦','硬','确','雁','殖','裂','雄','悲','紫','辉','敞','赏','掌','晴','暑','最','量','喷','晶','喇','遇','喊','景','践','跌','跑','蛛','蜓','喝','喂','喘','喉','幅','帽','赌','赔','链','销','锁','锄','锅','锈','锋','锐','短','智','毯','鹅','剩','稍','程','稀','税','筐','等','筑','策','筛','筒','答','筋','傅','牌','堡','集','奥','街','惩','御','循','艇','舒','番','释','禽','腊','脾','腔','鲁','猾','猴','然','馋','装','蛮','就','痛','童','阔','善','羡','普','粪','尊','道','渣','湿','温','渴','滑','湾','渡','游','滋','溉','愤','慌','惰','愧','愉','慨','割','寒','富','窜','窝','窗','遍','裕','裤','裙','谢','谣','谦','属','屡','隔','隙','絮','缎','缓','编','骗','缘','瑞','魂','肆','摄','摸','填','搏','摆','携','搬','摇','搞','塘','摊','蒜','勤','鹊','蓝','墓','幕','蓬','蓄','蒙','蒸','献','禁','楚','想','槐','赖','酬','感','碍','碑','碎','碰','碗','碌','雷','零','雾','雹','龄','鉴','睛','睡','睬','鄙','愚','暖','盟','歇','暗','照','跨','跳','跪','路','蜂','嗓','置','罪','罩','错','锡','锣','锤','锦','键','锯','矮','辞','稠','愁','筹','签','简','鼠','催','傻','像','躲','微','愈','遥','腰','腥','触','解','酱','痰','廉','新','韵','意','粮','数','煎','塑','慈','煤','煌','满','漠','源','滤','滥','滔','溪','溜','滚','滨','慎','誉','塞','谨','辟','障','嫌','嫁','叠','缝','缠','慧','撕','撒','趣','趟','撑','播','增','聪','鞋','蕉','蔬','横','槽','樱','橡','飘','醋'}
---115
-tab5={'醉','震','霉','瞒','题','暴','瞎','影','踢','踏','踩','嘱','墨','镇','靠','稻','黎','稿','稼','箱','箭','篇','僵','躺','艘','膝','膛','熟','摩','颜','毅','糊','遵','潜','潮','懂','额','慰','劈','静','碧','璃','墙','撇','嘉','摧','境','摘','摔','聚','蔽','慕','暮','蔑','模','榴','榜','榨','歌','遭','酷','酿','酸','磁','愿','需','弊','裳','蜡','蝇','蜘','赚','锹','锻','舞','稳','算','箩','管','僚','鼻','膜','膊','膀','鲜','疑','馒','裹','敲','豪','膏','遮','腐','瘦','辣','竭','端','熄','熔','漆','漂','漫','滴','演','漏','慢','寨','赛','察','蜜','谱','嫩','翠','熊','凳'}
+local choose_flag = false
 
-
-function setValue(sql,val)
-	local sql2 
-	sql2 = string.gsub(sql, '?', val,1)		
-	return sql2
+if TOUCH_MODE == true then
+	require("TSLib")
 end
 
-function getCharactorName()
+local open_app
+local front_app
+local mmsleep
+local init_screen
+local init_log
+local wt_log,wx_log
 
-	local char1,char2,char3,char4,char5
-	math.randomseed(os.time())
-	char1 = tab1[math.random(1,410)]
-	math.randomseed(os.time())
-	char2 = tab2[math.random(1,410)]
-	math.randomseed(os.time())
-	char3 = tab3[math.random(1,410)]
-	math.randomseed(os.time())
-	char4 = tab4[math.random(1,410)]
-	math.randomseed(os.time())
-	char5 = tab5[math.random(1,110)]
-	nLog(char1..char2..char3..char4..char5)
-	return char1..char2..char3..char4..char5
+local log_file = "chuanqishijie"
 
+local multi_col
+local press
+local before_game = 'Y'
+local beibao_flag = 'N'
+if TOUCH_MODE == true then
+	open_app= runApp
+	front_app = frontAppBid
+	mmsleep = mSleep
+	init_screen = init
+	init_log = initLog
+	wt_log= wLog
+	close_log = closeLog
+	multi_col = multiColor
+	ltap = tap
+elseif XXT_MODE ==true then
+	open_app= app.run
+	front_app = app.front_bid
+	mmsleep = sys.msleep
+	init_screen = screen.init
+	wx_log= sys.log
+	multi_col = screen.is_colors
+	ltap = touch.tap	
 end
 
-function initArgs()
-
-	local args = proc_take('spawn_args')    --获取启动参数
-	--sys.alert(args)
-	if args == '' then
-		args = proc_take('CC_args')         --适配中控框架启动方式
-	end
-	--sys.alert(args)
-	if args == '' then
-		args = proc_take('IDE_args')        --适配IDE启动方式(需在IDE电脑端启动中控)
-	end
-
-	proc_put('spawn_args', args)            --重新再次写入
-	proc_put('CC_args', args)               --重新再次写入
-	proc_put('IDE_args', args)              --重新再次写入	
-	local args_json = json.decode(args)     --转换启动参数
-
-	--sys.alert(table.deep_print(args_json))
-	if type(args_json) == 'table' then      --防止未提交启动
-		if type(args_json['server_ip']) == 'string' then
-			local server_ip = json.decode(  --IDE与中控的传输方式不同所以需要增加此段
-				args_json['server_ip']
-			)
-			CC.set_sever_ip(                --设置中控IP
-				server_ip
-			)
-		else
-			CC.set_sever_ip(                --设置中控IP
-				args_json['server_ip']
-			)
-		end
-	else
-		error('无启动参数,请使用中控或IDE启动')
-	end
-
-	--args_json['source'] = "运行账号.csv"
-	args_json['target'] = "./complete/account_greater60.csv"
-	args = json.encode(args_json)
-	proc_put('CC_args', args) 
-end
-
-function file_exists(path)
-	local file = io.open(path, "rb")
-	if file then file:close() end
-	return file ~= nil
-end
-
-local name_pre = getCharactorName()
-
-initArgs()
-list = CC.web_file.list("./running")
-local batchid
-
-nLog("文件个数")
-nLog(#list)
-
-local ip = "没开 WiFi"
-for i,v in ipairs(device.ifaddrs()) do
-	if (v[1]=="en0") then
-		ip = v[2]
-	end
-end
---sys.alert(db_name)
-local db_file_local
-local sqlite3
-local db_name
-if #list > 0 then
-	initArgs()
-	batchid=CC.web_file.size("./running/"..list[1])
-	--sys.alert(list[1])
---sys.alert(batchid)
---机器名称中不能包含空格
---local db_name = "db-"..device.name().."-"..os.date("%Y-%m-%d_%H%M%S", os.time())..".db"
-	db_name = device.type()..device.name()..ip.."-"..batchid..".db"
---sys.alert(db_name)
-	db_file_local = "/private/var/mobile/Media/1ferver/lua/scripts/"..db_name
-
-	sqlite3 = require('sqlite3')
-
-	sys.msleep(1000)
-	initArgs()
---local aa = CC.web_file.exists(db_file_local)
-	--local aa = CC.web_file.size(db_file_local)
-	--nLog(CC.web_file.size(db_file_local))
-	nLog(db_file_local)
---size
-	if file_exists(db_file_local) == false then
-		nLog("81 第一次，开始下载")
-		initArgs()
-		CC.web_file.down_file('foo2.db',db_file_local)
-	else
-		nLog("85 文件已经存在")
-	end
-	sys.msleep(2000)
-else
-	nLog("没有账号文件.")
-	os.exit()
+if TOUCH_MODE == true then
+	init_log(log_file, 1)
 end	
 
-function testrun()
+function wwlog(msg)
+	if TOUCH_MODE == true then		
+		wt_log(log_file,msg)
+	elseif XXT_MODE == true then
+		wx_log(msg)
+	end	
+	nLog(msg)
+end
 
-	if app.is_running("com.jiguang.mgame.yhjy") then
-		--nLog("46 app  is running")
-		abc =1
+init_screen(1)
+--app.front_bid() ~= "com.tencent.smoba" then	
+
+mmsleep(200)
+
+function showuii(json_str)
+	local ret, input1
+	if TOUCH_MODE == true then		
+		ret, input1 =  showUI(json_str)
+	elseif XXT_MODE == true then
+		ret, input1 = 1, XXT_DAQU
+	end	
+	return  ret, input1
+end 
+
+function run_app_first(...)
+
+	if front_app() == "com.tencent.xin" then
+		wwlog("74 微信程序ing...")
+	elseif  front_app() ~= "com.tencent.cqsj" then
+		mmsleep(200)
+		open_app("com.tencent.cqsj")
+		wwlog("game start")
+		mmsleep(2000)
+		before_game = 'Y'
+	end
+end
+
+function run_app(...)
+
+	if front_app() == "com.tencent.xin" then
+		wwlog("74 微信程序ing...")
+	elseif  front_app() ~= "com.tencent.cqsj" then
+		mmsleep(30000)
+		open_app("com.tencent.cqsj")
+		wwlog("game start")
+		mmsleep(2000)
+		before_game = 'Y'
+	end
+end
+
+
+
+function choose_fuwuqi(...)
+
+	w,h = getScreenSize();--此段代码仅供演示用，不可复制粘贴直接运行
+	MyJsonString = [[
+{
+  "style": "default",
+  "width": ]]..w..[[,
+  "height": ]]..h..[[,
+  "config": "save_111.dat",
+  "timer": 15,
+  "views": [
+    {
+      "type": "Label",
+      "text": "设置",
+      "size": 25,
+      "align": "center",
+      "color": "0,0,255"
+    },
+    {
+      "type": "Edit",
+      "prompt": "输入服务器对应的数字",
+      "text": "1",
+      "size": 15,
+      "align": "left",
+      "color": "255,0,0"
+    },   
+  ]
+}
+]]
+	ret, input1 = showuii(MyJsonString);
+	local fuwuqi
+	if ret == 1 then
+		fuwuqi = input1	
+	end
+	nLog(fuwuqi)
+	tab_right = {
+		{  415,  150, 0x452e20},
+		{  655,  150, 0x452e20},
+		{  895,  150, 0x452e20},
+		{  415,  225, 0x452e20},
+		{  655,  225, 0x452e20},
+		{  895,  225, 0x452e20},
+		{  415,  305, 0x452e20},
+		{  655,  305, 0x452e20},
+		{  895,  305, 0x452e20},
+		{  415,  395, 0x452e20},
+	}
+
+	tab_left ={
+		{  205,  210, 0xdbb27c},
+		{  205,  280, 0x493b31},
+		{  205,  350, 0x453a2f},
+		{  205,  420, 0x4b3f32},
+		{  205,  490, 0x463a30},
+		{  205,  560, 0x493b31},
+	}
+
+	local idx_left = math.ceil(fuwuqi/10)
+	local idx_right = fuwuqi%10
+	if idx_right == 0 then
+		idx_right = 10
+	end
+
+	if tonumber(fuwuqi) > 50 then
+		moveTo(205,  560,205,  490)
+		mmsleep(2000)
+		ltap(  205,  563) --点击左侧最下边的区域
+	end
+
+	local x1,y1 = tab_left[idx_left][1],tab_left[idx_left][2]
+	if multi_col({
+			{  208,  152, 0x65441e},
+			{  206,  205, 0xe6c08c},
+			{  206,  209, 0xe5bf8c},
+			{  212,  211, 0xe7c18d},
+			{  223,  204, 0xe6c08c},
+			{  223,  214, 0xe5bf8c},
+			{  224,  210, 0x483b31},
+			})then 
+		wwlog("167 此微信号第一次登陆此游戏，")
 	else
-		local r = app.run("com.jiguang.mgame.yhjy") -- 启动应用 
-		sys.msleep(10 * 1000) -- 等 10 秒
-		if r == 0 then
-			nLog("50 app run ok")
-		else
-			sys.alert("启动失败", 3)		
+		if multi_col({
+				{  165,  197, 0x765122},
+				{  186,  214, 0x63431c},
+				{  191,  208, 0xd7ae78},
+				{  219,  208, 0xe9c089},
+				{  240,  211, 0xd5ae7a},
+				{  209,  207, 0x835924},
+				}) or ({
+				{  164,  198, 0x493f2f},
+				{  182,  208, 0xceac7d},
+				{  243,  208, 0xae916c},
+				{  221,  209, 0xcdab7e},
+				{  210,  209, 0x4a3e31},
+				}) then
+			y1 = y1 + 70
 		end
 	end
 
-	local bid = app.front_bid()
-	if bid ~= "com.jiguang.mgame.yhjy" then
-		local r = app.run("com.jiguang.mgame.yhjy") -- 启动应用 
-		sys.msleep(10 * 1000) -- 等 10 秒
-		if r == 0 then
-			nLog("50 app run ok")
-		else
-			sys.alert("启动失败", 3)		
-		end
-	end 
+	tap(x1,y1)
+
+	--tap(tab_left[idx_left][1],tab_left[idx_left][2])
+
+	mmsleep(2000)
+
+	tap(tab_right[idx_right][1],tab_right[idx_right][2])
+
+	mmsleep(2000)
+	return fuwuqi
+	-- body
 end
 
-function lijizhuangbei()
-	local ret = false
-	local x, y = screen.find_color({
-			{   0,    0, 0xfbfcfb },
-			{   1,    8, 0x688305 },
-			{  -6,   14, 0x507c07 },
-			{  -5,   17, 0xb2c6b9 },
-			{   1,   16, 0xfdfefc },
-			{   6,   14, 0x5e880a },
-			}, 80)
-
-	if x ~= -1 and y ~= -1 then
-		ret = true
-		nLog("173 立即装备")
-		touch.tap(x,y)		
-	end		
-	return ret
-end
-local jingling_flag =false
-function move_jingling()
-	local ret = false
-	local x, y = screen.find_color({
-			{   0,    0, 0x7d3718 },
-			{  -3,    6, 0x311104 },
-			{   8,    6, 0xfcfbfb },
-			{   0,    9, 0x361405 },
-			{   0,   11, 0x813e1f },
-			{   9,   15, 0xf26568 },
-			}, 85)
-	sys.msleep(200)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		nLog("193 移动小精灵")
-		touch.on(x,  y):move(11,  475):off()
-	end 
-	sys.msleep(300)
-	 x, y = screen.find_color({
-			{   0,    0, 0x732b0c },
-			{  -5,    8, 0x7f3c1e },
-			{   1,   13, 0x813d1e },
-			{  -1,    6, 0x311103 },
-			{ -10,   16, 0xf26568 },
-			}, 85)
-	sys.msleep(200)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		nLog("207 移动小精灵")
-		touch.on(x,  y):move(11,  475):off()
-	end 
-	sys.msleep(300)
-	x, y = screen.find_color({
-	{   0,    0, 0x7e3919 },
-	{   3,    5, 0x823e1f },
-	{   7,    7, 0xfefcfc },
-	{  -2,    5, 0x371506 },
-	{  -2,   11, 0x803d1f },
-}, 85)
-
-if x~= -1 and y ~= -1 then
-		ret = true
-		nLog("221 移动小精灵")
-		touch.on(x,  y):move(11,  475):off()
-	end 
-	
-	sys.msleep(2000)
-	if screen.is_colors({
-	{  149,  454, 0xffffff},
-	{  125,  463, 0xffffff},
-	{  156,  465, 0xffffff},
-	{  134,  473, 0xffffff},
-	{   43,  479, 0xff9600},
-	{   45,  494, 0xff7e00},
-})then
-	nLog("219 在点击一下精灵图标")
-	touch.tap(45,  494)
-end	
-	
-	return ret
-end
-
-
-function closeon()
-	local x, y = screen.find_color({
-			{   0,    0, 0xb8f669 },
-			{   5,    0, 0xb6f95f },
-			{   2,    5, 0x41ef21 },
-			{   4,    6, 0x42f228 },
-			{   2,   13, 0x3ae831 },
-			{   4,   15, 0x56f443 },
-			}, 85,574,   83,998,  504)
-
-	sys.msleep(100)
-	if x ~= -1 and y ~= -1 then
-		nLog("173 找到高级装备")
-		touch.tap(x,y)		
-	end			
-end
-
-function lingqujiangli2()
-	local ret = false
-	local x, y = screen.find_color({
-			{   0,    0, 0xf5f7e1 },
-			{   1,    5, 0x556d43 },
-			{  -3,    8, 0xe7ead3 },
-			{  -2,   11, 0x677b54 },
-			{   3,   14, 0x294c0b },
-			{  15,    9, 0x76aa1b },
-			}, 80)
-	if x ~= -1 and y ~= -1 then
-		ret = true
-		nLog("209 领取奖励")
-		touch.tap(x,y)		
-	end	
-	return ret
-end
-
-function lingqujiangli()
-	local ret = false
-	local x, y = screen.find_color({
-			{   0,    0, 0xd1d7be },
-			{   3,    9, 0xe7ead3 },
-			{   5,    6, 0x5e734b },
-			{  10,    1, 0xedf0da },
-			{  16,   11, 0x72a817 },
-			{  24,    9, 0xd2d8be },
-			{  49,   11, 0xfcfde8 },
-			}, 85)
-	if x ~= -1 and y ~= -1 then
-		ret = true
-		nLog("228 领取奖励")
-		touch.tap(x,y)		
-	end	
-	return ret
-end
-
-function usex()
-	local ret = false
-	local x, y = screen.find_color({
-			{   0,    0, 0x5e8836 },
-			{   9,    4, 0xf5f8f5 },
-			{   8,    9, 0xfafbfa },
-			{  17,   12, 0xfbfcfa },
-			{  22,   19, 0xecf1ed },
-			{  21,   16, 0x8abc25 },
-			}, 85)
-	if x ~= -1 and y ~= -1 then
-		ret = true
-		nLog("173 使用")
-		touch.tap(x,y)		
-	end	
-	return ret
-end
-
-function clickback()
-	local ret = false
-	local x, y = screen.find_color({
-			{   0,    0, 0x94773f },
-			{   4,   -5, 0xc4ab71 },
-			{   9,   -3, 0xb18b56 },
-			{  15,  -11, 0xd1bd81 },
-			{  15,  -16, 0xe7d595 },
-			{  12,   -7, 0xbca568 },
-			}, 85)
-	if x ~= -1 and y ~= -1 then
-		ret = true
-		nLog("264 返回")
-		touch.tap(x,y)		
-	end	
-	return ret
-end
-
-function huanhao()
-	local ret = false
-
-	if screen.is_colors({
-			{   18,   16, 0xf7f4f2},
-			{   17,   18, 0xe0d4d3},
-			{   15,   20, 0xd3c3c2},
-			{   14,   23, 0xe3d9d6},
-			{   17,   26, 0xcebdba},
-			{   20,   24, 0xe1d6d4},
-			{   18,   21, 0xe3d9d7},
+function  get_tianlei_flag(...)
+	local ret = 'N'
+	mmsleep(200)
+	if multi_col({
+			{  921,  572, 0x2d476a},
+			{  933,  573, 0xc9d0f9},
+			{  932,  586, 0xdcdcfc},
+			{  920,  594, 0x3b86cd},
 			})then
-		nLog("60 级了")
-		ret = true
-	end 
-	sys.msleep(500)
-	if screen.is_colors({
-			{   14,   16, 0xd5c2bc},
-			{   17,   16, 0xd9cbc8},
-			{   19,   16, 0xfcfbfa},
-			{   18,   19, 0xf5f1f0},
-			{   17,   21, 0xede6e4},
-			{   15,   25, 0xd9cbc9},
+		ret = 'Y'
+	elseif multi_col({
+			{  927,  569, 0xc2d2fa},
+			{  928,  579, 0xfffef5},
+			{  930,  606, 0xfcf34a},
+			}) then
+		ret = 'Y'
+	elseif multi_col({
+			{  364,  114, 0x48150c},
+			{  384,  120, 0xf4e472},
+			{  412,  113, 0xf1e172},
+			{  425,  125, 0x330e0c},
+			{  433,  118, 0xfdef78},
+			}) then
+		ret = 'Y'
+	elseif multi_col({
+			{ 1039,   31, 0xf3c892},
+			{ 1048,   32, 0xe2b184},
+			{ 1062,   30, 0xf6cd95},
+			{ 1062,   37, 0xdeac7f},
+			{ 1059,   37, 0x883433},
+			}) then
+		ret = 'Y'
+	elseif multi_col({
+			{ 1004,   57, 0xebca77},
+			{ 1018,   57, 0xf6d67f},
+			{ 1006,   63, 0x591617},
+			{ 1010,   63, 0xc69c63},
+			}) then
+		ret = 'Y'
+	end
+
+	return ret
+end
+
+function  getcurlevel(...)
+	local ret =0
+	if multi_col({
+			{   15,   73, 0x958a8a},
+			{   18,   74, 0xe6c192},
+			{   20,   82, 0xcda276},
+			{   13,   80, 0xc99f76},
+			{   15,   82, 0xeac08c},
+			{   18,   76, 0xd6b287},
+			{   18,   83, 0xdaae7f},
+			{   16,   84, 0x430302},
 			})then
-		nLog("304 70级了")
-		ret = true
+		ret = 4
+		wwlog("228 4级")
+	elseif multi_col({
+			{   14,   75, 0xe1bc8e},
+			{   15,   74, 0xe0bc90},
+			{   17,   74, 0xd6b58d},
+			{   17,   78, 0xc9a37b},
+			{   17,   80, 0xc59b73},
+			{   17,   85, 0xc4936b},
+			{   11,   79, 0x4d2a2a},
+			})then
+		ret = 1
+		wwlog("239 1级")
 	end
-	return ret 
-
-end
-
-function gogogo()
-	local x, y = screen.find_color({
-			{   0,    0, 0x5f7431 },
-			{  32,    7, 0x284414 },
-			{   2,   17, 0x99a686 },
-			{  11,   15, 0xffffeb },
-			{  30,   15, 0xebedd7 },
-			{  16,   14, 0x869b18 },
-			}, 85)
-	if x ~= -1 and y ~= -1 then
-		nLog("204 立即前往")
-		touch.tap(x,y)		
-	end	
-end
-
-function closewindow()
-	local ret = false
-	local x, y = screen.find_color({
-			{   0,    0, 0xebcf86 },
-			{  21,    0, 0xe7c47b },
-			{  20,   20, 0xde9842 },
-			{  -1,   20, 0xd79943 },
-			{  10,    7, 0xcfa669 },
-			{   5,   16, 0xc5833d },
-			}, 85)
-	if x ~= -1 and y ~= -1 then
-		ret = true
-		nLog("189 关闭按钮")
-		touch.tap(x,y)		
-	end		
 	return ret
+	-- body
 end
 
-function lingqu()
-	local ret = false
-	local x, y = screen.find_color({
-			{   0,    0, 0x4b782a },
-			{   6,    5, 0xeaf1ea },
-			{   9,   10, 0xbbd3bd },
-			{  11,   12, 0x75a130 },
-			{  17,   12, 0x428923 },
-			{  17,   21, 0xf7faf6 },
-			}, 85)
-	if x ~= -1 and y ~= -1 then
-		ret = true
-		nLog("205 可领取")
-		touch.tap(x,y)		
-	end	
-	return ret	
-end
-
-function lingqu2()
-	local ret=false
-	local x, y = screen.find_color({
-			{   0,    0, 0xafccb2 },
-			{   3,    2, 0x015b0b },
-			{   2,    5, 0xeff5ef },
-			{   6,    7, 0x468623 },
-			{  10,    4, 0x2a7532 },
-			{  13,   10, 0xf9fbf8 },
-			}, 85)
-	if x ~= -1 and y ~= -1 then
-		ret = true
-		nLog("205 可领取")
-		touch.tap(x,y)		
-	end	
-	return ret
-end
-
-function find_puton_button2()
-	local ret = false
-	local x, y = screen.find_color({
-			{   0,    0, 0xacc1b4 },
-			{   9,    0, 0xbccdc2 },
-			{   3,    7, 0xadc2b4 },
-			{   0,   12, 0x19581d },
-			{   6,   16, 0x49861f },
-			{  14,   10, 0xe5ece7 },
-			}, 85)
-
-	if x ~= -1 and y ~= -1 then
-		ret = true
-		nLog("14 找到穿上按钮2")
-		touch.tap(x,y)		
-	end	
-	return ret
-end
-
-function find_puton_button()
-	local ret = false
-	local x, y = screen.find_color({
-			{   0,    0, 0x73b121 },
-			{   6,    9, 0xe9efeb },
-			{  14,   11, 0xfffffe },
-			{  14,   17, 0xfdfefc },
-			{  40,    5, 0xfafbfa },
-			{  40,   15, 0xfdfefc },
-			{  35,   12, 0x82c524 },
-			}, 80)
-
-	if x ~= -1 and y ~= -1 then
-		ret = true
-		nLog("14 找到穿上按钮")
-		touch.tap(x,y)		
-	end	
-	return ret
-end
-
-function clickOkbutton()
-	local x, y = screen.find_color({
-			{   0,    0, 0x697c34 },
-			{  14,    5, 0xfcfdfc },
-			{  12,   14, 0xfdfdfd },
-			{  21,   17, 0xe5e8e2 },
-			{  25,   10, 0xfcfdfc },
-			{  33,   15, 0xa0b900 },
-			}, 85)
-
-	if x ~= -1 and y ~= -1 then
-		nLog("209 找到确定按钮")
-		touch.tap(x,y)		
-	end	
-	return true
-end
-
-function getUserAcct(acct1)	
-	--sys.alert( string.find(acct1,"/"))
-	local acct_r = string.sub(acct1,1,string.find(acct1,",") - 1)
-	--sys.alert(string.len(acct1))
-	local pwd_r = string.sub(acct1, string.find(acct1,",") + 1 ,string.len(acct1))
-	return (string.gsub(acct_r,'"','')) ,(string.gsub(pwd_r,'"',''))
-end
-
-function insGameAcct(acct_name)
-	local db = sqlite3.open(db_file_local, "rw")
-	--local sql="insert into game_acct(acct_name,acct_log_device,device_type) values('"..acct_name.."','"..device.name().."','"..device.type().."' );"
-	local sql ="insert into game_acct(acct_name,acct_log_device,device_type,charactor_name)select '"..acct_name.."','"..device.name().."','"..device.type().."','".. name_pre .."' where not exists(select acct_name from game_acct where acct_name = '"..acct_name.."');"
-	nLog(sql)
-	db:exec(sql)
-	db:close()
-end
-
-function updGameAcct(acct_name,flag_60)
-	local db = sqlite3.open(db_file_local, "rw")
-	--local sql1 =".set param @acct_name = '"..acct_name.."';"
-	--local sql2 =".set param @flag60 = '"..flag_60.."';"
-	local sql =[=[ 	update game_acct  set flag60 = '?'  where acct_name = '?' ; ]=]
-	--nLog(sql)
-	sys.msleep(200)
-	sql= setValue(sql,flag_60)
-	sql = setValue(sql,acct_name)
-	--[[
-	local stmt = db:prepare(sql)
-	stmt:bind_values(flag_60,acct_name)
-	--stmt.bind("@acct","13944912552")
-	stmt:step()	
-	]]--
-	db:exec(sql)
-	db:close()
-end
-
-function getLess60Account()
-	local acct_ret
-	--local args = proc_take("CC_args")
-	--local args = json.decode(args)
-	--local filename = args['source']
-	local filename	
-	local list1 = CC.web_file.list("./running")
-	if #list1 >0 then
-		filename = "./running/"..list1[1]
-		filename1 = "./is_running/is_running.csv"
-		nLog(filename)
-		if CC.web_file.exists(filename) then
-			nLog("198")
-			while  (CC.web_file.line_count(filename) > 0 ) do
-				nLog("200")
-				acct_ret = CC.web_file.take_line(filename)
-				sys.msleep(200)
-				nLog(filename1)
-				success = CC.web_file.appends(filename1, "\r\n"..acct_ret..",\""..device.name().."\",\""..ip.."\",\""..os.date("%Y-%m-%d %H:%M:%S",os.time()).."\"")
-				if acct_ret ~= nil then
-					break
-				end 
-			end
-			CC.log('')
-		else
-			CC.log('文件不存在')
-			os.exit()
-		end
-		--nLog("acct_ret"..acct_ret)
-		if acct_ret == nil then
-			nLog("216")
-			success = CC.web_file.delete(filename);
-			acct_ret = getLess60Account()
-		end
+function resethome(...)
+	if multi_col({
+			{  961,  567, 0xca9663},
+			{  979,  572, 0xb98552},
+			{  967,  578, 0x333322},
+			{  970,  580, 0x332722},
+			{  631,  585, 0xf6ec9e},
+			}) then
+		ltap(562,  577)
+		wwlog("272 点击红篮球，复位底部任务栏")
 	end
-	return acct_ret
+	-- body
 end
 
-function getLess60Account_bak()
-	local acct_ret
-	--local args = proc_take("CC_args")
-	--local args = json.decode(args)
-	--local filename = args['source']
-	local filename	
-	local list1 = CC.web_file.list("./running")
-	if #list1 >0 then
-		filename = "./running/"..list1[1]
-
-		nLog(filename)
-		--local filename1 = args['target']
---sys.alert("filename:"..filename)
-		if CC.web_file.exists(filename) then
-			nLog("in...........")
-			--sys.alert("CC.web_file.exists(filename)")
-			--sys.alert(CC.web_file.take_line(filename))
-			--sys.alert(CC.web_file.line_count(filename))
-			while  (CC.web_file.line_count(filename) > 0 ) do
-				nLog("in2.............")
-				acct_ret = CC.web_file.take_line(filename)
-				if acct_ret ~= nil then
-					break
-				end 
-			end
-			CC.log('')
-		else
-			CC.log('文件不存在')
-			os.exit()
-		end
-		--nLog("acct_ret"..acct_ret)
-		if acct_ret == nil then
-			success = CC.web_file.delete(filename);
-			acct_ret = getLess60Account()
-		end
+function is_in_game(...)
+	local ret = 'N'
+	if multi_col({
+			{   30,  123, 0x992222},
+			{   40,  133, 0xaa2223},
+			{   41,  132, 0x6d2424},
+			{   52,  128, 0xdf5248},
+			{   65,  136, 0xb63232},
+			}) then
+		ret = 'Y'
 	end
-	return acct_ret
-
+	return  ret
+	-- body
 end
 
-function recordOKAccount(ok_acct)
-	local args = proc_take("CC_args")
-	local args = json.decode(args)
---local filename = args['source']
-	local filename1 = args['target']
---sys.alert("filename:"..filename)
-	if CC.web_file.exists(filename1) then
-		--sys.alert("CC.web_file.exists(filename)")
-		--sys.alert(CC.web_file.take_line(filename))
-		--sys.alert(CC.web_file.line_count(filename))
-		--while  (CC.web_file.line_count(filename) > 0 ) do
-		--local abc = CC.web_file.take_line(filename)
-		--sys.alert(abc)
-		--local g_success = true --游戏运行成功
-		success = CC.web_file.appends(filename1, ok_acct..",\"".."Y".."\",\""..os.date("%Y-%m-%d %H:%M:%S",os.time()).."\"\r\n")		
-		--end
-		CC.log('')
-	else
-		CC.log('文件不存在')
-		os.exit()
+function find_dialog(...)
+	local ret = 'N'
+	if multi_col({
+			{ 1000,   58, 0x64151a},
+			{ 1000,   72, 0x52271a},
+			{ 1021,   71, 0xa36737},
+			{ 1019,   56, 0xe0b760},
+			{ 1012,   63, 0xd6aa6b},
+			}) then
+		ret = 'Y'
 	end
+	return ret
+	-- body
 end
 
-function find_multi_color()	
-	local ret_flag='N'
-	local loop_cnt =1
-	while true do
-		loop_cnt = loop_cnt +1
-		screen.keep()
-		x, y = screen.find_color({
-				{   0,    0, 0xb9f65f },
-				{   2,   -1, 0xcdf96d },
-				{   5,    2, 0x98f357 },
-				{   1,   14, 0x35eb34 },
-				{   3,   14, 0x3dfa33 },
-				}, 90,   567,   83, 985,  418)
---,  567,   83, 985,  418
+function get_locked_red(...)
+		local ret = false
+		x,y = findMultiColorInRegionFuzzy( 0xc53838, "-21|9|0x6b3d07,-25|7|0xab7108,-12|20|0xcecece,-13|-4|0xffffff", 85,  243,  105, 1010,  474)
+		mmsleep(80)
 		if x~= -1 and y ~= -1 then
-			sys.msleep(100)
-			nLog("195 点击半边精灵图标"..x..y)
-			sys.msleep(500)
-			touch.tap(x,y)
-			sys.msleep(3000)
-			ret_flag = 'Y'
-			break		
+			ret = true
+			ltap(x,y)
+			wwlog("1001 点击背包中红色药水")
+			--cangku_red ='N'				
 		end
-		nLog(x..y)
+		-- body
+		return ret
+	end
 
-		if loop_cnt >50 then 
+
+	function get_locked_blue(...)
+		local ret = false
+		--x,y = findMultiColorInRegionFuzzy( 0xeffaef, "-3|5|0x3838c1,5|-1|0x504a94,-9|6|0xefac0b,-11|13|0xc78609", 85,  243,  105, 1010,  474)
+		x,y = findMultiColorInRegionFuzzy( 0xe8f7fc, "-2|4|0x363bbd,-9|6|0xcb8a07,-10|13|0xb47707", 85,  243,  105, 1010,  474)
+		mmsleep(80)
+		if x~= -1 and y ~= -1 then
+			ret = true
+			ltap(x,y)
+			wwlog("1016 点击背包中蓝色药水")
+			--cangku_red ='N'
+		end
+		
+		mmsleep(100)
+		x,y = findMultiColorInRegionFuzzy( 0x393ac1, "0|2|0x4046cc,-7|2|0xa76f06,-8|9|0xb67607", 90, 243,  105, 1010,  474)
+		mmsleep(80)
+		if x~= -1 and y ~= -1 then
+			ret = true
+			ltap(x,y)
+			wwlog("1027 点击背包中蓝色药水")
+			--cangku_red ='N'
+		end
+		
+		mmsleep(100)
+		x,y = findMultiColorInRegionFuzzy( 0x3d44c4, "4|-1|0xecedef,2|4|0x322287,-7|2|0xba7e07", 90, 0, 0, 1135, 639)
+		if x~= -1 and y ~= -1 then
+			ret = true
+			ltap(x,y)
+			wwlog("372 点击背包中蓝色药水")
+			--cangku_red ='N'
+		end
+		
+		-- body
+		return ret
+	end
+
+	function get_locked_gold(...)
+		local ret = false
+		x,y = findMultiColorInRegionFuzzy( 0xffd54c, "2|8|0xf7b322,-8|22|0x4f2d09,-12|12|0xce8d07", 85,  243,  105, 1010,  474)
+		mmsleep(80)
+		if x~= -1 and y ~= -1 then
+			ret = true
+			ltap(x,y)
+			wwlog("1030 点击背包中太阳神水")			
+		end
+		mmsleep(100)
+		x,y = findMultiColorInRegionFuzzy( 0xf4d04c, "-1|4|0xc6a328,1|14|0xe0b83c,-11|7|0xa76f06,-11|14|0xbc7e0a", 90, 243,  105, 1010,  474)
+		mmsleep(80)
+		if x~= -1 and y ~= -1 then
+			ret = true
+			ltap(x,y)
+			wwlog("1049 点击背包中太阳神水")			
+		end
+		-- body
+		return ret
+	end
+
+	function get_unlocked_blue(...)
+		local ret = false
+		x,y = findMultiColorInRegionFuzzy( 0x3332aa, "5|5|0x4433bb,-14|19|0xdedddd,-25|-12|0xd6d6d6,4|-47|0xfcfcfc", 85,  243,  105, 1010,  474)
+		mmsleep(80)
+		if x~= -1 and y ~= -1 then
+			ret = true
+			ltap(x,y)
+			wwlog("1008 点击背包中蓝色药水")
+			--find_red ='Y'
+		end
+		-- body
+		return ret
+	end
+
+	function get_unlocked_red(...)
+		local ret = false
+		x,y = findMultiColorInRegionFuzzy( 0xbb4447, "8|0|0xf1e3e3,1|4|0xbb3333,34|-5|0xc3c3c3,4|-21|0x431111", 85,  243,  105, 1010,  474)
+		mmsleep(80)
+		if x~= -1 and y ~= -1 then
+			ret = true
+			ltap(x,y)
+			wwlog("1059 点击背包中红色药水")
+			find_red ='Y'
+		end
+		-- body
+		return ret
+	end
+	
+	function find_locked_gold(...)
+		local ret = false
+		x,y = findMultiColorInRegionFuzzy( 0xd9990a, "-3|-1|0xb87d06,0|11|0x623b11,-6|12|0x52300b", 85,  642,  134, 1005,  534)
+		if x~= -1 and y ~= -1 then
+			ret = true
+			ltap(x,y)
+			wwlog("1071 点击仓库中的太阳神水")			
+		end
+		return ret
+	-- body
+end
+
+function find_locked_blue(...)
+		local ret = false
+		x,y = findMultiColorInRegionFuzzy( 0xce9009, "-3|-1|0xb67c06,2|7|0xb97e0d,-6|7|0x774706", 85,  642,  134, 1005,  534)
+		
+		if x~= -1 and y ~= -1 then
+			ret = true
+			ltap(x,y)
+			wwlog("1084 点击仓库中的蓝色药水")			
+		end
+		wwlog("1086 find blue in cangku")
+		return ret
+	-- body
+end
+
+
+function find_locked_red(...)
+		local ret = false
+		
+		x,y = findMultiColorInRegionFuzzy( 0xbe8107, "-5|7|0x8e5909,-1|7|0x9f6706,-4|11|0x573209", 85,  642,  134, 1005,  534)
+		if x~= -1 and y ~= -1 then
+			ret = true
+			ltap(x,y)
+			wwlog("1098 点击仓库中的红色药水")			
+		end
+		return ret
+	-- body
+end
+
+local sleep_cnt = 1
+local renwu_flag = 1
+run_app_first()
+local level = 1
+--local jineng_flag ='N'
+local tianlei_flag = 'N'
+local yaoshui_shezhi = 'N'
+local fuli_flag = 'N'
+local in_game = 'N'
+local kuangqu_flag = 'N'
+local dialog_flag = 'N'
+--启动游戏并进入游戏
+-----------------------------------------------------------------------------------------
+while (true) do 
+	renwu_flag = renwu_flag +1
+	mmsleep(500)
+	resethome()
+	mmsleep(500)
+	level =getcurlevel()
+	mmsleep(500)
+	in_game = is_in_game()
+	mmsleep(500)
+	if tianlei_flag =='N' then
+		tianlei_flag =get_tianlei_flag()
+	end
+	if level >0 or tianlei_flag =='Y' or in_game =='Y' then
+		before_game = 'N'
+	end 
+
+	dialog_flag =find_dialog()
+
+	while (before_game == 'Y') do
+		mmsleep(1000)
+		wwlog("252 before log in game"..before_game)
+		if multi_col({
+				{  919,   75, 0x9d702a},
+				{  922,   95, 0xdbb16a},
+				{  923,  116, 0xfada80},
+				{  891,   99, 0xa97144},
+				{  886,   96, 0xae8050},
+				{  882,   95, 0x4f1415},
+				})then
+			ltap(882,   95)
+			wwlog("333 点击公告")
+		elseif multi_col({
+				{  211,  516, 0x82d943},
+				{  226,  524, 0xeff3f3},
+				{  238,  514, 0x415f2b},
+				{  282,  509, 0x43642c},
+				{  298,  518, 0xdedfdc},
+				}) then
+			ltap(298,  518)
+			wwlog("79 点击微信")
+			mmsleep(5000)
+			--break
+			--[[
+	elseif multi_col({
+			{  253,  869, 0xffffff},
+			{  273,  881, 0xffffff},
+			{  284,  884, 0x04be02},
+			{  306,  878, 0xffffff},
+			{  340,  877, 0xecfaec},
+			{  343,  885, 0x04be02},
+			{  373,  879, 0xffffff},
+			})then
+		ltap(373,  879)
+		wwlog("308 竖屏 微信确认登陆")
+	]]--	
+		elseif multi_col({
+				{  874,  379, 0x04be02},
+				{  876,  349, 0xfbfefb},
+				{  876,  339, 0x04be02},
+				{  879,  332, 0xf0fbf0},
+				{  877,  302, 0xe9f9e9},
+				{  878,  271, 0xffffff},
+				{  892,  285, 0x04be02},
+				})then
+			ltap(892,  285)
+			wwlog("307 微信确认登陆")
+			--[[
+	elseif multi_col({
+			{  676,  480, 0x007aff},
+			{  665,  506, 0x007aff},
+			{  663,  502, 0xe4e4e4},
+			{  671,  438, 0x007aff},
+			{  667,  403, 0x007aff},
+			})then
+		ltap(667,  403)
+		wwlog("305 不在提示")
+	]]--	
+		elseif multi_col({
+				{  390,  372, 0xd1daee},
+				{  407,  371, 0x007aff},
+				{  407,  381, 0x007aff},
+				{  443,  369, 0x007aff},
+				{  457,  380, 0x007aff},
+				{  449,  374, 0xd5daec},
+				})then
+			ltap(449,  374)
+			wwlog("353 打开微信")
+		elseif multi_col({
+				{  664,  476, 0xf5c26a},
+				{  684,  479, 0xf4b75e},
+				{  703,  476, 0xd9c06d},
+				{  721,  479, 0xbc8946},
+				{  507,  550, 0x681912},
+				{  549,  552, 0xe6be00},
+				{  569,  549, 0xb28209},
+				}) then
+			if choose_flag == true then
+				ltap(564,  557) --点击进入游戏				
+				wwlog("89 点击进入游戏")			
+			else
+				ltap(692,  480) --点击换服
+				mmsleep(1000)
+				v_choose = choose_fuwuqi()
+				mmsleep(1000)
+				if v_choose ~= nil then
+					choose_flag = true
+				end
+				wwlog("175 点击换服")
+			end
+		elseif multi_col({
+				{  543,  409, 0x6a341a},
+				{  547,  423, 0x5a2718},
+				{  557,  419, 0xf2c892},
+				{  581,  418, 0xf3ca93},
+				{  570,  419, 0x582818},
+				})then
+			ltap(570,  419)
+			wwlog("350 角色名称重复 ,点击确定")
+		elseif multi_col({
+				{  698,  575, 0xce9c61},
+				{  698,  586, 0xba703c},
+				{  700,  578, 0x221108},
+				{  706,  578, 0x231108},
+				{  928,  576, 0x601213},
+				}) then
+			ltap(928,  576)
+			before_game = 'N'
+			wwlog("360 直接点击开始游戏")
+			break
+			--[[
+		elseif multi_col({
+				{  844,  573, 0xaa2a19},
+				{ 1012,  572, 0x9c0e0d},
+				{  879,  573, 0xcfab68},
+				{  964,  575, 0xc8a76a},
+				{  928,  574, 0x571212},
+				{  923,  569, 0xe7c071},
+				}) then
+			ltap(923,  569)
+			before_game = 'N'
+			wwlog("360 直接点击开始游戏")	
+		]]--	
+		elseif multi_col({
+				{  677,  564, 0xba901e},
+				{  694,  566, 0xc38a0d},
+				{  685,  579, 0xaa7c00},
+				{  865,  569, 0x6c1c13},
+				{  929,  573, 0x561311},
+				}) then
+			mmsleep(200)
+			local fashi_flag = 'N'
+			if multi_col({
+					{   80,  221, 0x2a1c0d},
+					{   90,  227, 0xcaad7d},
+					{   96,  243, 0xe4cb96},
+					{   93,  288, 0xf3da9a},
+					{   99,  286, 0x644d26},
+					})then
+				ltap(753,  343)
+				wwlog("382 战士转法师")
+				mmsleep(1000)
+				fashi_flag = 'Y'
+			elseif multi_col({
+					{   80,  229, 0x90d072},
+					{  101,  230, 0x85c75c},
+					{   90,  278, 0xb0e481},
+					{   90,  298, 0xadd887},
+					})then
+				ltap(378,  320)
+				wwlog("382 道士转法师")
+				mmsleep(1000)
+				fashi_flag = 'Y'
+			end
+			mmsleep(200)
+			if multi_col({
+					{  115,  218, 0x9d5685},
+					{   83,  232, 0xac6ca2},
+					{   99,  284, 0xde9fce},
+					}) or fashi_flag == 'Y' then
+				ltap(677,  564) --点击色子
+				mmsleep(1000)
+				ltap(929,  573) --点击开始游戏
+				wwlog("396 点击色子，更换名字，然后点击开始游戏，直到成功开始游戏")
+
+			end
+
+		elseif multi_col({
+				{  910,  608, 0xfbfbfa},
+				{  924,  611, 0xfdfdfd},
+				{  941,  608, 0xfbfbfb},
+				{  961,  610, 0xfdfdfd},
+				{  989,  609, 0xfbfbfa},
+				}) then
+			ltap(989,  609)
+			wwlog("405 请点击继续")
+			before_game = 'N'
+		elseif multi_col({
+				{  518,  175, 0x816856},
+				{  539,  177, 0xeac38f},
+				{  369,  438, 0x652f1b},
+				{  416,  439, 0x67311c},
+				})then
+			ltap(416,  439)
+			wwlog("368 回城复活")	
+		elseif multi_col({
+				{  910,  608, 0xfbfbfa},
+				{  924,  611, 0xfdfdfd},
+				{  941,  608, 0xfbfbfb},
+				{  961,  610, 0xfdfdfd},
+				{  989,  609, 0xfbfbfa},
+				}) then
+			ltap(989,  609)
+			wwlog("423 请点击继续")
+		end	
+	end
+-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+	while tianlei_flag =='N' do
+		wwlog("232 配置完天雷技能之前的任务"..tianlei_flag)	
+		if level ==1 then
+			ltap(79,  196) --第一次点击任务
+		end
+		mmsleep(1000)
+
+		--[[
+		if multi_col({
+				{  848,  205, 0x4f1e1d},
+				{  846,  234, 0x4c1d1c},
+				{  846,  346, 0x4a1c1b},
+				{ 1037,  184, 0x8a2121},
+				{ 1035,  191, 0xd7bc7a},
+				{ 1027,  198, 0xba733f},
+				{ 1031,  272, 0x4a211c},
+				{ 1013,  393, 0x461a19},
+				})then
+			ltap(938,  398)
+			wwlog("514 立即装备")
+		]]--	
+		if multi_col({
+				{  398,  371, 0xbd56e2},
+				{  398,  403, 0xb955df},
+				{  398,  436, 0xba56e0},
+				{  464,  370, 0xe068ec},
+				{  761,  402, 0x362720},	
+				})then
+			ltap(834,  403)
+			wwlog("340 完成任务2")
+		elseif multi_col({
+				{  498,  370, 0x68a5ec},
+				{  566,  370, 0x5781c1},
+				{  498,  438, 0x4a7ac3},
+				{  498,  403, 0x588fe6},
+				}) then
+			ltap(832,  404)
+			wwlog("395 完成任务")
+		elseif multi_col({
+				{  598,  370, 0xce6adb},
+				{  598,  393, 0xb85fd8},
+				{  598,  438, 0x9f53ba},
+				{  664,  370, 0xdf68ec},	
+				})then
+			ltap(834,  403)
+			wwlog("403 接受任务3")
+		elseif multi_col({
+				{  498,  370, 0xdc68ec},
+				{  498,  402, 0xc15ae8},
+				{  498,  436, 0xbe59e5},
+				{  562,  370, 0xd768ec},	
+				}) then
+			ltap(835,  404)
+			wwlog("412 接受任务2")
+		elseif multi_col({
+				{  426,  352, 0x130b07},
+				{  438,  352, 0x130b07},
+				{  425,  365, 0x130b07},
+				{  672,  401, 0x783e1b},
+				}) then
+			ltap(672,  401)
+			wwlog("427 保持流畅模式")
+		elseif multi_col({
+				{  910,  608, 0xfbfbfa},
+				{  924,  611, 0xfdfdfd},
+				{  941,  608, 0xfbfbfb},
+				{  961,  610, 0xfdfdfd},
+				{  989,  609, 0xfbfbfa},
+				}) then
+			ltap(989,  609)
+			wwlog("487 请点击继续")
+			--before_game = 'N'
+		elseif multi_col({
+				{  928,  249, 0x1b1f33},
+				{  938,  261, 0x222251},
+				{  933,  290, 0x538bda},
+				{  934,  321, 0x5a76a6},
+				{  915,  328, 0x6084bb},
+				{  934,  308, 0x300e0d},
+				})then
+			ltap(932,  401) --点击天雷咒
+			mmsleep(1500)
+			ltap(  564,  573) --点击红蓝球
+			mmsleep(1500)
+			ltap(  251,  575) --点击技能书图标
+			mmsleep(1500)
+			ltap(  1057,  297) --点击设置标签
+			mmsleep(1500)
+			ltap( 455,  212) --点击天雷咒技能
+			mmsleep(1500)
+			ltap( 722,  423) --点击第一个技能槽
+			tianlei_flag = 'Y'
+			mmsleep(1500)	
+			ltap( 1012,   64) --技能设置--关闭
+			mmsleep(1000)
+			break
+		elseif multi_col({
+				{  521,   58, 0x7f2314},
+				{  547,   58, 0x7e2214},
+				{  529,   71, 0xf6cd95},
+				{  574,   71, 0xe8bc89},
+				{  566,   71, 0x651414},
+				})then
+			ltap(566,   71) --跳过引导
+			mmsleep(200)
+			ltap(  932,  401) --点击天雷咒
+			mmsleep(200)
+
+			wwlog("309 跳过引导")
+
+			--[[
+		elseif multi_col({
+				{   32,  121, 0xaa332e},
+				{   40,  127, 0xc6332e},
+				{   40,  134, 0xaa2222},
+				{   52,  126, 0xdd463f},
+				{   51,  134, 0xbd3333},
+				{   65,  136, 0xb63232},
+				})then
+			ltap(88,  202)
+			wwlog("849 点击主任务")
+			]]--
+		end	
+		if tianlei_flag =='N' then
+			tianlei_flag =get_tianlei_flag()	
+			if sleep_cnt  >10 then
+				ltap(60,  195)
+				wwlog("786 长时间没有响应，点击左侧任务栏")
+				sleep_cnt =1
+			end
+		end
+
+		sleep_cnt =sleep_cnt + 1
+
+	end
+
+	----------------------------------------------------------------------
+	----------------------------------------------------------------------
+
+	--设置，买药，领取奖励
+	while (tianlei_flag=='Y' and yaoshui_shezhi == 'N' and dialog_flag =='N') do
+		mmsleep(1000)
+		wwlog("622药水设置")
+		if multi_col({
+				{  962,  566, 0xcf9966},
+				{  976,  569, 0xe19f65},
+				{  976,  587, 0x8a4927},
+				{  961,  588, 0xb06a38},
+				{  968,  577, 0x333322},
+				}) then
+			ltap(968,  577)
+			wwlog("610 点击设置按钮")
+
+		elseif multi_col({
+				{  184,  178, 0xc48a53},
+				{  178,  189, 0xbf7f49},
+				{  164,  192, 0xd19d62},
+				{  181,  566, 0xc0844e},
+				{  173,  575, 0xbc834e},
+				{ 1011,   64, 0xab7c4d},
+				}) then
+			ltap(1011,   64)
+			wwlog("621 关闭设置窗口")
+			yaoshui_shezhi = 'Y'
+			dialog_flag = 'N'
+			break
+		elseif multi_col({
+				{ 1049,  157, 0x4e0b05},
+				{ 1057,  170, 0xeaba87},
+				{  903,  182, 0xb68a5c},
+				{  902,  191, 0x6d4d37},
+				{  838,  186, 0x546722},
+				}) then
+			ltap(835,  188)
+			wwlog("620 关闭红色药水")
+		elseif multi_col({
+				{ 1054,  159, 0x650904},
+				{ 1063,  197, 0xf7ce96},
+				{  904,  481, 0xc09564},
+				{  898,  491, 0x6f4e39},
+				{  836,  487, 0x546722},
+				}) then
+			ltap(837,  484)
+			wwlog("629 关闭蓝色药水")
+		elseif multi_col({
+				{  845,  191, 0x444444},
+				{  900,  190, 0x201410},
+				{  845,  487, 0x545454},
+				{  909,  485, 0x20140f},
+				{ 1058,  299, 0x3f251c},
+				}) then
+			ltap(1058,  299)
+			wwlog("638 药水设置完毕，点击拾取设置")
+		elseif multi_col({
+				{ 1049,  263, 0x4b0b05},
+				{ 1058,  292, 0xf1c58f},
+				{  168,  194, 0x130b07},
+				{  174,  191, 0x130a06},
+				{  177,  183, 0x130a06},
+				}) then
+			ltap(168,  183)
+			wwlog("647 自动拾取白色药水")
+		elseif multi_col({
+				{  164,  565, 0x130c08},
+				{  194,  565, 0x362720},
+				{  193,  574, 0x362923},
+				{  145,  568, 0x362821},
+				{  171,  568, 0x130c08},
+				}) then
+			ltap(171,  568)
+			wwlog("656 自动拾取金币")
+		elseif multi_col({
+				{  507,  583, 0xeece79},
+				{  507,  593, 0x784827},
+				{  627,  580, 0xf0df88},
+				{  626,  598, 0x9a7138},
+				})then
+			ltap(569,  575)
+			wwlog("609 点击红篮球")
+		end 
+	end	
+
+----------------------------------------领取福利-------------------------------------------
+	mmsleep(1000)
+	local yaoshui_cnt =0
+	while (fuli_flag =='N' and yaoshui_shezhi =='Y') do
+		wwlog("设置药水")
+		yaoshui_cnt = yaoshui_cnt +1
+		mmsleep(500)
+		--[[
+		if not multi_col({
+				{  896,   11, 0xce4422},
+				{  902,    9, 0xdf4422},
+				{  897,   18, 0xb91101},
+				{  902,   18, 0xb91202},
+				}) then
+			wwlog("752 没有福利可以领取")
+			fuli_flag = 'Y'
 			break
 		end
-		sys.msleep(500)
-
-		screen.unkeep()
-	end
-	return ret_flag
-end
---require("TSLib")
---init("com.tencent.smoba",1)
-screen.init(1)
-sys.msleep(1000)
-testrun()
---fuhuo =0
-bag_back = 'Y'
-shangjin_flag ='N'
---第一次运行脚本登陆，点击左侧小头像，输入账号
-
-local setok_flag = false
-function getSetButton()
-	local ret = false
-	local x, y = screen.find_color({
-			{   0,    0, 0xe6dac1 },
-			{ -14,    3, 0x614c34 },
-			{   5,   13, 0x5f4528 },
-			{   6,   -8, 0xc7a162 },
-			{  26,   15, 0x312110 },
-			}, 80,791,  544,1069,  630)
-	if x ~= -1 and y ~= -1 then
-		ret = true
-		nLog("15 点击设置")
-		touch.tap(x,y)		
-	end	
-	return ret
-end
-
-function getonoffset()
-	local ret = false
-	local x, y = screen.find_color({
-			{   0,    0, 0xb8a78a },
-			{   7,    4, 0xdec6ab },
-			{   4,    1, 0x874814 },
-			{  13,    1, 0xc0ad8b },
-			{  14,   -1, 0x5f3605 },
-			{  19,    2, 0xcbb99b },
-			}, 90)
-	if x ~= -1 and y ~= -1 then
-		ret = true
-		nLog("15 点击on 开关")
-		touch.tap(x,y)		
-	end	
-	return ret
-end
-
-function first_step()
-	local ret = false
-	if screen.is_colors({
-			{   49,  585, 0x876c2e},
-			{   55,  589, 0x6b4a27},
-			{   44,  591, 0x9f8244},
-			{   45,  599, 0x4c1b0c},
-			{   33,  606, 0xb89460},
-			{   57,  599, 0xd60403},
-			})then
-		nLog("653 刚刚进入游戏，点击箭头，进行初始化设置")
-		touch.tap(57,  599)
-
-		sys.msleep(1500)
-		touch.tap(838,  589) --点击设置按钮
-		if getSetButton() then
-			nLog("34 点击了设置按钮")
-		end
-		
-	end	
-	sys.msleep(5000)
-	if screen.is_colors({
-			{  766,  123, 0x35251b},
-			{  768,  179, 0x352518},
-			{  743,  125, 0xcea775},
-			{  743,  183, 0xe6c28c},
-			{  241,   36, 0x894324},
-			{  246,   45, 0xce5519},
-			}) or screen.is_colors({
-	{  736,  119, 0x362218},
-	{  736,  174, 0x362218},
-	{  264,  347, 0x5db318},
-	{  280,  336, 0x81ec13},
-})  then
-		nLog("48 第一次系统设置")
-		touch.tap(840,  120) --自动吃药
-		sys.msleep(200)
-		touch.tap(840,  177) --自动吃药
-		sys.msleep(200)
-		touch.tap(307,  344) --自动拾取
-		sys.msleep(200)
-		touch.tap(636,  348) --自动拾取
-		sys.msleep(200)
-		touch.tap(754,  347) --自动拾取
-		sys.msleep(200)
-		touch.tap(634,  396) --自动拾取
-		sys.msleep(500)
-		touch.on(219,  373):move(223,  222):off()
-
-		sys.msleep(3000)
-
-		getonoffset()  --打开开关,从上到下
-		sys.msleep(500) 
-		getonoffset()
-		sys.msleep(500) 
-		getonoffset() 
-		sys.msleep(500) 
-
-		touch.tap(360,   37) --点击系统设置
-		sys.msleep(2000) 
-		touch.tap(322,  112) --关闭声音
-		sys.msleep(500)
-		touch.tap(322,  161) --关闭声音
-		sys.msleep(500)
-		touch.tap(323,  208) --关闭声音
-		sys.msleep(500)
-		touch.tap(865,  283) --性能-极速
-		sys.msleep(500)
-
-		touch.tap(1064,   33) --点击返回
-		setok_flag = true
-		ret =  true
-	elseif screen.is_colors({
-			{  215,   33, 0xf9f6f6},
-			{  253,   33, 0xcbb5ae},
-			{  243,   34, 0xfc9045},
-			{  307,  346, 0x461b0b},
-			{  311,  342, 0x411708},
-			{  316,  341, 0x1e1209},
-			}) or  screen.is_colors({
-	{  306,  343, 0x3c160a},
-	{  312,  340, 0x29140b},
-	{  313,  348, 0x3c0f08},
-	{  304,  350, 0x350c04},
-	{  321,  335, 0x3e3423},
-	{  244,   36, 0xfb8c3f},
-})   or screen.is_colors({
-	{  818,  123, 0xad0701},
-	{  814,  177, 0x066ca7},
-	{  245,   33, 0x6b2a12},
-	{  839,  179, 0xdfb984},
-})   then
-		setok_flag = true
-		nLog("715 设置过了")
-		touch.tap(1076,   31)
-	end
-	return ret
-end
-
-sys.msleep(10000)
-while setok_flag== false do
-	first_step()
-	break
-
-end
-
-
-local x,y
---sys.alert("屏幕懂了")
-local acct1 --从中控读取的账号密码存此变量
-local server_choose_flag= 'N'
-while true do 
-	screen.keep()
-	sys.msleep(500)
-	if screen.is_colors({
-			{  772,  197, 0xaa7439},
-			{  536,  416, 0x728a00},
-			{  568,  417, 0x9cb504},
-			}) then --点击确定，更新客户端
-		nLog("10 点击确定，更新客户端")
-		sys.msleep(200)
-		touch.tap(568,  417)
-	elseif screen.is_colors({
-			{  653,  400, 0x627532},
-			{  725,  403, 0x6a7e38},
-			{  687,  421, 0x859572},
-			}) then	
-		nLog("77 点击确定，更新客户端")
-		touch.tap(687,  421)
-	elseif screen.is_colors({
-			{  849,  129, 0xa86e34},
-			{  535,  473, 0x879d2a},
-			{  567,  474, 0xd9e55b},
-			}) then --公告，点击确认
-		nLog("18 公告，点击确认")
-		sys.msleep(200)
-		touch.tap(567,  474)
-	elseif screen.is_colors({
-			{  642,  516, 0x365c7a},
-			{  664,  515, 0x385b74},
-			{  713,  515, 0x385b75},
-			{  659,  526, 0xedeede},
-			{  708,  534, 0x405266},
-			{  661,  538, 0x0270af},
-			{  683,  530, 0x0281b0},
-			}) then
-		nLog("2641 推荐")
-		touch.tap(683,  530)
-	elseif screen.is_colors({
-			{  527,  463, 0x6a7a35},
-			{  557,  475, 0xfefefd},
-			{  587,  475, 0xebeee9},
-			{  569,  482, 0xa1be01},
-			}) then
-		nLog("29 公告确认")
-		sys.msleep()
-		touch.tap(569,  482)
-	elseif screen.is_colors({
-			{  537,  466, 0x788b39},
-			{  583,  475, 0x8ba306},
-			{  567,  474, 0xd9e55a},
-			}) then
-		nLog("36 公告确认")
-		touch.tap(567,  474)
-	elseif screen.is_colors({
-			{  558,  576, 0x999999},
-			{  558,  561, 0x999999},
-			{  572,  583, 0x999999},
-			{  554,  574, 0x999999},
-			})then
-		nLog("307 注销登陆")
-		touch.tap(554,  574)
-	elseif screen.is_colors({
-			{  400,  447, 0x2b8d1d},
-			{  628,  443, 0xd9b668},
-			{  657,  445, 0xe2be6e},
-			{  689,  443, 0xe0bc6d},
-			{  657,  456, 0xe2be6e},
-			})then
-		nLog("390 点击选服")
-		if server_choose_flag =='N' then
-			touch.tap(657,  456)--点击选服
-			sys.msleep(2000)
-			server_choose_flag='Y'
-		else
-			touch.tap(571,  547) --点击登录游戏
-			sys.msleep(5000)
-			server_choose_flag ='N'
-		end
-
-	elseif screen.is_colors({
-			{  208,  152, 0x9e7831},
-			{  305,  142, 0x7e6834},
-			{  302,  158, 0xa86b03},
-			{  258,  159, 0xfabb00},
-			{  950,   83, 0xaf7337},
-			{  249,  154, 0xcdb8ab},
-			}) then
-		nLog("408 服务器列表")
-		touch.tap(256,  221) --点击纪元王者专服
-		sys.msleep(2000)
-		touch.tap(469,  431) --点击纪元王者1服
-		--touch.tap(768,  342)--点击纪元王者2服
-	elseif screen.is_colors({
-			{  904,  597, 0xc5890f},
-			{  943,  598, 0xbd7800},
-			{  973,  603, 0x9d5803},
-			{ 1013,  591, 0xfeaf00},
-			{ 1071,  608, 0xba731a},
-			{  697,  600, 0x0388de},
-			{  687,  605, 0x006bce},
-			}) then
-		nLog("423 创建角色")
-		touch.tap(563,  597)
-		sys.msleep(10000)
-		math.randomseed(os.time())
-		--print('zvx'..math.random(1,1000) )	
-		touch.tap(155,   97) --点击文本框
-		sys.msleep(5000)
-		touch.tap(263,  187) --点击select all
-		sys.msleep(3000)
-		touch.tap(80,  188) --点击 Cut
-		sys.msleep(2000)
-		name_pre = getCharactorName()
-		sys.msleep(2000)
-		sys.input_text(name_pre)
-		sys.msleep(3000)
-		touch.tap(54,  274) --点击Done
-		sys.msleep(5000)
-		touch.tap(987,  591) --点击确认创建
-	elseif screen.is_colors({
-			{  297,  100, 0xf65700},
-			{  504,  176, 0xf06144},
-			{  321,  244, 0xa2a2a2},
-			{  710,  247, 0xffffff},
-			}) or screen.is_colors({
-			{  321,  240, 0xacacac},
-			{  335,  243, 0x999999},
-			{  361,  244, 0x999999},
-			{  326,  344, 0xa3a3a3},
-			{  359,  350, 0xa9a9a9},
-			{  653,  475, 0x408ed6},
-			{  375,  239, 0x999999},
-			})  then
-
-		initArgs()
-		acct1 = getLess60Account()
-		local acct_name, acct_pwd  
-
-		if acct1 ~= nil and string.len(acct1) >12  then 
-			--sys.alert("getNewAccount:"..acct1)
-			acct_name, acct_pwd = getUserAcct(string.atrim(acct1))
-
-			sys.msleep(4000)
-			nLog("126 用户登录 点击账号")
-			touch.tap(636,  243)
-			sys.msleep(5000)
-			nLog("134 清空账号")
-			touch.tap(717,   38)
-			sys.msleep(1000)
-			nLog("142 输入账号")
-			sys.input_text(acct_name)
-			sys.msleep(1000)
-			nLog("135 点击密码框")
-			touch.tap(559,  141)
-			sys.msleep(1000)
-			nLog("138 清空密码")
-			touch.tap(718,  140)
-			sys.msleep(2000)
-			nLog("141 输入密码")
-			sys.input_text(acct_pwd)
-			sys.msleep(3000)
-			nLog("144 立即登陆")
-			touch.tap(715,  279)
-			setok_flag= false 
-
-			if acct_name ~= nil then 
-				sys.msleep(2000)
-				insGameAcct(acct_name)				
-			end 
-			shangjin_flag ='N'
-		else
-			initArgs()
-			CC.web_file.update_file("upload_sqlite/"..db_name,db_file_local)
-			nLog("account_less60.txt 没有账号了！")
-
-			--os.exit()
-		end
-	elseif huanhao() then
-		nLog("893 该换号了")
-		touch.tap(52,589)--点击左下角箭头
-		sys.msleep(2000)
-		touch.tap(839,  586) --点击设置
-		sys.msleep(4000)
-		touch.tap(356,   37) --点击系统设置
-		sys.msleep(2000)
-		touch.tap(494,467)--点击切换账号
-	elseif screen.is_colors({
-			{   16,   20, 0xe0d5d3},
-			{   17,   15, 0xc3adaa},
-			{   18,   20, 0xeee8e7},
-			{   20,   24, 0xe8e0de},
-			{   17,   27, 0x9c7773},
-			}) then
-		nLog("276 80多级了，换账号了")
-		touch.tap(47,  592) --点击设置		
-		sys.msleep(2000)
-		touch.tap(920,  589)
-		sys.msleep(2000)
-		touch.tap(362,   42) --点击系统设置
-		sys.msleep(2000)
-		touch.tap(494,  469) --点击切换账号
-		sys.msleep(2000)
-		touch.tap(692,  406) --点击确定
-
-		if acct1 ~= nil then
-			nLog("413 "..acct1)
-			initArgs()
-			recordOKAccount(acct1)
-			acct_name, acct_pwd = getUserAcct(string.atrim(acct1))
-			if acct_name ~= nil then 
-				--sys.msleep(2000)	
-				updGameAcct(acct_name,"Y")
-			end 
-			initArgs()
-			CC.web_file.update_file("upload_sqlite/"..db_name,db_file_local)
-		else
-			nLog("422 当前账号为空")
-		end
-	elseif screen.is_colors({
-			{   18,   21, 0xf8f5f4},
-			{   14,   17, 0xe3d9d7},
-			{   16,   25, 0xe3d9d7},
-			{   17,   19, 0x7a3202},
-			})then
-		nLog("152 90多级了，可以切换账号了")
-		touch.tap(50,  591)
-		sys.msleep(3000)
-		--60级和90级的设置按钮，貌似位置不一致
-		--默认点击设置按钮
-		touch.tap(923,  614) --默认点击设置按钮
-		sys.msleep(3000)
-
-		touch.tap(362,   42) --点击系统设置
-		sys.msleep(2000)
-		touch.tap(494,  469) --点击切换账号
-		sys.msleep(2000)
-		touch.tap(692,  406) --点击确定
-
-		if acct1 ~= nil then
-			nLog("664 "..acct1)
-			initArgs()
-			recordOKAccount(acct1)
-			acct_name, acct_pwd = getUserAcct(string.atrim(acct1))
-			if acct_name ~= nil then 
-				--sys.msleep(2000)	
-				updGameAcct(acct_name,"Y")
-			end 
-			initArgs()
-			CC.web_file.update_file("upload_sqlite/"..db_name,db_file_local)
-		else
-			nLog("671 当前账号为空")
-		end
-	elseif screen.is_colors({
-			{  321,   38, 0xacacac},
-			{  349,   40, 0xa8a8a8},
-			{  713,   39, 0xcccccc},
-			{  717,   38, 0xfefefe},
-			})then
-		nLog("134 清空账号")
-		touch.tap(717,   38)
-	elseif screen.is_colors({
-			{  321,   38, 0xacacac},
-			{  351,   38, 0x9e9e9e},
-			{  419,   37, 0xc7c7cd},
-			{  518,   42, 0xc7c7cd},
-			})then
-		nLog("142 输入账号")
-		sys.input_text("13944912552")
-	elseif screen.is_colors({
-			{  489,  523, 0xad7001},
-			{  568,  545, 0xb17b06},
-			{  607,  545, 0x965f05},
-			{  574,  554, 0xc7c4a4},
-			}) then --登录游戏
-		nLog("1007 登录游戏")
-		sys.msleep(200)
-		touch.tap(574,  554)
-	elseif screen.is_colors({
-			{  892,  586, 0xf9e017},
-			{  957,  583, 0xfef063},
-			{ 1022,  593, 0xe4b404},
-			})then
-		nLog("1015 开始游戏")
-		fuhuo = 0
-		sys.msleep(3000)
-		touch.tap(1022,  593)
-	elseif screen.is_colors({
-			{  892,  579, 0xffffeb},
-			{  944,  598, 0xb67202},
-			{ 1010,  595, 0xcd8b05},
-			{ 1049,  600, 0xa86909},
-			}) then 
-		nLog("36 确认创建角色")
-		sys.msleep(200)
-		touch.tap(1049,  600)
-	elseif screen.is_colors({
-			{  900,  603, 0xc09841},
-			{  973,  604, 0x9e5904},
-			{ 1050,  599, 0xb56c06},
-			})then
-		nLog("349 确认创建")
-		touch.tap(1050,  599)
-	elseif screen.is_colors({
-			{  527,  284, 0xfcfbf9},
-			{  589,  287, 0xf7f6f3},
-			{  568,  411, 0xb15213},
-			{  546,  417, 0xccc7c3},
-			})then
-		nLog("357 角色重名")
-		touch.tap(546,  417)
-		sys.msleep(2000)
-		touch.tap(696,  600)
-	elseif screen.is_colors({
-			{  907,  584, 0xfeeb3d},
-			{  958,  597, 0xb67b11},
-			{ 1067,  607, 0xaf6d1a},
-			{  986,  596, 0x103f77},
-			}) then --确认创建
-		nLog("36 确认创建")
-		sys.msleep(200)
-		touch.tap(986,  596)
-	elseif screen.is_colors({
-			{  891,  586, 0xffe513},
-			{  956,  594, 0xcc9209},
-			{ 1054,  593, 0xd99500},
-			{  983,  589, 0x091f34},
-			}) then --开始游戏
-		nLog("163 开始游戏")
-		fuhuo = 0
-		touch.tap(983,  589)
-	elseif screen.is_colors({
-			{  529,  394, 0x7a5d35},
-			{  603,  396, 0x745933},
-			{  583,  419, 0xfffffe},
-			{  565,  410, 0xdd7c40},
-			})  then
-		nLog("64 断开连接，重新登陆游戏")
-		sys.msleep(200)
-		touch.tap(565,  410)
-
-	elseif screen.is_colors({
-			{  893,  578, 0xfffff2},
-			{  948,  581, 0xfff391},
-			{ 1057,  593, 0xda9a0a},
-			{  985,  598, 0x9b6f1c},
-			})  then
-		nLog("182 开始游戏")
-		fuhuo = 0
-		touch.tap(  985,  598)
-
-	elseif screen.is_colors({
-			{   15,   17, 0xa88784},
-			{   19,   18, 0xe0d5d3},
-			{   20,   23, 0xe9e1e0},
-			{   13,   24, 0xbfa7a4},
-			{   16,   26, 0xd1c0be},
-			}) then
-		nLog("165 80级了，换账号了")
-		touch.tap(52,589)--点击左下角箭头
-		sys.msleep(2000)
-		touch.tap(930,585) --点击设置
-		sys.msleep(3500)
-		touch.tap(357,38) --点击系统设置
-		sys.msleep(3500)
-		touch.tap(494,467)--点击切换账号
-		sys.msleep(3500)
-		touch.tap(693,413)--确定退出
-		sys.msleep(1500)
-	elseif screen.is_colors({
-			{  952,  585, 0xa1a6b2},
-			{  954,  612, 0xa1a6b2},
-			{ 1075,  613, 0xa3a7b1},
-			{  983,  595, 0x000000},
-			{ 1012,  602, 0x000000},
-			{ 1039,  598, 0x050505},
-			{ 1025,  603, 0xa1a7b2},
-			}) then
-		nLog("675 点击return")
-		touch.tap(1025,  603)
-	elseif	screen.is_colors({
-			{  297,  100, 0xf65700},
-			{  504,  176, 0xf06144},
-			{  321,  244, 0xa2a2a2},
-			{  710,  247, 0xffffff},
-			}) then
-		nLog("183 输入账号")
-		touch.tap(710,  247)
-	elseif screen.is_colors({
-			{  742,  520, 0x6b7c36},
-			{  774,  524, 0xeef2ef},
-			{  808,  524, 0x788b35},
-			{  748,  540, 0x205935},
-			{  788,  535, 0x769982},
-			{  806,  539, 0x87a601},
-			}) then
-		nLog("694 确认出售")
-		touch.tap(806,  539)
-		--[[
-	elseif screen.is_colors({
-			{  308,  183, 0xec2100},
-			{  325,  190, 0xdc2100},
-			{  343,  181, 0xce2000},
-			{  357,  182, 0xea2100},
-			{  385,  188, 0xeb2100},
-			{  400,  185, 0xe82100},
-			{  348,  205, 0x75552e},
-			{  315,  288, 0x593a29},
-			{  429,  289, 0xff0000},
-			{  453,  290, 0xf70000},
-			}) then
-		nLog("698 55级红色主线，点击红色进行中支线")
-		touch.tap(453,  290)
-		sys.msleep(1000)
-		touch.tap(919,  568)
-	]]--	
-	elseif screen.is_colors({
-			{  667,  473, 0x408ed6},
-			{  697,  480, 0xffffff},
-			{  722,  482, 0xb0d0ee},
-			{  716,  492, 0x9fc6eb},
-			})  then
-		nLog("73 立即登陆")
-		sys.msleep(200)
-		touch.tap(  716,  492)
-	elseif screen.is_colors({
-			{  660,  459, 0x578132},
-			{  713,  460, 0x608a32},
-			{  657,  485, 0x53880d},
-			{  692,  475, 0xc6cdc1},
-			}) then
-		nLog("243 脱机外挂结算 知道了")
-		touch.tap(692,  475)
-
-	elseif setok_flag== false and first_step() then
-		nLog("1169 初始化设置完毕")
-	elseif screen.is_colors({
-			{  840,  258, 0xba8b48},
-			{  753,  409, 0x578430},
-			{  773,  415, 0x7d9e89},
-			{  794,  420, 0x3b6d4d},
-			{  770,  427, 0xeff3f0},
-			{  790,  424, 0xc1d1c6},
-			}) then
-		nLog("675 穿装备")
-		touch.tap(790,  424)
-	elseif screen.is_colors({
-			{  747,  406, 0x104608},
-			{  779,  408, 0x265625},
-			{  803,  409, 0x1d4f1c},
-			{  752,  419, 0xa1b6a0},
-			{  772,  418, 0xa0b59f},
-			{  791,  418, 0x597d59},
-			})then
-		nLog("1113 背包已满")
-		touch.tap(791,  418)
-	elseif screen.is_colors({
-			{  753,  404, 0x5f8931},
-			{  777,  409, 0xb8e053},
-			{  800,  409, 0x557b55},
-			{  760,  419, 0xeaefe9},
-			{  782,  414, 0xfffffe},
-			})then
-		nLog("1122 买一组")
-		touch.tap(782,  414)
-	elseif screen.is_colors({
-			{  701,  161, 0xf0e7bb},
-			{  726,  163, 0xdabf7d},
-			{  713,  171, 0xb98745},
-			{  702,  183, 0xdc9f46},
-			{  723,  183, 0xe09942},
-			{  713,  175, 0xa86c36},
-			}) then
-		nLog("721 关闭装备提示")
-		touch.tap(713,  175)
-	elseif screen.is_colors({
-			{  798,  516, 0x637633},
-			{  850,  519, 0x334f1e},
-			{  809,  530, 0xccd3b8},
-			{  851,  530, 0xffffeb},
-			{  821,  536, 0xffffeb},
-			{  831,  533, 0xa4bb02},
-			}) or screen.is_colors({
-			{  797,  518, 0x6b7b34},
-			{  816,  528, 0x6a7e57},
-			{  822,  534, 0xd6dbc2},
-			{  832,  528, 0xadbd33},
-			{  849,  528, 0x4f673d},
-			{  850,  534, 0xe0e4cc},
-			}) then
-		nLog("803 晋升")
-		touch.tap(831,  533)
-		sys.msleep(5000)
-		touch.tap(572,  525)
-		sys.msleep(200)
-		touch.tap(902,   72)
-	elseif screen.is_colors({
-			{  727,  558, 0x785933},
-			{  746,  562, 0x886435},
-			{  774,  568, 0x90592c},
-			{  792,  568, 0xc9c2bc},
-			{  806,  567, 0x543518},
-			{  760,  578, 0xa89c92},
-			{  791,  576, 0xd5cfca},
-			}) then
-		nLog("841 自动强化")
-		touch.tap(791,  576)
-	elseif screen.is_colors({
-			{  732,  563, 0x85675f},
-			{  780,  563, 0xc8bab6},
-			{  801,  568, 0x4b1e13},
-			{  751,  576, 0xa70c03},
-			{  775,  571, 0x795850},
-			})then
-		nLog("850 停止强化 ,点击返回")
-		touch.tap(1064,   33)
-	elseif screen.is_colors({
-			{  908,  143, 0xdcaf63},
-			{  925,  140, 0xe2b973},
-			{  909,  157, 0xde983f},
-			{  924,  157, 0xdc933f},
-			{  914,  148, 0xad7c3d},
-			{  919,  151, 0xa66e3a},
-			}) then
-		nLog("698 关闭弹窗")
-		touch.tap(919,  151)
-	elseif screen.is_colors({
-			{  594,  485, 0x7daa03},
-			{  636,  483, 0x91ca00},
-			{  681,  480, 0x91cb06},
-			{  672,  508, 0xfdfe90},
-			{  608,  503, 0x325918},
-			{  621,  506, 0xf7fba0},
-			}) then
-		nLog("631 领取")
-		touch.tap(621,  506)
-	elseif screen.is_colors({
-			{  760,  404, 0x5d842f},
-			{  808,  404, 0x5a8430},
-			{  838,  261, 0xe5c486},
-			})then
-		nLog("250 关机脱机外挂窗口")
-		touch.tap(838,  261)
-	elseif screen.is_colors({
-			{  655,  396, 0x647532},
-			{  692,  400, 0x778c36},
-			{  732,  399, 0x657632},
-			{  681,  421, 0xfffffe},
-			{  710,  419, 0x153c24},
-			})then
-		nLog("618 确定-装备提示")
-		touch.tap(710,  419)	
-	elseif screen.is_colors({
-			{  537,  407, 0x6b7d35},
-			{  571,  404, 0x607532},
-			{  606,  414, 0xc8d6cc},
-			{  551,  421, 0x82a300},
-			{  588,  422, 0xe0e8e2},
-			}) then
-		nLog("1190 立即装备")
-		touch.tap(588,  422)
-	elseif screen.is_colors({
-			{  533,  401, 0x61762c},
-			{  580,  408, 0x17522b},
-			{  546,  423, 0x5e890a},
-			{  605,  421, 0x86a591},
-			{  573,  418, 0x719409},
-			})then
-		nLog("1199 立即装备")
-		touch.tap(573,  418)
-	elseif screen.is_colors({
-			{  483,  282, 0xe4e1dc},
-			{  528,  286, 0xc7c2ba},
-			{  568,  278, 0xedebe7},
-			{  608,  283, 0xeceae6},
-			{  663,  399, 0x6d8035},
-			{  691,  414, 0xa4bc02},
-			})then
-		nLog("1018 确定退出当前账号")
-		touch.tap(691,  414)
-		sys.msleep(500)
-
-		if acct1 ~= nil then
-			nLog("664 "..acct1)
-			initArgs()
-			recordOKAccount(acct1)
-			acct_name, acct_pwd = getUserAcct(string.atrim(acct1))
-			if acct_name ~= nil then 
-				--sys.msleep(2000)	
-				updGameAcct(acct_name,"Y")
-			end 
-			initArgs()
-			CC.web_file.update_file("upload_sqlite/"..db_name,db_file_local)
-		else
-			nLog("671 当前账号为空")
-		end
-	elseif screen.is_colors({
-			{   18,   16, 0xf7f3f2},
-			{   16,   19, 0xe6dddc},
-			{   14,   24, 0xe2d7d5},
-			{   16,   26, 0xd9ccca},
-			{   20,   24, 0xe1d6d4},
-			{   18,   20, 0xbca29f},
-			})then
-		nLog("1374 60级了 ，开始换账号")
-		touch.tap(52,589)--点击左下角箭头
-		sys.msleep(2000)
-		touch.tap(839,  586) --点击设置
-		sys.msleep(5000)
-		touch.tap(356,   37) --点击系统设置
-		sys.msleep(2000)
-		touch.tap(494,467)--点击切换账号
-	elseif screen.is_colors({
-			{   15,   16, 0xd9cbc8},
-			{   19,   16, 0xfcfbfa},
-			{   18,   19, 0xf5f1f0},
-			{   17,   21, 0xede6e4},
-			{   16,   23, 0xe2d7d5},
-			{   14,   26, 0xb59a94},
-			})then
-		nLog("772 70级了，换账号")
-		touch.tap(52,589)--点击左下角箭头
-		sys.msleep(2000)
-		touch.tap(839,  586) --点击设置
-		sys.msleep(2500)
-		touch.tap(356,   37)
-	elseif screen.is_colors({
-			{   15,   16, 0xdaccc9},
-			{   18,   16, 0xdbcecc},
-			{   19,   17, 0xf3efee},
-			{   17,   21, 0xece5e3},
-			{   15,   25, 0xd9cbc9},
-			})then
-		nLog("659 70级了 ，开始换账号")
-		touch.tap(52,589)--点击左下角箭头
-		sys.msleep(2000)
-		touch.tap(839,  586) --点击设置
-	elseif screen.is_colors({
-			{  292,  541, 0xfefefe},
-			{  292,  544, 0x555555},
-			{  307,  545, 0x5f5f5f},
-			{  321,  544, 0x555555},
-			{  332,  555, 0x555555},
-			{  344,  547, 0x858585},
-			{  379,  547, 0x5e5e5e},
-			{  336,  547, 0xffffff},
-			}) then
-		nLog("785 已有账号")
-		touch.tap(336,  547)
-		--[[
-	elseif screen.is_colors({
-			{  212,   27, 0xb0673d},
-			{  234,   27, 0xaa887c},
-			{  251,   27, 0xd27642},
-			{  264,   40, 0x7f4733},
-			{  236,   38, 0xf98338},
-			{  244,   38, 0xf88337},
-			}) then
-		nLog("886 背包")
-		sys.msleep(200)
-		touch.tap(774,  569) --一键出售
-		sys.msleep(3000)
-		touch.tap(920,  570)
-		sys.msleep(8000)
-		if find_multi_color() == 'N' then
-			sys.msleep(200)
-			touch.tap(1078,   30) --返回		
-		end
-	]]--	
-	elseif screen.is_colors({
-			{  742,  522, 0x6d7e35},
-			{  775,  525, 0x537f63},
-			{  799,  525, 0x849b38},
-			{  818,  524, 0x0c491e},
-			{  756,  538, 0x145018},
-			{  803,  538, 0xfbfcfa},
-			}) then
-		nLog("833 确认出售")
-		touch.tap(803,  538)
-	elseif screen.is_colors({
-			{  755,  521, 0x6e8234},
-			{  804,  520, 0x6d7f35},
-			{  808,  538, 0x88a702},
-			{  751,  542, 0x285f3b},
-			{  775,  532, 0x7e9f8a},
-			}) then
-		nLog("877")
-		touch.tap(775,  532)
-	elseif screen.is_colors({
-			{  935,  378, 0x68a01d},
-			{  964,  381, 0x6ea61e},
-			{  989,  384, 0x6fa91d},
-			{  947,  397, 0xd7e2da},
-			{  971,  394, 0x86ca26},
-			{  950,  401, 0xfefffd},
-			})then
-		nLog("62 穿上")
-		touch.tap(950,  401)
-	elseif screen.is_colors({
-			{   80,  257, 0xe4e300},
-			{  100,  257, 0xcfcd00},
-			{  101,  261, 0xd0ce00},
-			{   89,  262, 0xfbfb00},
-			{  138,  257, 0xf2f100},
-			})then
-		nLog("1475 赏金任务")
-		touch.tap(138,  257)
-	--[[
-	elseif screen.is_colors({
-			{   57,  254, 0xfcfc00},
-			{   57,  263, 0xfcfc00},
-			{   81,  255, 0xfdfd00},
-			{   81,  259, 0xfdfd00},
-			{   81,  266, 0xfdfd00},
-			})then
-		nLog("1484 赏金任务")
-		touch.tap(81,  266)
-	]]--	
-	elseif screen.is_colors({
-			{   22,  256, 0xf7f600},
-			{   46,  257, 0xe9e800},
-			{   69,  260, 0xb5b200},
-			{  102,  259, 0xcbc800},
-			{  122,  260, 0xedec00},
-			{  137,  262, 0xfbfa00},
-			{   35,  282, 0xc0b9b1},
-			{  115,  283, 0xc7c0b9},
-			}) then
-		nLog("引-赏金任务")
-		touch.tap(115,  283)
-	elseif screen.is_colors({
-			{   65,  254, 0xf6f600},
-			{   65,  257, 0xffff00},
-			{   65,  263, 0xe4e300},
-			{   76,  255, 0xe2e100},
-			{   69,  258, 0x9b9600},
-			{   69,  263, 0xd0ce00},
-			})then
-		nLog("1384 赏金任务")
-		touch.tap(69,  263)
-		--[[
-	elseif screen.is_colors({
-			{  755,  407, 0xf0f3ef},
-			{  776,  407, 0xf3f6f2},
-			{  804,  407, 0x0b4105},
-			{  765,  419, 0xfefefc},
-			{  788,  419, 0xbac9b9},
-			}) then
-		nLog("748 背包已满")
-		touch.tap(788,  419)
-	]]--	
-		--[[
-	elseif screen.is_colors({
-			{  753,  403, 0x4f7d2e},
-			{  777,  403, 0x699234},
-			{  800,  412, 0xdee6dd},
-			{  765,  421, 0xf6f8f5},
-			{  788,  414, 0xf4f7f3},
-			}) then
-		nLog("757 万能背包")
-		touch.tap(788,  414)
-	]]--
-		--[[
-	elseif screen.is_colors({
-	{  538,  452, 0x728234},
-	{  558,  452, 0x4f6822},
-	{  587,  452, 0x758735},
-	{  540,  467, 0x7d9e00},
-	{  563,  467, 0x4f673c},
-	{  583,  467, 0x2c481a},
-	{  605,  468, 0xffffeb},
-	{  570,  470, 0xe8ebd4},
-}) then
-	nLog("953 万能背包，一键取出")
-	touch.tap(759,  149)
-]]--	
-	elseif screen.is_colors({
-			{   65,  258, 0xf6f500},
-			{   81,  262, 0xfdfd00},
-			{   93,  257, 0x9b9700},
-			{  111,  260, 0xe3e200},
-			{  131,  259, 0xf7f700},
-			{  147,  257, 0xf3f300},
-			})then
-		nLog("704 赏金任务")
-		touch.tap(147,  257)
-		shangjin_flag ='Y'
-	elseif screen.is_colors({
-			{   65,  318, 0xffff00},
-			{   93,  319, 0xd6d400},
-			{  123,  317, 0xfbfb00},
-			{  146,  323, 0xd2d000},
-			{  130,  319, 0xffff00},
-			{   81,  320, 0xfdfd00},
-			})then 
-		nLog("715 赏金任务")
-		touch.tap(130,  319)
-		shangjin_flag ='Y'
-	elseif screen.is_colors({
-			{  852,  540, 0xffff5b},
-			{  852,  603, 0xffff40},
-			{  893,  554, 0x355a74},
-			{  921,  568, 0x3aa2c6},
-			}) then
-		nLog("673 前往接取-黄色框")
-		touch.tap(921,  568)
-	elseif screen.is_colors({
-			{  886,  551, 0x295373},
-			{  938,  555, 0x355a7a},
-			{  887,  575, 0xc6cac2},
-			{  950,  575, 0xfdfdea},
-			{  920,  575, 0x0682b8},
-			{  918,  565, 0x36799c},
-			})then
-		nLog("709 前往接取-蓝色")
-		touch.tap(918,  565)
-	elseif screen.is_colors({
-			{  815,  552, 0xff6d21},
-			{  815,  571, 0x1b0c06},
-			{  818,  598, 0x714733},
-			{  827,  575, 0x6f2604},
-			{  831,  558, 0x51283c},
-			}) then
-		nLog("674 天神")
-		touch.tap(831,  558)
-	elseif screen.is_colors({
-			{  814,  551, 0xb53e20},
-			{  824,  549, 0xf2851f},
-			{  835,  553, 0x221018},
-			{  812,  604, 0x793e2d},
-			{  821,  573, 0x511321},
-			}) then
-		nLog("691")
-		touch.tap(821,  573)
-	elseif screen.is_colors({
-			{  819,  554, 0x732f1e},
-			{  815,  578, 0xbaaa8a},
-			{  814,  601, 0x4c3128},
-			{  819,  567, 0x221324},
-			{  828,  566, 0x7a5955},
-			}) then
-		nLog("674 天神")
-		touch.tap(828,  566)
-	elseif screen.is_colors({
-			{  822,  570, 0x381424},
-			{  820,  584, 0x852802},
-			{  827,  559, 0x746573},
-			})then
-		nLog("560 再次体验天神")
-		touch.tap(827,  559)
-	elseif screen.is_colors({
-			{ 1055,  553, 0x423e3b},
-			{ 1064,  541, 0x3e3e3e},
-			{ 1038,  561, 0x565859},
-			{ 1041,  542, 0x3b3c3d},
-			{ 1063,  562, 0x545656},
-			{ 1052,  571, 0x63480e},
-			})then
-		nLog("754 天神")
-		touch.tap(843,  580)
-	elseif screen.is_colors({
-			{  958,  429, 0x88cf26},
-			{  947,  431, 0xfefffd},
-			{  978,  435, 0xdee7e0},
-			{  971,  430, 0xfefefd},
-			})then
-		nLog("763 出售")
-		touch.tap(971,  430)
-	elseif screen.is_colors({
-			{  766,  323, 0x74b121},
-			{  781,  327, 0xf2f6f3},
-			{  809,  331, 0xb7cabd},
-			{  787,  339, 0xa5bcac},
-			}) then
-		nLog("219 使用")
-		touch.tap(787,  339)
-	elseif screen.is_colors({
-			{  761,  387, 0x78b620},
-			{  793,  380, 0x6ea41c},
-			{  814,  401, 0xebf0ec},
-			{  801,  401, 0xf4f7f4},
-			})then
-		nLog("227 使用")
-		touch.tap(801,  401)
-	elseif screen.is_colors({
-			{  534,  422, 0x697a36},
-			{  590,  421, 0x677933},
-			{  567,  439, 0xa5bd01},
-			{  554,  443, 0xfcfdfb},
-			})then
-		nLog("227 使用")
-		touch.tap(554,  443)
-	elseif screen.is_colors({
-			{  768,  411, 0x70ac1f},
-			{  791,  417, 0x89d028},
-			{  815,  428, 0xf4f7f4},
-			})then
-		nLog("242 使用")
-		touch.tap(815,  428)
-	elseif screen.is_colors({
-			{  767,  446, 0x70ac20},
-			{  794,  446, 0x79b921},
-			{  801,  463, 0xf7f9f6},
-			})then
-		nLog("242 使用")
-		touch.tap(801,  463)
-	elseif screen.is_colors({
-			{  651,  252, 0x7dfd34},
-			{  651,  255, 0x44f723},
-			{  652,  264, 0x3ffd35},
-			}) then
-		nLog("210 穿上")
-		touch.tap(963,404)
-		--[[
-	elseif screen.is_colors({
-			{  651,  249, 0xf15e12},
-			{  651,  254, 0xf3590a},
-			{  651,  263, 0xea781b},
-			})then
-		nLog("217 出售")
-		touch.tap(960,464)
-	]]--	
-		--[[
-	elseif screen.is_colors({
-			{  215,   28, 0xc47141},
-			{  243,   28, 0xe1834c},
-			{  259,   44, 0xd8c9c3},
-			}) then
-		nLog("打开背包")
-		touch.tap(921,571) --整理
-
-		sys.msleep(7000)
-		touch.tap(776,567) --一键出售
-		sys.msleep(500)
-		touch.tap(621,131)--点击第一件装备
-		sys.msleep(500)	
-	]]--	
-		--[[
-	elseif screen.is_colors({
-			{   64,  567, 0xf2f1ee},
-			{   61,  577, 0xc6c0b8},
-			{   51,  589, 0x725634},
-			}) then
-		nLog("210 点击满字箭头")
-		touch.tap(51,  589)
-		sys.msleep(2000)
-		touch.tap(201,590) --点击背包
-	]]--	
-	elseif screen.is_colors({
-			{  536,  502, 0x758637},
-			{  573,  503, 0x829435},
-			{  562,  521, 0xdbdbdb},
-			})then
-		nLog("1318 确定")
-		touch.tap(562,  521)
-	elseif screen.is_colors({
-			{  286,  441, 0x7d482c},
-			{  325,  450, 0xd8a84d},
-			{  355,  460, 0xd5d0bb},
-			})then
-		nLog("299 领取奖励20/20")
-		touch.tap(355,  460)
-	elseif screen.is_colors({
-			{  879,  556, 0x667934},
-			{  927,  560, 0x92a07f},
-			{  921,  576, 0x9eb900},
-			})then
-		nLog("306 前往领取")
-		touch.tap(921,  576)
-	elseif screen.is_colors({
-			{  536,  409, 0x627532},
-			{  564,  410, 0x708836},
-			{  594,  410, 0x637035},
-			{  563,  428, 0xa0be02},
-			}) then
-		nLog("108 选择奖励")
-		touch.tap(563,  428)
-	elseif screen.is_colors({
-			{  657,  440, 0x7f9075},
-			{  698,  439, 0x9eab96},
-			{  681,  450, 0xa4be01},
-			{  451,  442, 0xc6743b},
-			}) then
-		nLog("116 取消购买")
-		touch.tap(451,  442)
-	elseif screen.is_colors({
-			{  535,  403, 0x768934},
-			{  599,  402, 0x6f8535},
-			{  566,  414, 0xa5bd03},
-			{  773,  194, 0xa66d34},
-			}) then
-		nLog("125 取消充值")
-		touch.tap(773,  194)
-		sys.msleep(500)
-		touch.tap(1060,   33)
-	elseif screen.is_colors({
-			{  534,  396, 0x765a32},
-			{  537,  420, 0xa85b03},
-			{  567,  410, 0xde7b3e},
-			})then
-		nLog("235 检查到非法软件运行游戏")
-		touch.tap(567,  410)
-	--[[
-	elseif screen.is_colors({
-			{  329,   35, 0xeddaa2},
-			{  352,   41, 0xe4d29b},
-			{  373,   40, 0x786d3a},
-			})then
-		nLog("1769 点击系统设置tab")
-		touch.tap(373,   40)
-	]]--	
-		--[[
-	elseif screen.is_colors({
-			{   61,  571, 0x918578},
-			{   69,  577, 0xb4ada4},
-			{   48,  587, 0xaa844b},
-			})then
-		nLog("242 背包满")
-		touch.tap(48,  587)
-	]]--	
-	--[[
-	elseif screen.is_colors({
-			{  456,  457, 0x588231},
-			{  521,  476, 0x5c9011},
-			{  487,  468, 0xe6e8e2},
-			{  495,  468, 0xd0ed57},
-			})then
-		nLog("1787 切换账号")
-		touch.tap(495,  468)
-	]]--	
-	--[[
-	elseif screen.is_colors({
-			{  463,  480, 0x54880c},
-			{  519,  478, 0x588d0c},
-			{  488,  471, 0xfffffe},
-			{  499,  468, 0x5a694a},
-			})then
-		nLog("1757 切换账号")
-		touch.tap(499,  468)
-	]]--	
-	elseif screen.is_colors({
-			{  749,  407, 0x507729},
-			{  782,  417, 0xb8eb4e},
-			{  802,  418, 0x90ba40},
-			}) then
-		nLog("983 使用金币")
-		touch.tap(802,  418)
-	elseif screen.is_colors({
-			{   14,  252, 0xc7c500},
-			{   36,  268, 0xcecc00},
-			{   53,  257, 0xc5c300},
-			{   34,  285, 0xf4f1f0},
-			}) then
-		nLog("956 引")
-		touch.tap(34,  285)
-	elseif screen.is_colors({
-			{   13,  260, 0xcbc900},
-			{   37,  266, 0xc1bf01},
-			{   80,  259, 0xe2e100},
-			})then
-		nLog("963 引")
-		touch.tap(80,  259)
-	elseif screen.is_colors({
-			{  758,  407, 0x537c2a},
-			{  807,  411, 0x648d31},
-			{  777,  423, 0x387420},
-			{  787,  424, 0xcfdcd3},
-			}) then 
-		nLog("109 查看装备")
-		sys.msleep(100)
-		touch.tap(787,  424)
-	elseif screen.is_colors({
-			{  747,  408, 0x577c2f},
-			{  768,  419, 0xc7d5cb},
-			{  789,  418, 0xfbfcfa},
-			}) then --查看装备
-		nLog("71 查看装备")
-		sys.msleep(200)
-		touch.tap(789,  418)
-	elseif screen.is_colors({
-			{  924,  402, 0x679f1e},
-			{  947,  408, 0xeef3ef},
-			{  977,  419, 0xa8beb0},
-			}) then --穿上
-		nLog("79 穿上")
-		sys.msleep(200)
-		touch.tap( 977,  419)
-	elseif screen.is_colors({
-			{  747,  407, 0x4f7728},
-			{  753,  427, 0x588f0f},
-			{  771,  420, 0xaac0b2},
-			{  795,  419, 0xf8faf8},
-			}) then --装备武器衣服
-		nLog("812 装备武器衣服")
-		sys.msleep(200)
-		touch.tap(795,  419)
-	elseif screen.is_colors({
-			{  921,  387, 0x67a01d},
-			{  950,  406, 0xfffffe},
-			{  976,  401, 0xfafbfa},
-			}) then --穿上装备
-		nLog("104 穿上装备")
-		sys.msleep(200)
-		touch.tap(976,  401)	
-	elseif screen.is_colors({
-			{  759,  401, 0x5b832e},
-			{  800,  402, 0x598430},
-			{  833,  255, 0xe6dbb0},
-			{  833,  271, 0xc98b41},
-			}) then
-		nLog("92 关闭查看窗口")
-		touch.tap(833,  271)
-	elseif screen.is_colors({
-			{  344,  502, 0x7b5a35},
-			{  413,  500, 0x765933},
-			{  364,  527, 0xb46401},
-			{  393,  515, 0xb5a78c},
-			}) then
-		nLog("100 安全区复活")
-		touch.tap(393,  515)
-	
-	elseif screen.is_colors({
-			{   12,  316, 0x969200},
-			{   19,  317, 0xf2f200},
-			{   30,  319, 0xdad900},
-			{   49,  320, 0xd7d500},
-			}) then
-		nLog("1097 主界面参加赏金任务")
-		touch.tap( 49,  320)
-		--touch.tap(491,  141)
-		sys.msleep(100)
-		shangjin_flag ='Y'
-	
-	elseif screen.is_colors({
-			{  466,  136, 0x6b9335},
-			{  522,  136, 0x699134},
-			{  492,  138, 0xbde053},
-			{  492,  149, 0x98cd2a},
-			}) then
-		nLog("1075 前往赏金")
-		touch.tap(492,  149)
-	elseif screen.is_colors({
-			{  108,  560, 0x5a8431},
-			{  161,  560, 0x648e33},
-			{  112,  578, 0xa5bca1},
-			{  155,  577, 0xf9fae6},
-			})then
-		nLog("1081 领取任务")
-		touch.tap(155,  577)
-	elseif screen.is_colors({
-			{  878,  555, 0x647a33},
-			{  952,  553, 0x5e7331},
-			{  885,  577, 0xb1bb9d},
-			{  923,  572, 0xf2f4de},
-			}) then
-		nLog("132 前往")
-		touch.tap(923,  572)
-	elseif screen.is_colors({
-			{  112,  554, 0x2b5c81},
-			{  161,  553, 0x2d6388},
-			{  138,  572, 0xeaecdc},
-			}) then
-		nLog("139 进入副本")
-		touch.tap( 138,  572)
-		--[[
-	elseif screen.is_colors({
-			{  891,  319, 0xd4ac5e},
-			{  888,  329, 0xc18f37},
-			{  899,  334, 0xb48837},
-			}) then 
-		nLog("476 点击邮件")
-		sys.msleep(100)
-		touch.tap(899,  334)
-	elseif screen.is_colors({
-			{  897,  322, 0xd5aa49},
-			{  905,  335, 0xb07e2b},
-			{  888,  328, 0xbf8d32},
-			}) then
-		nLog("653 点击邮件")
-		touch.tap(888,  328)
-	elseif screen.is_colors({
-			{  885,  556, 0x697d36},
-			{  920,  564, 0x9dae3a},
-			{  955,  559, 0x6a8133},
-			{  922,  580, 0x9cbf02},
-			}) then
-		nLog("107 领取邮件奖励")
-		touch.tap(922,  580)
-		sys.msleep(1000)
-		touch.tap(1068,35)
-	elseif screen.is_colors({
-			{  928,  560, 0x606d6e},
-			{  890,  557, 0x515d5f},
-			{  805,  565, 0x356e8f},
-			{  776,  571, 0x0583b5},
-			}) then
-		nLog("107 删除邮件")
-		touch.tap(776,  571)
 		]]--
-	elseif screen.is_colors({
-			{  927,  555, 0x667c33},
-			{  954,  572, 0x6c8a00},
-			{  985,  548, 0x960304},
-			}) then
-		nLog("228 加点")
-		touch.tap(954,  572)
-	elseif screen.is_colors({
-			{  140,  574, 0xc52701},
-			{  150,  572, 0xb10a00},
-			{  119,  586, 0x745b2d},
-			})then
-		nLog("464 点击角色")
-		touch.tap(119,  586)
-		--[[
-	elseif screen.is_colors({
-	{  113,  227, 0x9d9e89},
-	{  118,  228, 0xf9faf8},
-	{  129,  228, 0xefefeb},
-	{  137,  228, 0xf0f0ed},
-	{  146,  224, 0xf7f7f6},
-	{  169,  230, 0xeeeeeb},
-}) then
-	nLog("1105 诅咒之戒前往挑战")
-	touch.tap(169,  230)
-]]--	
-	
-		--[[
-	elseif screen.is_colors({
-			{  516,   22, 0xb91500},
-			{  471,   36, 0xfe8f43},
-			{  204,  321, 0xa40800},
-			})then
-		nLog("235 坐骑技能")
-		touch.tap(204,  321)
-	elseif screen.is_colors({
-			{  733,  558, 0xb6a690},
-			{  803,  556, 0x785b34},
-			{  771,  576, 0xbd5501},
-			})then
-		nLog("236 自动驯养")
-		touch.tap(771,  576)
-	]]--	
-	elseif screen.is_colors({
-			{  386,  571, 0xb30f09},
-			{  358,  570, 0xe99f28},
-			{  362,  594, 0x261808},
-			})then 
-		nLog("200 强化")
-		touch.tap(362,  594)
-	elseif screen.is_colors({
-			{  731,  557, 0x7c6037},
-			{  816,  556, 0x6e5533},
-			{  743,  577, 0xf4f3f0},
-			{  778,  574, 0xf3f1ee},
-			}) then
-		nLog("208 自动强化")
-		touch.tap(778,  574)
-		--[[
-	elseif screen.is_colors({
-			{   43,  595, 0xf8e3a9},
-			{   48,  587, 0xab854b},
-			{   63,  574, 0xb4110c},
-			{   31,  608, 0xbf8e6d},
-			}) then
-		nLog("579 点击左下角任务")
-		touch.tap(31,  608)
-
-	elseif screen.is_colors({
-			{  729,  555, 0x325c76},
-			{  755,  568, 0x1a2c47},
-			{  773,  570, 0x0480b3},
-			}) then
-		nLog("321 一键申请")
-		touch.tap(773,  570)
-	elseif screen.is_colors({
-			{  829,  554, 0x9f0503},
-			{  749,  577, 0x0169a8},
-			{  774,  568, 0x4bb1d2},
-			}) then
-		nLog("215 一键申请")
-		touch.tap(774,  568)
-	elseif screen.is_colors({
-			{  116,  589, 0x7e5622},
-			{  128,  588, 0x845825},
-			{  145,  567, 0x780000},
-			{  148,  572, 0xb81400},
-			}) then
-		nLog("587 点击角色头像")
-		touch.tap(116,  589)
-	elseif screen.is_colors({
-			{  170,  343, 0xcceab8},
-			{  200,  348, 0xdfeebe},
-			{  210,  316, 0x710000},
-			}) then
-		nLog("107 坐骑技能")
-		touch.tap(210,  316)
-	elseif screen.is_colors({
-			{  513,   18, 0x770000},
-			{  517,   21, 0xab0c00},
-			{  509,   21, 0xaa0500},
-			})then 
-		nLog("154 点击坐骑")
-		touch.tap(509,   21)
-	elseif screen.is_colors({
-			{  775,  519, 0x596e2b},
-			{  798,  529, 0xbecc4b},
-			{  824,  529, 0xe5e9d1},
-			{  840,  535, 0x87a000},
-			}) then
-		nLog("115 学习技能")
-		touch.tap(840,  535)
-		sys.msleep(1000)
-		touch.tap(897,85)
-	elseif screen.is_colors({
-			{  883,  561, 0x708735},
-			{  986,  551, 0xba1600},
-			{  959,  557, 0x657634},
-			{  921,  573, 0xa4bc00},
-			}) then
-		nLog("125 加点")
-		touch.tap(921,  573)
-	elseif screen.is_colors({
-			{  894,  560, 0x758933},
-			{  924,  560, 0x809337},
-			{  897,  573, 0x1f3d0b},
-			{  915,  573, 0xdfe3db},
-			}) then
-		nLog("133 加点")
-		touch.tap( 915,  573)
-	elseif screen.is_colors({
-			{  643,  520, 0x336182},
-			{  684,  520, 0x377090},
-			{  684,  536, 0x078bc5},
-			{  697,  530, 0x79838b},
-			}) then
-		nLog("141 推荐")
-		touch.tap( 697,  530)
-		sys.msleep(1000)
-		touch.tap(828,526)
-		sys.msleep(1000)
-		touch.tap(1062,33)
-	]]--	
-	elseif screen.is_colors({
-			{  745,  401, 0x56812e},
-			{  785,  407, 0xa5c84a},
-			{  819,  422, 0x51850d},
-			}) then
-		nLog("91 买一组")
-		touch.tap(819,  422)
-	elseif screen.is_colors({
-			{  652,  395, 0x5d7331},
-			{  686,  395, 0x667932},
-			{  719,  396, 0x607633},
-			{  712,  415, 0x81978d},
-			{  682,  415, 0xb4c1bb},
-			{  692,  416, 0xa3bc00},
-			})  then
-		nLog("1217 确定")
-		touch.tap(692,  416)
-	elseif screen.is_colors({
-			{  948,  436, 0x6ba020},
-			{  976,  439, 0x689f1c},
-			{  962,  456, 0x84cb28},
-			{  991,  461, 0x669b1c},
-			{  956,  467, 0x6ba61d},
-			{  950,  459, 0xfffffe},
-			}) then
-		nLog("1217 穿上")
-		touch.tap(950,  459)
-		--[[
-	elseif screen.is_colors({
-			{  808,  144, 0xadfc55},
-			{  807,  152, 0x37f831},
-			{  806,  157, 0x39ee2c},
-			{  806,  141, 0xdff477},
-			{  803,  144, 0xb4f173},
-			}) then
-		nLog("1216 点击背包第三个装备")
-		touch.tap(803,  144)
-	]]--	
-	elseif screen.is_colors({
-			{  639,  144, 0xa8fc47},
-			{  603,  121, 0xfcf8c0},
-			{  627,  123, 0x8d6b26},
-			}) then
-		nLog("98 穿戴橙色装备")
-		touch.tap(627,  123)
-	elseif screen.is_colors({
-			{  598,  110, 0x6e3400},
-			{  613,  110, 0x793702},
-			{  635,  109, 0x612c00},
-			}) then
-		nLog("105 穿戴橙色装备")
-		touch.tap(627,  123)	
-	elseif screen.is_colors({
-			{  933,  369, 0x72af1e},
-			{  966,  366, 0x72ad21},
-			{  970,  385, 0xd2ded6},
-			}) then
-		nLog("485 穿上")
-		touch.tap(970,  385)
-	elseif screen.is_colors({
-			{  934,  430, 0x72ac1f},
-			{  960,  427, 0x6ea81d},
-			{  990,  441, 0x689d1d},
-			{  950,  441, 0xfffffe},
-			}) then
-		nLog("113 穿上")
-		touch.tap(950,  441)
-		--[[
-	elseif screen.is_colors({
-			{   64,  573, 0xe3e0dc},
-			{   69,  567, 0xd9d5d0},
-			{   58,  568, 0x3b220b},
-			}) then
-		nLog("514 点击左下角箭头")
-		touch.tap(51,590)
-		sys.msleep(500)
-		touch.tap(204,594)
-	]]--	
-		--[[
-	elseif screen.is_colors({
-			{  730,  557, 0x697e34},
-			{  776,  561, 0x809334},
-			{  801,  576, 0x7ea301},
-			}) then
-		nLog("1323 一键出售")
-		touch.tap(801,  576)
-		sys.msleep(500)
-		--touch.tap(780,  531)
-		sys.msleep(1000)
-		--touch.tap(1068,36)
-		--sys.msleep(2000)
-		touch.tap(790,  137)
-		
-		sys.msleep(200)
-		touch.tap(1064,   30) --点击返回
-	]]--	
-	elseif screen.is_colors({
-			{  734,  517, 0x637833},
-			{  806,  521, 0x718437},
-			{  779,  543, 0xbbcdc1},
-			{  780,  531, 0xc3d047},
-			}) then
-		nLog("108 确认出售")
-		touch.tap(780,  531)
-	elseif screen.is_colors({
-			{  744,  461, 0x6e8635},
-			{  804,  459, 0x6c8036},
-			{  777,  480, 0x7b9904},
-			}) then
-		nLog("117 立即体验")
-		touch.tap(777,  480)
-	elseif screen.is_colors({
-			{  562,  255, 0x8f4c26},
-			{  573,  254, 0xb26a42},
-			{  568,  263, 0xb99788},
-			}) then
-		nLog("124 新功能开启 战盟")
-		touch.tap(568,  263)
-	elseif screen.is_colors({
-			{  535,  396, 0x765b32},
-			{  598,  393, 0x715731},
-			{  562,  420, 0xdcd8d5},
-			})then
-		nLog("2122  确定")
-		touch.tap(562,  420)
-	elseif screen.is_colors({
-			{  653,  471, 0x408ed6},
-			{  773,  467, 0x408ed6},
-			{  688,  491, 0xffffff},
-			{  744,  492, 0xf5f9fd},
-			})then
-		nLog("1555 立即登陆")
-		touch.tap(744,  492)
-	elseif screen.is_colors({
-			{  816,  550, 0x7e3522},
-			{  816,  604, 0x55392e},
-			{  869,  554, 0xcf4825},
-			})then
-		nLog("663 再次体验天神")
-		touch.tap(838,  579)
-	elseif screen.is_colors({
-			{  816,  553, 0xfd6222},
-			{  843,  545, 0xff6a1e},
-			{  814,  607, 0x553a2e},
-			}) then
-		nLog("684 再次体验天神")
-		touch.tap(844,  584)
-	elseif screen.is_colors({
-			{  831,  556, 0x362436},
-			{  818,  566, 0x160810},
-			{  814,  591, 0x5b3a26},
-			}) then
-		nLog("223 再次体验天神")
-		touch.tap(814,  591)
-	elseif screen.is_colors({
-			{  818,  548, 0xff6521},
-			{  812,  601, 0xff752d},
-			{  816,  572, 0x200a11},
-			})  then
-		nLog("91 再次体验天神之戒")
-		sys.msleep(200)
-		touch.tap(  816,  572)
-
-	elseif screen.is_colors({
-			{  382,  318, 0xa25513},
-			{  386,  356, 0x3f1700},
-			{  423,  333, 0xcac1bf},
-			{  394,  333, 0xdba950},
-			})  then
-		nLog("100 获得破风之戒")
-		sys.msleep(200)
-		touch.tap(  394,  333)
-	elseif screen.is_colors({
-			{   30,  203, 0xc64ee4},
-			{  117,  223, 0xf9f9f8},
-			{  163,  227, 0xbbbbad},
-			}) then --诺玛村庄，前往挑战
-		nLog("112 诺玛村庄，前往挑战")
-		sys.msleep(200)
-		touch.tap(163,  227)
-	elseif screen.is_colors({
-			{   25,  257, 0x00fbfb},
-			{   49,  261, 0x00fefe},
-			{   87,  262, 0x08bab5},
-			{  120,  259, 0x08beb8},
-			{  132,  256, 0x00f9f9},
-			})  then
-		nLog("1351 主屏幕上点击可接取支线任务")
-		touch.tap(132,  256)
-	elseif screen.is_colors({
-			{  419,  350, 0x563d29},
-			{  424,  348, 0x1ef300},
-			{  443,  351, 0x1eff00},
-			{  467,  352, 0x1efa00},
-			{  392,  350, 0x563d29},
-			}) then
-		nLog("1416 点击支线任务")
-		touch.tap(392,  350)
-		sys.msleep(200)
-		touch.tap(921,  567) --前往接取
-	elseif screen.is_colors({
-			{  951,  581, 0x2f4b15},
-			{  964,  594, 0xd9dec5},
-			{ 1006,  596, 0xf1f3dd},
-			{  995,  595, 0xa2ba00},
-			}) then --挑战戒灵
-		nLog("1426 挑战戒灵")
-		sys.msleep(200)
-		--[[
-		touch.tap(45,  593) --点击箭头
-		sys.msleep(3000)
-		touch.tap(197,  595) --点击背包
-		sys.msleep(5000)
-		touch.tap(790,  134) --点击第三个装备
-		sys.msleep(2000)
-		]]--
-		touch.tap(995,  595) --点击挑战戒灵
-
-	elseif screen.is_colors({
-			{  793,  226, 0x8b381b},
-			{  806,  226, 0xb76646},
-			{  814,  232, 0xede393},
-			{  786,  234, 0x763a20},
-			{  789,  252, 0xddcd7c},
-			}) then
-		nLog("1428 点击右侧任务")
-		touch.tap(789,  252)
-		sys.msleep(5000)
-		touch.tap(939,  574) --闪光绿色立即前往
-		sys.msleep(10000)
-	elseif screen.is_colors({
-			{  691,  519, 0x527d2a},
-			{  748,  519, 0x59832f},
-			{  774,  523, 0x5d8832},
-			{  714,  533, 0x546b41},
-			{  773,  540, 0x45710f},
-			{  746,  540, 0xedefd9},
-			})then
-		nLog("1508 获取途径")
-		touch.tap(746,  540)
-	elseif screen.is_colors({
-			{  693,  304, 0xdd7b3e},
-			{  688,  310, 0xe08344},
-			{  701,  315, 0xc25010},
-			{  684,  316, 0xc44a0d},
-			{  691,  307, 0xe76023},
-			}) then
-		nLog("1428 装备没有获取")
-		touch.tap(542,  312)
-
-	elseif screen.is_colors({
-			{  533,  479, 0x637834},
-			{  574,  481, 0x6c8134},
-			{  536,  498, 0xfcfcfa},
-			{  567,  497, 0xd1d8cd},
-			{  593,  494, 0xf0f2ee},
-			{  573,  495, 0x9db700},
-			}) then
-		nLog("1481 属性不足，继续挑战")
-		touch.tap(725,  105) --点击关闭
-		sys.msleep(500)
-		touch.tap(1049,   42) --返回
-		sys.msleep(500)
-		touch.tap(1049,   42) --返回
-		sys.msleep(500)
-		touch.tap(51,  592) --箭头
-		sys.msleep(3000)
-		touch.tap(195,  597)--背包
-
-		--sys.msleep(2000)
-		--touch.tap(773,  567) --一键出售
-		--sys.msleep()
-		--touch.on(784,  303):move(784,  459):off()
-
-	elseif screen.is_colors({
-			{  713,  516, 0x778964},
-			{  739,  517, 0x546b42},
-			{  764,  517, 0x8f9f79},
-			{  713,  528, 0x2f510e},
-			{  753,  524, 0x5c7346},
-			}) then
-		nLog("1584 获取途径")
-		touch.tap(753,  524)
-	elseif screen.is_colors({
-			{  519,  106, 0xfae5ba},
-			{  483,  108, 0xa17a5e},
-			{  592,  110, 0x8a6047},
-			{  630,  113, 0xf2dcb3},
-			{  686,  305, 0xfb640b},
-			{  700,  317, 0xc55010},
-			{  690,  312, 0xe05d24},
-			})then
-		nLog("1586 属性不足，缺失第一件装备")
-		touch.tap(532,  314)
-	elseif screen.is_colors({
-			{  298,  265, 0x925822},
-			{  310,  283, 0xf1eeeb},
-			{  349,  277, 0xfdfdfb},
-			}) then --挑战戒灵
-		nLog("194 挑战戒灵")
-		sys.msleep(200)
-		touch.tap(349,  277)
-	elseif screen.is_colors({
-			{  387,  306, 0xffffff},
-			{  406,  310, 0xf55ef7},
-			{  381,  334, 0xbe7f35},
-			}) then --获得戒指
-		nLog("128 获得戒指")
-		sys.msleep(200)
-		touch.tap(381,  334)
-	elseif screen.is_colors({
-			{  520,  221, 0xf9dd93},
-			{  546,  224, 0xf3c761},
-			{  583,  221, 0xffe098},
-			{  617,  231, 0xcb9053},
-			})  then
-		nLog("203 获得戒指")
-		sys.msleep(100)
-		touch.tap(617,  231)
-	elseif screen.is_colors({
-			{  391,  293, 0x573c26},
-			{  415,  291, 0x24a600},
-			{  445,  289, 0x23b800},
-			{  462,  294, 0x20e300},
-			}) then
-		nLog("203 点击支线任务")
-		sys.msleep(100)
-		touch.tap(462,  294)
-		--[[
-	elseif screen.is_colors({
-			{   25,  256, 0xfcfc00},
-			{   19,  282, 0xd12000},
-			{  113,  286, 0xf22200},
-			}) then --点击主线红色任务
-		nLog("136 点击主线红色任务")
-		sys.msleep(200)
-		--touch.tap(113,  286)
-		sys.msleep(200)
-		touch.tap(114,211)
-	]]--	
-	elseif screen.is_colors({
-			{   22,  259, 0x06d0cc},
-			{   36,  260, 0x0c9b93},
-			{   67,  261, 0x02efee},
-			{   51,  266, 0x01f2f1},
-			}) then 
-		nLog("220 接取支线任务")
-		sys.msleep(100)
-		touch.tap(51,  266)
-	elseif screen.is_colors({
-			{   57,  259, 0x1efc00},
-			{   68,  255, 0x1ebc00},
-			{   75,  266, 0x1efc00},
-			{   81,  266, 0x1efd00},
-			}) then 
-		nLog("229 交付支线任务")
-		sys.msleep(100)
-		touch.tap(81,  266)
-	elseif screen.is_colors({
-			{  870,  554, 0x355a73},
-			{  971,  584, 0x0065bb},
-			{  897,  582, 0x016ec0},
-			{  920,  570, 0x1089b8},
-			}) then --前往交付
-		nLog("54 -前往交付")
-		sys.msleep(200)
-		touch.tap(920,  570)		
-	elseif screen.is_colors({
-			{  426,  287, 0x1fe600},
-			{  444,  289, 0x21d400},
-			{  462,  291, 0x20dc00},
-			{  439,  291, 0x402a13},
-			}) then
-		nLog("1621 接取支线任务")
-		sys.msleep(100)
-		touch.tap(439,  291)
-		--[[
-	elseif screen.is_colors({
-			{  309,  183, 0xe02100},
-			{  326,  186, 0x901d00},
-			{  332,  187, 0xca2000},
-			{  353,  188, 0xf22100},
-			}) then
-		nLog("802 55级可接取")
-		touch.tap(1066,29)
- ]]--
-		--[[
-	elseif screen.is_colors({
-			{  176,  290, 0x573b29},
-			{  188,  290, 0xdab669},
-			{  198,  295, 0xceab61},
-			}) then
-		nLog("1670 50级之前进行主线任务")
-		touch.tap(918,568)
-]]--
-	elseif screen.is_colors({
-			{  182,  288, 0xdeba6b},
-			{  181,  295, 0xd1ae63},
-			{  199,  286, 0xd3b065},
-			{  194,  296, 0xdeba6b},
-			{  921,  568, 0x758925},
-			}) then
-		nLog("1680 50级之前进行主线任务")
-		touch.tap(921,  568)
-	elseif screen.is_colors({
-			{  390,  293, 0x573c26},
-			{  416,  286, 0xed0200},
-			{  433,  289, 0xff0000},
-			{  453,  293, 0xf70000},
-			}) then
-		nLog("258 点击进行中的支线任务")
-		sys.msleep(200)
-		touch.tap(453,  293)
-		--[[	
-	elseif screen.is_colors({
-			{  115,  223, 0xfdfdfc},
-			{  137,  229, 0xdbdbd4},
-			{  150,  228, 0xa5a693},
-			{  165,  228, 0xa8a997},
-			}) then
-		nLog("1601 前往挑战")
-		sys.msleep(200)
-		touch.tap(165,  228)
-	]]--
-	elseif screen.is_colors({
-			{  788,  267, 0xf88c01},
-			{  742,  269, 0xf98d01},
-			{  840,  264, 0xb17b42},
-			})then
-		nLog("950 关闭到期提醒")
-		touch.tap(840,  264)
-	elseif screen.is_colors({
-			{   18,  282, 0xf9f8f7},
-			{   81,  287, 0xf6f4f3},
-			{  145,  280, 0xccc6c0},
-			})then
-		nLog("950 点击活动页面")
-		touch.tap(145,  280)
-	elseif screen.is_colors({
-			{  198,  152, 0xe3d008},
-			{  218,  155, 0xc18700},
-			{  202,  172, 0xf6f215},
-			})then
-		nLog("957 点击活动页面-赏金任务")
-		touch.tap(493,  151)
-		shangjin_flag ='Y'
-	elseif screen.is_colors({
-			{  106,  558, 0x557e2f},
-			{  165,  555, 0x537c2a},
-			{  125,  578, 0xe6edd7},
-			{  142,  577, 0xa5db2d},
-			})then
-		nLog("972 领取任务")
-		touch.tap(142,  577)
-	elseif screen.is_colors({
-			{  762,  265, 0xf48a02},
-			{  803,  271, 0xd27908},
-			{  838,  267, 0xa96c35},
-			})then
-		nLog("979 守护过期")
-		touch.tap(838,  267)
-	elseif screen.is_colors({
-			{  526,  429, 0xdaaf34},
-			{  569,  434, 0xd8ad36},
-			{  623,  427, 0xdecd53},
-			{  589,  434, 0xd6ae22},
-			})then
-		nLog("987 复活")
-		fuhuo = fuhuo +1
-		sys.msleep(8000)
-		if fuhuo >2 then
-			if screen.is_colors({
-					{ 1074,   46, 0xc29457},
-					{ 1086,   50, 0x5a3813},
-					{ 1078,   77, 0xcbb665},
-					}) then
-				nLog("994 复活，退出")
-				touch.tap(1086,   50)
-			end
-		end 
-		--touch.tap(53,596)
-		--sys.msleep(1000)
-		--touch.tap(119,  589)
-	elseif screen.is_colors({
-			{  658,  396, 0x637633},
-			{  720,  397, 0x627832},
-			{  686,  413, 0xfdfde9},
-			})then
-		nLog("1795 确认-退出副本")
-		touch.tap(686,  413)
-		sys.msleep(1000)
-		if acct1 ~= nil then
-			nLog("1687 "..acct1)
-			initArgs()
-			recordOKAccount(acct1)
-			acct_name, acct_pwd = getUserAcct(string.atrim(acct1))
-			if acct_name ~= nil then 
-				--sys.msleep(2000)	
-				updGameAcct(acct_name,"Y")
-			end 
-			initArgs()
-			CC.web_file.update_file("upload_sqlite/"..db_name,db_file_local)
-		else
-			nLog("1696 当前账号为空")
-		end
-	elseif screen.is_colors({
-			{  949,  578, 0x637833},
-			{  984,  579, 0x6c8135},
-			{ 1041,  584, 0x6a7c32},
-			{  952,  598, 0xc2caaf},
-			{  987,  598, 0xf2f4de},
-			{ 1014,  599, 0xeaedd6},
-			} )then
-		nLog("1554 挑战矮人")
-		touch.tap(1014,  599)
-	elseif screen.is_colors({
-			{  952,  584, 0xc3cbaf},
-			{  979,  590, 0x7c9126},
-			{  996,  595, 0x9cb400},
-			}) then 
-		nLog("468 挑战矮人")
-		sys.msleep(100)
-		touch.tap(996,  595)
-	elseif screen.is_colors({
-			{   20,  149, 0x625137},
-			{   35,  157, 0xe8e8d6},
-			{   71,  164, 0xcfcebe},
-			}) then --点击任务栏
-		nLog("2678 点击任务栏")
-		sys.msleep(200)
-		touch.tap(71,  164)	
-	elseif screen.is_colors({
-			{  424,  287, 0x1ef800},
-			{  416,  291, 0x20db00},
-			{  453,  296, 0x20e400},
-			}) then
-		nLog("275 交付支线任务")
-		sys.msleep(100)
-		touch.tap(453,  296)--点击左侧可交付
-		sys.msleep(300)
-		touch.tap(917,  570) --点击蓝色前往交付
-	elseif screen.is_colors({
-			{  407,  290, 0x563d29},
-			{  428,  289, 0xfe0000},
-			{  442,  290, 0xfd0000},
-			{  465,  291, 0xd60500},
-			})then
-		nLog("1440 点击进行中支线任务")
-		touch.tap(407,  290)
-	elseif screen.is_colors({
-	{  156,  289, 0xbd9b57},
-	{  168,  293, 0xbc9b57},
-	{  187,  289, 0xe0bc6d},
-	{  199,  290, 0xddb96a},
-	{  210,  288, 0xdab669},
-	{  233,  289, 0xe1bd6d},
-	{  249,  291, 0xcba960},	
-}) then
-	nLog("2714 50传奇装备，略过")
-	touch.tap(921,  570)
-	elseif screen.is_colors({
-			{  399,  289, 0x563d29},
-			{  429,  289, 0xff0000},
-			{  443,  289, 0xff0000},
-			{  466,  290, 0x451601},
-			{  416,  293, 0xe70300},
-			})then
-		nLog("1832 点击进行中支线任务")
-		touch.tap(369,  293)
-	elseif screen.is_colors({
-			{  430,  410, 0xea0200},
-			{  404,  410, 0x563c29},
-			{  444,  411, 0xe30300},
-			{  468,  412, 0xfe0000},
-			{  453,  410, 0xf90000},
-			{  369,  411, 0x573c29},
-			})then
-		nLog("1649 点击红色进行中任务")
-		touch.tap(369,  411)
-		sys.msleep(1000)
-		touch.tap(918,  567) --点击绿色立即前往
-	elseif screen.is_colors({
-			{  877,  561, 0x435c1e},
-			{  961,  564, 0x344f21},
-			{  923,  569, 0xf9fae5},
-			}) then
-		nLog("1687 立即前往")
-		touch.tap(923,  569)
-	elseif screen.is_colors({
-			{  888,  563, 0xf5f6e1},
-			{  914,  561, 0xb2bc9e},
-			{  937,  562, 0xf6f7e1},
-			{  953,  563, 0x6d8159},
-			{  890,  574, 0x799904},
-			{  939,  574, 0xebeed7},
-			})then
-		nLog("1828 闪光绿色立即前往")
-		touch.tap(939,  574)
-		sys.msleep(4000)
-		bag_back ='N'
-		--[[
-	elseif screen.is_colors({
-			{  891,  564, 0x809437},
-			{  918,  563, 0x92a538},
-			{  946,  563, 0xffffeb},
-			{  889,  583, 0x85be02},
-			{  956,  577, 0x739b00},
-			}) then
-		nLog("1838 背包界面")
-		if bag_back =='Y' then
-			touch.tap(1061,   34) --点击整理	
-		else
-			touch.tap(920,  572) --点击整理
-			sys.msleep(7000)
-			touch.tap(786,  123) --点击第3个装备
-			sys.msleep(2000)
-			bag_back ='Y'
-		end
-	]]--	
-		--[[
-	elseif screen.is_colors({
-			{  760,  355, 0x68a11f},
-			{  799,  361, 0x76b521},
-			{  824,  360, 0x6da71d},
-			{  791,  379, 0x74af21},
-			{  787,  491, 0x5fa225},
-			{  810,  494, 0xf1f4f1},
-			{  763,  498, 0x6aa421},
-			})then
-		nLog("1850 出售")
-		touch.tap(763,  498)
-	]]--	
-	elseif screen.is_colors({
-			{  873,  556, 0x657834},
-			{  894,  570, 0x729105},
-			{  920,  571, 0x9eb600},
-			{  931,  570, 0xcad1b7},
-			}) then --立即前往
-		nLog("1447 立即前往")
-		sys.msleep(200)
-		touch.tap( 931,  570)
-		--[[
-	elseif screen.is_colors({
-			{  102,  558, 0x537d2c},
-			{  143,  569, 0xb3d44f},
-			{  162,  571, 0x9abd3f},
-			}) then
-		nLog("292 领取奖励")
-		sys.msleep(200)
-		touch.tap(162,  571)	
-	]]--	
-	elseif screen.is_colors({
-			{  104,  560, 0x578130},
-			{  182,  583, 0x57890e},
-			{  140,  570, 0xadcc47},
-			}) then
-		nLog("162 领取奖励")
-		sys.msleep(200)
-		touch.tap(142,  575)
-	elseif screen.is_colors({
-			{  104,  558, 0x557e30},
-			{  183,  587, 0x609d18},
-			{  124,  569, 0xedefda},
-			{  142,  575, 0xaae32d},
-			}) then
-		nLog("171 领取奖励")
-		sys.msleep(200)
-		touch.tap(142,  575)
-	elseif screen.is_colors({
-			{  102,  559, 0x588131},
-			{  182,  585, 0x538c13},
-			{  141,  572, 0xd9ef5a},
-			{  155,  575, 0xf4f6e2},
-			}) then --领取奖励
-		nLog("180 领取奖励")
-		sys.msleep(200)
-		touch.tap(155,  575)
-	elseif screen.is_colors({
-			{ 1034,   35, 0xd4be74},
-			{ 1071,   30, 0xedd98b},
-			{ 1095,   47, 0xbea94d},
-			}) then --跳过剧情
-		nLog("163 跳过剧情")
-		sys.msleep(200)
-		touch.tap(1095,   47)
-	elseif screen.is_colors({
-			{  819,  551, 0xfc5922},
-			{  817,  603, 0x984028},
-			{  830,  581, 0x6c140b},
-			}) then --体验天神之威
-		nLog("171 体验天神之威")
-		sys.msleep(200)
-		touch.tap(830,  581)
-	elseif screen.is_colors({
-			{  753,  537, 0x5d6f2e},
-			{  764,  553, 0xf9faf7},
-			{  790,  562, 0xfffffe},
-			}) then --退出
-		nLog("179 退出")
-		sys.msleep(200)
-		touch.tap(790,  562)
-	elseif screen.is_colors({
-			{  553,  215, 0xf7e7aa},
-			{  371,  324, 0xda7c1f},
-			{  433,  329, 0x513e38},
-			}) then --获得戒指
-		nLog("187 获得戒指")
-		sys.msleep(200)
-		touch.tap(433,  329)
-	elseif screen.is_colors({
-			{  870,  556, 0x647936},
-			{  894,  569, 0xb4c748},
-			{  919,  569, 0xcbda49},
-			{  943,  569, 0xb3c443},
-			}) then --立即前往
-		nLog("196 立即前往")
-		sys.msleep(200)
-		touch.tap(943,  569)
-	elseif screen.is_colors({
-			{  872,  554, 0x315d78},
-			{  921,  570, 0x007faf},
-			{  946,  575, 0x0067a0},
-			}) then
-		nLog("359 立即前往")
-		touch.tap(946,  575)
-	elseif screen.is_colors({
-			{  752,  410, 0x5b8631},
-			{  770,  420, 0xa1b9a9},
-			{  788,  418, 0xf4f7f4},
-			}) then --查看更好的装备
-		nLog("204 查看更好的装备")
-		sys.msleep(200)
-		touch.tap(788,  418)
-	elseif screen.is_colors({
-			{ 1108,   25, 0xf4e6a2},
-			{ 1075,   28, 0xc2aa7f},
-			{ 1102,   40, 0xb69e67},
-			}) then --返回
-		nLog("1855 返回")
-		sys.msleep(200)
-		touch.tap(1102,   40)
-	elseif screen.is_colors({
-			{ 1017,   16, 0x48692e},
-			{ 1046,   28, 0xcbba88},
-			{ 1074,   28, 0xc0ab7f},
-			{ 1102,   42, 0xa58b59},
-			}) then --点击返回
-		nLog("1864 点击返回")
-		sys.msleep(200)
-		touch.tap(1102,   42)
-	elseif screen.is_colors({
-			{ 1034,   36, 0xd6c38a},
-			{ 1095,   35, 0xf2e19f},
-			{ 1087,   52, 0xa18850},
-			}) then --返回
-		nLog("1708 返回")
-		sys.msleep(200)
-		touch.tap(1087,   52)
-	elseif screen.is_colors({
-			{ 1035,   37, 0xccb882},
-			{ 1041,   44, 0xa48351},
-			{ 1068,   38, 0xbca576},
-			{ 1064,   51, 0x926031},
-			{ 1088,   52, 0xa6884e},
-			{ 1099,   44, 0xc9b57b},
-			})then
-		nLog("1883 点击返回")
-		touch.tap(1088,   52)
-	elseif screen.is_colors({
-			{  962,  567, 0x42352c},
-			{  295,  185, 0xf22200},
-			{  424,  289, 0x21db00},
-			}) then --接取支线任务
-		nLog("230 接取支线任务")
-		sys.msleep(200)
-		touch.tap(424,  289)
-	elseif screen.is_colors({
-			{  101,  557, 0x28597e},
-			{  141,  573, 0x07a8e9},
-			{  171,  565, 0xecf1e0},
-			}) then --接受蓝色任务
-		nLog("238 接受蓝色任务")
-		sys.msleep(200)
-		touch.tap(171,  565)
-	elseif screen.is_colors({
-			{ 1039,   23, 0xe2d098},
-			{ 1067,   31, 0xb49666},
-			{ 1098,   41, 0xaa8d59},
-			}) then
-		nLog("325 返回")
-		sys.msleep(200)
-		touch.tap(1098,   41)
-	elseif screen.is_colors({
-			{ 1112,   24, 0xfbf7b0},
-			{ 1106,   41, 0xc99d53},
-			{   30,  205, 0xe659f7},
-			{  146,  228, 0xe5e6e3},
-			}) then 
-		nLog("248 第一次戒灵")
-		sys.msleep(200)
-		touch.tap(146,  228)
-	elseif screen.is_colors({
-			{  945,  578, 0x637734},
-			{  974,  593, 0xfefeea},
-			{ 1011,  591, 0xfefeea},
-			{  995,  596, 0xa4bd01},
-			}) then --挑战戒灵
-		nLog("257 挑战戒灵")
-		sys.msleep(200)
-		touch.tap( 995,  596)
---[[
-	elseif screen.is_colors({
-			{  482,  103, 0xa78365},
-			{  525,  476, 0x5d6e2e},
-			{  725,  106, 0xa56b36},
-			}) then --属性不足，关闭
-		nLog("265 属性不足，关闭")
-		sys.msleep(200)
-		touch.tap(725,  106)
-]]--		
-	elseif screen.is_colors({
-			{  332,   33, 0xb99c92},
-			{  350,   33, 0x672811},
-			{  379,   36, 0xdb6a2a},
-			{  549,  320, 0xfbe2a6},
-			{  575,  324, 0xedd885},
-			{  573,  258, 0x82329c},
-			}) then
-		nLog("2276 前往冈德城")
-		touch.tap(573,  258)
-	elseif screen.is_colors({
-			{  531,  323, 0xf2e88f},
-			{  551,  323, 0xd6bd7a},
-			{  574,  323, 0xebd488},
-			{  543,  345, 0x484026},
-			{  583,  345, 0xb8c3a0},
-			}) then
-		nLog("2296 前往冈德城")
-		touch.tap(583,  345)
-	elseif screen.is_colors({
-			{  531,  323, 0xf4ea91},
-			{  575,  323, 0xeed98b},
-			{  573,  250, 0xffffff},
-			}) then --前往冈德城
-		nLog("273 前往冈德城")
-		sys.msleep(200)
-		touch.tap(573,  250)
-	elseif screen.is_colors({
-			{  106,  557, 0x2c5d7d},
-			{  115,  570, 0xe2e4d6},
-			{  145,  571, 0x848d93},
-			{  141,  571, 0x08a9ee},
-			}) then
-		nLog("444 进入副本")
-		sys.msleep(100)
-		touch.tap(141,  571)
-	elseif screen.is_colors({
-			{ 1072,  329, 0x442e0e},
-			{ 1082,  329, 0x54330a},
-			{ 1091,  333, 0x8d6a28},
-			}) then
-		nLog("453 开启挂机")
-		sys.msleep(100)
-		touch.tap(1081,  328)
-	elseif screen.is_colors({
-			{ 1073,  331, 0x221217},
-			{ 1088,  331, 0x291419},
-			{ 1074,  345, 0x746c67},
-			{ 1092,  363, 0xdbcb79},
-			}) then
-		nLog("555 开启挂机")
-		touch.tap(1092,  363)
-
-
-	elseif screen.is_colors({
-			{  444,  222, 0xf1c16a},
-			{  467,  223, 0xf3af58},
-			{  451,  240, 0xa24012},
-			{  462,  240, 0xab481c},
-			}) then
-		nLog("654 点击礼包")
-		touch.tap(462,  240)
-	elseif screen.is_colors({
-			{  559,  241, 0xfff2e9},
-			{  576,  242, 0x7d6556},
-			{  563,  254, 0xfce19f},
-			}) then
-		nLog("484 自主加点")
-		touch.tap(563,  254)
-	elseif screen.is_colors({
-			{  243,  188, 0xfbfcfc},
-			{  275,  192, 0xf3f2f1},
-			{  324,  190, 0xd1cec9},
-			{  381,  190, 0xeeedeb},
-			}) then
-		nLog("1921 点击自主加点")
-		touch.tap(116,597)
-		--[[
-	elseif screen.is_colors({
-			{  441,   17, 0xd39251},
-			{  485,   18, 0x9e5a2b},
-			{ 1063,  304, 0x3ebcf2},
-			}) then
-		nLog("593 坐骑，点击下一篇")
-		touch.tap(1063,  304)
-		]]--
-	elseif screen.is_colors({
-			{  215,   26, 0x7d712a},
-			{  241,   33, 0xb29829},
-			{  266,   46, 0xf3e0a7},
-			}) then
-		nLog("677 点击角色标签")
-		touch.tap(266,   46)
-	elseif screen.is_colors({
-			{  547,  254, 0xc99149},
-			{  566,  244, 0xfffcbd},
-			{  587,  252, 0x7f4d23},
-			{  568,  261, 0xd6a240},
-			}) then
-		nLog("618 新功能开启 赏金任务")
-		touch.tap(568,  261)
-		shangjin_flag ='Y'
-	elseif screen.is_colors({
-			{  441,  107, 0xffff0c},
-			{  574,  106, 0xfefe12},
-			{  488,  221, 0x766654},
-			}) then
-		nLog("740 前往暗黑密道")
-		touch.tap(488,  221)
-	elseif screen.is_colors({
-			{  523,  396, 0x745a33},
-			{  601,  396, 0x725934},
-			{  572,  419, 0xebe9e7},
-			}) then
-		nLog("762 重连")
-		touch.tap(572,  419)
-	elseif screen.is_colors({
-			{  405,  315, 0x0ca700},
-			{  389,  313, 0xe9d4c1},
-			{  408,  339, 0xfffcfa},
-			}) then
-		nLog("1280 获得戒指-挽歌之戒")
-		touch.tap(408,  339)
-	elseif screen.is_colors({
-			{  557,  249, 0xcf9a51},
-			{  576,  247, 0xe8c074},
-			{  567,  271, 0x7d422d},
-			{  567,  233, 0xc6a877},
-			})then
-		nLog("1281 60级le 魔戒寻主")
-		touch.tap(567,  233)
-	elseif screen.is_colors({
-			{  558,  252, 0xe1a862},
-			{  574,  263, 0xcf8544},
-			{  574,  283, 0x785122},
-			}) then
-		nLog("854 魔戒寻主")
-		touch.tap(574,  283)
-	elseif screen.is_colors({
-			{  564,  257, 0x714023},
-			{  572,  256, 0x964624},
-			{  569,  267, 0xcdb5a9},
-			})then
-		nLog("1251 战盟")
-		touch.tap(569,  267)
-	elseif screen.is_colors({
-			{  557,  259, 0x9f4d28},
-			{  566,  259, 0xd4a93b},
-			{  564,  273, 0x885425},
-			})then
-		nLog("1258 赏金任务 ")
-		touch.tap(564,  273)
-		shangjin_flag ='Y'
-	elseif screen.is_colors({
-			{  559,  257, 0xd5b872},
-			{  575,  257, 0x8d5f35},
-			{  568,  277, 0x2f190e},
-			})then
-		nLog("1251 新功能开启 自主加点 ")
-		touch.tap(568,  277)
-	elseif screen.is_colors({
-			{  887,  558, 0x6c7d36},
-			{  944,  556, 0x667632},
-			{  914,  577, 0xfbfcfb},
-			})then
-		nLog("1258 第一次加点")
-		touch.tap(914,  577)
-	elseif screen.is_colors({
-			{  793,  517, 0x6b8238},
-			{  863,  517, 0x667833},
-			{  826,  529, 0x24410d},
-			})then
-		nLog("1265 点击确认")
-		touch.tap(826,  529)
-
-	elseif screen.is_colors({
-			{ 1079,  334, 0x987113},
-			{ 1086,  335, 0xe4bc3d},
-			{ 1082,  341, 0xd3a615},
-			})then
-		nLog("1258 开启挂机")
-		touch.tap(1082,  341)
-	elseif screen.is_colors({
-			{  972,   34, 0xdac178},
-			{ 1015,   30, 0xf8e196},
-			{ 1092,   47, 0xc0a050},
-			})then
-		nLog("1265 跳过剧情")
-		touch.tap(1092,   47)
-	elseif screen.is_colors({
-			{  991,   24, 0xf5d999},
-			{ 1010,   31, 0xcda968},
-			{ 1055,   27, 0xe9c88a},
-			}) then
-		nLog("3169 跳过引导")
-		touch.tap(1055,   27)
-	elseif screen.is_colors({
-			{  981,   33, 0xba9d57},
-			{ 1023,   23, 0xf7e598},
-			{ 1054,   30, 0xbf9764},
-			{ 1085,   28, 0xd4c179},
-			}) then
-		nLog("626 跳过引导")
-		touch.tap(1085,   28)
-	elseif screen.is_colors({
-			{  984,   26, 0xe5cb87},
-			{ 1017,   30, 0xd2b26c},
-			{ 1047,   24, 0xe9d68f},
-			})then
-		nLog("1051 跳过引导")
-		touch.tap(1047,   24)
-
-	elseif screen.is_colors({
-			{  660,  460, 0x578031},
-			{  710,  462, 0x6c9437},
-			{  692,  475, 0xc7cec2},
-			})then
-		nLog("1058 692,  475 知道了")
-		touch.tap(692,  475)
-	elseif screen.is_colors({
-			{  423,  290, 0xde0400},
-			{  443,  289, 0xff0000},
-			{  468,  291, 0xfd0000},
-			{  452,  297, 0xfe0000},
-			})then
-		nLog("1839 点击支线任务")
-		touch.tap(423,  290)
-	elseif screen.is_colors({
-	{  742,  275, 0xe98403},
-	{  747,  270, 0xe38104},
-	{  749,  278, 0xff9000},
-	{  772,  267, 0x2d2517},
-	{  791,  268, 0x292517},
-	{  838,  266, 0xa46938},
-})then
-	nLog("3211 守护过期")
-		touch.tap(836,  266)
-	
-	elseif screen.is_colors({
-			{  559,  248, 0xe0a95d},
-			{  577,  248, 0xe1b469},
-			{  558,  258, 0xffd083},
-			{  576,  257, 0xfee59b},
-			{  562,  267, 0xfde195},
-			})then
-		nLog("3220 新功能开启-魔戒寻主")
-		touch.tap(562,  267)
-		sys.msleep(5000)
-		touch.tap(52,589)--点击左下角箭头
-		sys.msleep(2000)
-		touch.tap(839,  586) --点击设置
-		sys.msleep(4000)
-		touch.tap(356,   37) --点击系统设置
-		sys.msleep(2000)
-		touch.tap(494,467)--点击切换账号
-	elseif screen.is_colors({
-			{   18,   16, 0xf7f4f2},
-			{   15,   20, 0xd3c3c2},
-			{   16,   26, 0xdbcdcb},
-			{   20,   25, 0xbea6a3},
-			{   20,   22, 0xd2c2c0},
-			{   17,   20, 0xd6c7c5},
-			}) then
-		nLog("2175 60级换号")
-		touch.tap(52,589)--点击左下角箭头
-		sys.msleep(2000)
-		touch.tap(839,  586) --点击设置
-		sys.msleep(5000)
-		touch.tap(358,   38)
-	elseif screen.is_colors({
-			{  116,  223, 0xfcfcfb},
-			{  137,  228, 0xefefec},
-			{  151,  229, 0xe1e1db},
-			{  164,  229, 0xb0b0a0},
-			})then
-		nLog("1833 前往挑战")
-		touch.tap(164,  229)
-	--[[
-	elseif screen.is_colors({
-			{   35,  157, 0xe9e9d6},
-			{   45,  160, 0xdcdbc9},
-			{   53,  162, 0x754319},
-			{   80,  160, 0xae9a81},
-			{   68,  165, 0xbdb5a2},
-			}) then
-		nLog("2256 点击任务")
-		touch.tap(68,  165)
-	]]--	
-		--[[
-	elseif screen.is_colors({
-			{   29,  149, 0x635136},
-			{   84,  166, 0x745118},
-			{   45,  161, 0xdbdac8},
-			})then
-		nLog("2198 点击任务")
-		touch.tap(45,  161)	
-		sys.msleep(200)
-		touch.tap(124,  218)
-	]]--	
-	elseif screen.is_colors({
-			{  888,  555, 0x657834},
-			{  945,  557, 0x6b7e35},
-			{  910,  571, 0xffffeb},
-			})then
-		nLog("1480 前去领取")
-		touch.tap(910,  571)
-		--[[
-	
-	]]--	
-		--[[
-	
-]]--		
-	elseif screen.is_colors({
-			{  660,  405, 0x718636},
-			{  722,  402, 0x677932},
-			{  699,  425, 0xc5cdb1},
-			})then
-		nLog("1565 断网重连 确定")
-		touch.tap(699,  425)
-	elseif screen.is_colors({
-			{  377,  314, 0xffd79b},
-			{  417,  310, 0xe9ca86},
-			{  406,  339, 0xb5a494},
-			{  408,  351, 0x73604f},
-			})then
-		nLog("1757 天神之戒")
-		touch.tap(408,  351)
-	elseif screen.is_colors({
-			{  813,  552, 0xc94120},
-			{  813,  603, 0x7d3f2d},
-			{  821,  568, 0x462232},
-			})then
-		nLog("再次体验天神")
-		touch.tap(821,  568)
-	elseif screen.is_colors({
-			{  358,   37, 0xe77b37},
-			{  343,   37, 0x7d422c},
-			{  375,  288, 0x785b2f},
-			{  420,  290, 0x755a30},
-			{  444,  288, 0x20d700},
-			{  449,  294, 0x1eff00},
-			}) then
-		nLog("2279 可交付任务")
-		touch.tap(921,  570)
-	elseif screen.is_colors({
-			{  323,   36, 0xe8dedb},
-			{  350,   32, 0xece5e2},
-			{  214,   35, 0xdecc95},
-			{  233,   38, 0xc6b67f},
-			{  277,   36, 0xfae6ae},
-			{  244,   41, 0xc09603},
-			}) then 
-		nLog("2273 转为赏金任务")
-		touch.tap(244,   41)
-		sys.msleep(500)
-		touch.tap(922,  569)
-		shangjin_flag ='Y'
-		--[[
-	elseif screen.is_colors({
-			{ 1109,   29, 0xebd392},
-			{ 1046,   27, 0xd5c28c},
-			{ 1098,   43, 0x9b824e},
-			}) then
-		nLog("1908 返回")
-		touch.tap(1098,   43)
-	]]--	
-	elseif screen.is_colors({
-			{ 1045,   29, 0x987d58},
-			{ 1056,   29, 0xc2ae7c},
-			{ 1084,   28, 0x512d15},
-			{ 1104,   25, 0xe2d1a8},
-			{ 1105,   39, 0xb8a570},
-			{ 1098,   41, 0xa98c58},
-			}) then
-		nLog("2644 返回")
-		touch.tap(1098,   41)
-	elseif screen.is_colors({
-			{ 1040,   24, 0xdcca94},
-			{ 1056,   28, 0xcab883},
-			{ 1112,   33, 0xd2c084},
-			{ 1097,   43, 0xaa8a53},
-			})then
-		nLog("1927 第一次返回")
-		touch.tap(1097,   43)
-	elseif screen.is_colors({
-			{ 1047,   28, 0xcab983},
-			{ 1081,   32, 0xae9864},
-			{ 1056,   44, 0xdb883f},
-			{ 1103,   44, 0xa9854f},
-			})then
-		nLog("1722 第一次返回")
-		touch.tap(1103,   44)
-	elseif screen.is_colors({
-			{  990,   29, 0xccae68},
-			{ 1009,   30, 0xd6b26c},
-			{ 1038,   32, 0xbd9a55},
-			{ 1075,   24, 0xf6dca0},
-			{ 1103,   40, 0xcca859},
-			{ 1038,   28, 0xd4bd72},
-			})then
-		nLog("2925 跳过引导")
-		touch.tap(1038,   28)
-	elseif screen.is_colors({
-			{  991,  332, 0xa07748},
-			{  998,  334, 0x92623c},
-			{ 1003,  337, 0x90573f},
-			{ 1002,  341, 0x4f2c12},
-			{  991,  342, 0xb48c5e},
-			})then
-		nLog("3298  点击拳头-我要变强")
-		touch.tap(991,  342)
-elseif screen.is_colors({
-			{  116,  228, 0xb8b9a9},
-			{  138,  228, 0xbebeb1},
-			{  151,  227, 0xd8d8d0},
-			{  168,  226, 0xebebe7},
-			}) and shangjin_flag =='N' then
-		nLog("2034 旋光之戒")
-		touch.tap(168,  226)
-	elseif screen.is_colors({
-			{  387,  295, 0xf2e1d8},
-			{  366,  317, 0x5e493c},
-			{  411,  350, 0xb0a595},
-			})then
-		nLog("1098 诅咒之戒")
-		touch.tap(411,  350)
-	elseif screen.is_colors({
-			{   32,  215, 0xffb000},
-			{   19,  286, 0xe82100},
-			{   37,  287, 0xb91f00},
-			})then
-		nLog("706 诅咒之戒")
-		touch.tap(32,  215)	
-	elseif screen.is_colors({
-			{  948,  577, 0x667d35},
-			{ 1021,  579, 0x677b36},
-			{  956,  597, 0x70835c},
-			{ 1014,  597, 0xe2e6ce},
-			})	then
-		nLog("479 挑战戒灵")
-		touch.tap(1014,  597)elseif screen.is_colors({
-			{  116,  228, 0xb8b9a9},
-			{  138,  228, 0xbebeb1},
-			{  151,  227, 0xd8d8d0},
-			{  168,  226, 0xebebe7},
-			}) and shangjin_flag =='N' then
-		nLog("2034 旋光之戒")
-		touch.tap(168,  226)
-	elseif screen.is_colors({
-			{  387,  295, 0xf2e1d8},
-			{  366,  317, 0x5e493c},
-			{  411,  350, 0xb0a595},
-			})then
-		nLog("1098 诅咒之戒")
-		touch.tap(411,  350)
-	elseif screen.is_colors({
-			{   32,  215, 0xffb000},
-			{   19,  286, 0xe82100},
-			{   37,  287, 0xb91f00},
-			})then
-		nLog("706 诅咒之戒")
-		touch.tap(32,  215)	
-	elseif screen.is_colors({
-			{  948,  577, 0x667d35},
-			{ 1021,  579, 0x677b36},
-			{  956,  597, 0x70835c},
-			{ 1014,  597, 0xe2e6ce},
-			})	then
-		nLog("479 挑战戒灵")
-		touch.tap(1014,  597)
-	elseif screen.is_colors({
-	{   33,  155, 0x6d4321},
-	{   34,  160, 0xc0b49d},
-	{   45,  159, 0xdcd9c6},
-	{   72,  159, 0xc9bfaa},
-	{   58,  166, 0x88521c},
-})then
-	nLog("3430 点击任务")
-	touch.tap(58,  166)
-	elseif screen.is_colors({
-			{   26,  149, 0x635236},
-			{   43,  154, 0xdfd8c3},
-			{   68,  155, 0xdbd5c0},
-			{   77,  164, 0xcfcebe},
-			{   43,  170, 0xa4957f},
-			{   59,  160, 0x804b19},
-			}) then
-		nLog("3431 点击任务")
-		touch.tap(59,  160)
-	elseif screen.is_colors({
-	{  867,  420, 0xea0200},
-	{  867,  427, 0xea0200},
-	{  750,  556, 0x7b5c33},
-	{  780,  569, 0xf0edd9},
-	{  755,  571, 0x8a725a},
-})then
-	nLog("3320 自动驯养 没有丹药了")
-	touch.tap(1068,   31) --点击返回
-	elseif screen.is_colors({
-			{  733,  555, 0x795f36},
-			{  732,  562, 0xffffeb},
-			{  742,  571, 0xf2efdb},
-			{  734,  574, 0x6b3b0b},
-			{  752,  568, 0xdad2bd},
-			{  763,  568, 0xffffeb},
-			{  771,  569, 0xbc6022},
-			}) or screen.is_colors({
-	{  740,  557, 0x7e5d34},
-	{  776,  562, 0x6c4e35},
-	{  806,  562, 0xc0b39d},
-	{  780,  572, 0xcbc0aa},
-	{  772,  568, 0xd57b40},
-})then 	
-		nLog("3326 自动驯养")
-		touch.tap(771,  569)
-		sys.msleep(6000)
-		closewindow()
-		sys.msleep(200)
-		clickback()
-	elseif screen.is_colors({
-			{  216,   26, 0xb16738},
-			{  229,   35, 0xf4f1ef},
-			{  245,   35, 0xfb8e42},
-			{  262,   33, 0xf8f6f5},
-			{  268,   43, 0xefe8e6},
-			})  or screen.is_colors({
-	{  211,   25, 0x9f5c31},
-	{  245,   27, 0xd57745},
-	{  258,   35, 0xdc7032},
-	{  234,   39, 0xe8dfdc},
-	{  243,   42, 0xe76826},
-})  then
-		nLog("3470 背包界面")
-		--touch.tap(919,  569) --整理背包
-		sys.msleep(200)
-		--touch.tap(777,  570) --一键出售	
-		sys.msleep(500)
-		touch.tap(919,  572) -- 整理
-		sys.msleep(8000)
-		closeon()
-		sys.msleep(200)
-		clickback()
-	elseif screen.is_colors({
-			{  536,  396, 0x775b32},
-			{  565,  400, 0x8b6134},
-			{  583,  403, 0xaea7a0},
-			{  553,  414, 0xebe9e7},
-			{  583,  412, 0xf0efec},
-			{  568,  412, 0xb74e06},
-			})then
-		nLog("3258 非法软件，确定")
-		touch.tap(568,  412)
-	elseif screen.is_colors({
-			{ 1077,  336, 0xb28125},
-			{ 1087,  335, 0xf0c03f},
-			{ 1081,  345, 0x9d9d9a},
-			})then
-		nLog("2653 点击自动挂机")
-		touch.tap(1081,  345)
-	elseif screen.is_colors({
-			{ 1079,  337, 0x9c6a05},
-			{ 1076,  345, 0xedf2f1},
-			{ 1085,  344, 0x7c807d},
-			})then
-		nLog("3508 自动挂机.............")
-		touch.tap(1085,  344)	
-	elseif lijizhuangbei() then
-		nLog("3238 立即装备")
-	elseif lingqujiangli() then
-		nLog("3046 领取奖励")
-	elseif lingqujiangli2() then
-		nLog("3269 领取奖励")	
-	elseif lingqu() then
-		nLog("2970 点击可领取")
-	elseif lingqu2() then
-		nLog("2993 点击可领取2")	
-	elseif clickback() then
-		nLog("3384 没有选项了，点击返回")
-	elseif closewindow() then
-		nLog("3388 没有选项了，关闭")		
-	else
-		nLog("2976 没有可点击的了，点击屏幕中间一点")
-		touch.tap(535,  307)
-	end	
-
---[[
-	if fuhuo > 2 then
-		if screen.is_colors({
-				{  836,  583, 0xe0ccb3},
-				{  842,  584, 0xd1bea2},
-				{  839,  590, 0x70542b},
+		mmsleep(500)
+		if multi_col({
+				{  894,   13, 0xbe3322},
+				{  899,   15, 0xaa1100},
+				{  861,   44, 0xdd3622},
+				})then
+			ltap(861,   44)
+			wwlog("722 点击福利")
+		elseif multi_col({
+				{  530,   45, 0x51140f},
+				{  555,   42, 0xf3c992},
+				{  209,  145, 0x7b5322},
+				{  278,  124, 0xaf1600},	
 				}) then
-			nLog("1430 直接点击设置")
-			touch.tap(839,  590)
-		else 
-			if screen.is_colors({
-					{  915,  583, 0xa59072},
-					{  920,  583, 0xfbfaf2},
-					{  922,  591, 0x563d25},
-					})then
-				nLog("1505 判定设置按钮的位置")
-				touch.tap(922,  591)
-			else
-				touch.tap( 48,  589)
-				sys.msleep(500)
-				touch.tap(839,  588)
-			end	
-		end		
-	end
-	]]--
-
-	if screen.is_colors({
-			{  981,   29, 0xd4bb72},
-			{ 1018,   31, 0xc7a460},
-			{ 1047,   33, 0xbf8344},
-			{ 1076,   29, 0xd2b366},
-			{ 1104,   39, 0xd9b263},
-			})then
-		nLog("3587 跳过引导" )
-		touch.tap(1104,   39)
-	end
-	screen.unkeep()
-	--nLog(fuhuo)
-	sys.msleep(3000)
-	--nLog("2055 end")
-	testrun()
-
-	if screen.is_colors({
-			{  840,  258, 0xba8b48},
-			{  753,  409, 0x578430},
-			{  773,  415, 0x7d9e89},
-			{  794,  420, 0x3b6d4d},
-			{  770,  427, 0xeff3f0},
-			{  790,  424, 0xc1d1c6},
-			}) then
-		nLog("2319 穿装备")
-		touch.tap(790,  424)
-	elseif screen.is_colors({
-			{  937,  407, 0x72b121},
-			{  958,  408, 0x7dc022},
-			{  977,  409, 0xacc1b3},
-			{  955,  418, 0xa7beae},
-			{  967,  420, 0x7fc121},
-			}) then
-		nLog("2738 穿上")
-		touch.tap(967,  420)
-	elseif screen.is_colors({
-			{  783,  384, 0x68a820},
-			{  801,  391, 0x8ad42d},
-			{  784,  398, 0x25651d},
-			{  798,  398, 0x7cbf21},
-			{  769,  398, 0x6ba720},
-			}) then
-		nLog("2766 穿上")
-		touch.tap(769,  398)
-	elseif screen.is_colors({
-			{  758,  407, 0x537c2a},
-			{  807,  411, 0x648d31},
-			{  777,  423, 0x387420},
-			{  787,  424, 0xcfdcd3},
-			}) then 
-		nLog("2337 查看装备")
-		sys.msleep(100)
-		touch.tap(787,  424)
-	elseif screen.is_colors({
-			{  747,  408, 0x577c2f},
-			{  768,  419, 0xc7d5cb},
-			{  789,  418, 0xfbfcfa},
-			}) then --查看装备
-		nLog("2345 查看装备")
-		sys.msleep(200)
-		touch.tap(789,  418)
-	end
-
-	if screen.is_colors({
-			{  921,  387, 0x67a01d},
-			{  950,  406, 0xfffffe},
-			{  976,  401, 0xfafbfa},
-			}) then --穿上装备
-		nLog("2355 穿上装备")
-		sys.msleep(200)
-		touch.tap(976,  401)	
-	end
-	sys.msleep(1000)
-
-	--[[
-	if screen.is_colors({
-			{  212,   27, 0xb0673d},
-			{  234,   27, 0xaa887c},
-			{  251,   27, 0xd27642},
-			{  264,   40, 0x7f4733},
-			{  236,   38, 0xf98338},
-			{  244,   38, 0xf88337},
-			}) then
-		nLog("2877 背包")
-		sys.msleep(200)
-		touch.tap(774,  569) --一键出售
-		sys.msleep(3000)
-		touch.tap(920,  570)
-		sys.msleep(8000)
-		if find_multi_color() == 'N' then
-			sys.msleep(200)
-			touch.tap(1078,   30) --返回		
+			ltap(401,  173)
+			wwlog("731 签到领取5w金币")
+		elseif multi_col({
+				{  264,  348, 0x6a4519},
+				{  282,  335, 0xb11600},
+				{  902,  221, 0x6e371c},
+				{  931,  220, 0x7b3d1d},
+				}) then
+			ltap(931,  220)
+			wwlog("739 领取七日盛典第一天的礼包")
+		elseif multi_col({
+				{  227,  339, 0x594a3b},
+				{  284,  334, 0xaf1600},
+				{  259,  356, 0x40342a},
+				}) then
+			ltap(259,  356)
+			wwlog("746 点击七日盛典")
+		elseif multi_col({
+				{  532,   47, 0x4c1311},
+				{  281,  192, 0xc73216},
+				{  209,  217, 0x473a30},
+				}) then
+			ltap(209,  217)
+			wwlog("754 点击在线礼包")
+		elseif multi_col({
+				{  522,   49, 0x4a1414},
+				{  228,  197, 0x976729},
+				{  281,  191, 0xb71400},
+				{  898,  365, 0x70371c},
+				{  928,  370, 0x603019},
+				}) then
+			ltap(928,  370)
+			wwlog("740 领取第一个在线礼包")
+		elseif multi_col({
+				{  527,   41, 0x58180e},
+				{  555,   42, 0xf3c992},
+				{  282,  191, 0xb71400},
+				{  227,  206, 0x4e4231},
+				}) then
+			ltap(227,  206)
+			wwlog("793 点击在线礼包标签")
+		elseif multi_col({
+				{  210,  203, 0x9a6a27},
+				{  279,  194, 0xaf1600},
+				{  894,  368, 0x603119},
+				{  906,  371, 0x5e2f18},
+				}) then
+			ltap(928,  370)
+			wwlog("779 领取第一个在线礼包")
+			--break
+		elseif multi_col({
+				{  533,   42, 0x57170e},
+				{  568,   43, 0x51140f},
+				{  286,  332, 0x744e20},
+				{ 1011,   64, 0xab7c4d},
+				}) or multi_col({
+				{  285,  331, 0x4a4131},
+				{  286,  193, 0x734c1e},
+				{  533,   45, 0x4f130f},
+				{ 1012,   64, 0xb88551},
+				}) then
+			ltap(1011,   64)
+			wwlog("771 关闭福利窗口")
+			fuli_flag = 'Y'
+		elseif multi_col({
+				{  523,   39, 0x58180e},
+				{  287,  123, 0x744e1e},
+				{  286,  192, 0x4a4131},
+				{  285,  332, 0x4a4131},	
+				}) then
+			ltap(1011,   64)
+			wwlog("771 关闭福利窗口")
+			fuli_flag = 'Y'
+			break
+		elseif multi_col({
+				{  467,  506, 0xfbfbfb},
+				{  492,  505, 0xd8d5d4},
+				{  522,  505, 0xdad8d6},
+				{  547,  504, 0xecebe9},
+				{  475,  514, 0xe4e2e1},
+				{  493,  509, 0xf8f7f7},
+				}) then
+			ltap(493,  509)
+			wwlog("741 点击屏幕继续--通用")
+		elseif multi_col({
+				{  531,  309, 0xa74cc9},
+				{  531,  338, 0xa74cc9},
+				{  589,  292, 0xa84cca},
+				}) then
+			ltap(589,  292)
+			wwlog("738  点击屏幕继续")
+		elseif not multi_col({
+				{  896,   11, 0xce4422},
+				{  902,    9, 0xdf4422},
+				{  897,   18, 0xb91101},
+				{  902,   18, 0xb91202},
+				}) then
+			wwlog("752 没有福利可以领取")
+			fuli_flag = 'Y'
+			break
 		end
-	elseif screen.is_colors({
-			{  935,  378, 0x68a01d},
-			{  964,  381, 0x6ea61e},
-			{  989,  384, 0x6fa91d},
-			{  947,  397, 0xd7e2da},
-			{  971,  394, 0x86ca26},
-			{  950,  401, 0xfefffd},
-			})then
-		nLog("62 穿上")
-		touch.tap(950,  401)
+		if yaoshui_cnt >100 then
+			yaoshui_cnt = 0
+			break
+		end
+
 	end
-	]]--
 
-	screen.keep()
-	sys.msleep(200)
+	wwlog(kuangqu_flag)
+	mmsleep(200)
+	local kuang_qu_flag1 = 'N'
+	local shua_guai_dian ='N'
+	local shua_guai_time = 0
+	------------------------------区落霞岛刷装备-------------------------------------
+	while ( kuangqu_flag =='N' and dialog_flag =='N') do
+		mmsleep(1000)
+		shua_guai_time = shua_guai_time +1
+		wwlog("893 进入落霞岛刷装备")
+		if multi_col({
+				{ 1047,   31, 0xf3c992},
+				{ 1058,   31, 0xf3c992},
+				{ 1067,   32, 0xeabe8a},
+				{ 1089,   31, 0xf6cd95},
+				{ 1088,   38, 0xf5ca93},
+				{ 1029,   51, 0x65f663},
+				}) then
+			ltap(1029,   51)
+			wwlog("857 点击右上角落霞岛")
+		elseif multi_col({
+				{ 1097,  319, 0xac9977},
+				{ 1079,  332, 0x665844},
+				{ 1088,  351, 0xccccbb},
+				{ 1105,  350, 0xefdece},
+				{ 1113,  353, 0xf3e3d2},
+				}) then
+			ltap(1113,  353)
+			wwlog("1080 点击自动攻击按钮")
+		elseif multi_col({
+				{  358,  123, 0x360e0c},
+				{  379,  114, 0xe9d86e},
+				{  420,  122, 0x390f0b},
+				{  367,  319, 0x000000},
+				{  249,  483, 0xfccb72},
+				}) and shua_guai_dian == 'N' then
+			ltap(  301,  325)
+			mmsleep(2000)
+			ltap(1010,   63) --关闭地图
+			wwlog("1091 矿区地图，去刷怪点1爆装备")
+			shua_guai_dian = 'Y'
+			kuangqu_flag= 'Y' --------------------------------------------------
+		elseif multi_col({
+				{  374,  119, 0x3c100b},
+				{  399,  118, 0xe3d069},
+				{  421,  115, 0xf9ea76},
+				{  620,  306, 0xf4c275},
+				{  632,  308, 0x5b3021},
+				}) then
+			ltap(633,  302)
+			wwlog("866 点击落霞岛地图矿区入口")
+		elseif multi_col({
+				{ 1039,   31, 0xf3c892},
+				{ 1048,   37, 0x883333},
+				{ 1063,   36, 0xf3c892},
+				{ 1067,   37, 0x883333},
+				}) and kuang_qu_flag1 =='N' then
+			ltap(1067,   37)
+			wwlog("920 点击右上角矿区入口")
+			kuang_qu_flag1 = 'Y'
 
-	if screen.is_colors({
-			{  844,  228, 0xdec08a},
-			{  855,  230, 0xc69e6b},
-			{  847,  234, 0xb68756},
-			{  854,  241, 0xefd9a1},
-			{  881,  227, 0xfdedb3},
-			{  879,  234, 0xffefb5},
-			{  867,  234, 0x7b4c31},
-			})then
-		nLog("3427 提升界面")
-		touch.tap(866,  294) --点击第一个
-	elseif screen.is_colors({
-			{  827,  219, 0x4a3521},
-			{  902,  222, 0x4b3621},
-			{  826,  237, 0x583921},
-			{  851,  237, 0x955a2d},
-			{  857,  231, 0xf4e0a7},
-			{  854,  238, 0xf8e6ad},
-			{  878,  234, 0xfdedb3},
-			})then
-		nLog("3377 点击变强之后，出现 提升 提示框")
-		sys.msleep(200)
-		x, y = screen.find_color(0xfdfdfb, 90, 790,  202,940,  469)
+		end
+		if shua_guai_time >20 then
+			shua_guai_dian = 'N'
+			shua_guai_time=0
+		end 
+		mmsleep(80)
+		resethome()
+		-- body
+	end
+
+	
+
+-----------------------------------------自动买药水-----------------------------
+	
+	local find_red='N'
+	local find_blue='N'
+	local cangku_red = 'N'
+	local buy_cnt = 0
+	while (beibao_flag =='N' ) do
+		wwlog("1000 购买药水")
+		dialog_flag =find_dialog()
+		mmsleep(1500)
+
 		--[[
-		x, y = screen.find_color({
-				{   0,    0, 0xeeebe8 },
-				{  -4,   10, 0xe4dfda },
-				{  10,   16, 0xfefefd },
-				{   5,    2, 0x664730 },
-				{   5,   11, 0x70543f },
-				{   1,   15, 0x968172 },
-				}, 75,790,  202,940,  469)
-		]]--
-		sys.msleep(100)
-		if x ~= -1 and y ~= -1 then
-			nLog("14 替换装备")
-			touch.tap(x,y)		
-		end	
+		if find_red == 'N' then
+			x,y = findMultiColorInRegionFuzzy( 0x3332aa, "5|5|0x4433bb,-14|19|0xdedddd,-25|-12|0xd6d6d6,4|-47|0xfcfcfc", 85,  243,  105, 1010,  474)
+			mmsleep(80)
+			if x~= -1 and y ~= -1 then
+				ltap(x,y)
+				wwlog("1008 点击背包中蓝色药水")
+				find_red ='Y'
+			end
+		end
 
-		if x == -1 or y == -1 then
-			nLog("14 点击变强")
-			touch.tap(992,  336)
+		wwlog("find_red"..find_red)
+		if find_red == 'N' then
+			x,y = findMultiColorInRegionFuzzy( 0xbb4447, "8|0|0xf1e3e3,1|4|0xbb3333,34|-5|0xc3c3c3,4|-21|0x431111", 85,  243,  105, 1010,  474)
+			mmsleep(80)
+			if x~= -1 and y ~= -1 then
+				ltap(x,y)
+				wwlog("1018 点击背包中红色药水")
+				find_red ='Y'
+			end
+		end
+		]]--
+
+		mmsleep(80)
+		--wwlog("cangku_red"..cangku_red)
+		--点击购买的绑定药水
+		--if cangku_red =='Y' then
+
+		--end
+		if multi_col({
+	{  525,   40, 0x5b190e},
+	{  559,   44, 0xf3ca93},
+	{ 1059,  279, 0xb48765},
+	{ 1055,  286, 0xb78967},
+	{ 1062,  314, 0xb28564},
+}) and buy_cnt >5 then 
+		ltap(1062,  314)
+		wwlog("1113 批量购买完药水之后，开始从仓库取出")
+	elseif multi_col({
+	{  599,   90, 0xc52d2c},
+	{  610,   90, 0xd22e2e},
+	{  540,  531, 0x6f371c},
+	{  549,  533, 0xf6cd95},
+	{  579,  537, 0xd5ab7b},
+}) then
+	ltap(579,  537)
+	wwlog("1161 点击取出")
+	elseif multi_col({
+	{ 1059,  282, 0x780804},
+	{ 1063,  289, 0xe7b382},
+	{  725,  115, 0x332620},
+	{  734,  119, 0xe6bf8c},
+	{  734,  126, 0xe4bd8a},
+}) then
+	local more_flag = 'N'
+	mmsleep(100)
+	if find_locked_red() then
+		mmsleep(80)
+		more_flag = 'Y'
+		wwlog("1161")
+	elseif find_locked_blue() then
+		more_flag = 'Y'
+		mmsleep(80)
+		wwlog("1163")
+	elseif find_locked_gold() then
+		more_flag = 'Y'
+		mmsleep(80)
+		wwlog("1165")
+	end	
+	mmsleep(80)
+	wwlog("1216 从仓库中多点取色，找到药水，并点击")
+	
+	if more_flag == 'N' then
+		ltap(1011,   65)
+		wwlog("1208 关闭仓库")
+		beibao_flag = 'Y'
+	end 
+	
+		elseif multi_col({
+				{  449,  533, 0x69311c},
+				{  460,  534, 0xe5ba86},
+				{  473,  533, 0xefc58f},
+				{  443,  417, 0x4e2315},
+				{  483,  414, 0xdab07f},
+				})then
+			ltap(475,  414)
+			mmsleep(80)
+			wwlog("1068 点击放入仓库")
+			find_red = 'N'
+			cangku_red = 'N'
+		elseif multi_col({
+				{  601,   84, 0xb52c2a},
+				{  598,   90, 0xcc2d2d},
+				{  624,   90, 0xc92d2d},
+				{  645,   92, 0xc92d2d},
+				{  455,  538, 0x522516},
+				{  475,  536, 0xf1c891},
+				}) then
+			ltap(475,  536)
+			wwlog("1125 点击--已绑定--更多")
+		elseif multi_col({
+				{  416,   93, 0xe6be8a},
+				{  449,  167, 0xd64146},
+				{  610,   90, 0xd22e2e},
+				{  478,  537, 0x532617},
+				})then
+			ltap(478,  537)
+			wwlog("1078 点击红色药水--已绑定--更多") --已绑定的取色，放在随身药店上面
+		elseif multi_col({
+				{  534,   43, 0x52140f},
+				{  566,   47, 0x4c110f},
+				{  540,  368, 0x4d3a2b},
+				{  566,  374, 0xbd8e6b},
+				{  578,  372, 0x634b38},
+				}) then
+			ltap(578,  372)
+			wwlog("979 点击随身药店")
+		elseif multi_col({
+				{  516,   43, 0x51140f},
+				{  533,   48, 0xf3cb94},
+				{  568,   44, 0x50130f},
+				{  787,  172, 0x331255},
+				{  567,  250, 0xe9c18c},
+				}) and buy_cnt <6 then  --购买次数限制
+			ltap(604,  163) --购买红药水
+			wwlog("1121 药品商城--点击红药水")
+			mmsleep(1000)
+			ltap(659,  545) --弹出的购买窗口，点击确认，买一个红药水
+			mmsleep(1000)
+			ltap(787,  165) --购买蓝药水
+			wwlog("1126 药品商城--点击蓝药水")
+			mmsleep(1000)
+			ltap(659,  545) --弹出的购买窗口，点击确认，买一个蓝药水
+			mmsleep(1000)
+			ltap(501,  264) --购买太阳神水
+			wwlog("1131 药品商城--点击太阳神水")
+			mmsleep(1000)
+			for i=1,3,1 do -- 测试，先一组买2个太阳神水,以免金币花光，无法测试
+				mmsleep(200)
+				ltap(690,  366)
+			end			
+			ltap(659,  545) --弹出的购买窗口，点击确认，买一组太阳水
+			mmsleep(1000)
+			ltap(1011,   67) --点击关闭
+			wwlog("1150 关闭药品商城")
+			--wwlog("1138 药品商城")
+			buy_cnt =buy_cnt +1
+			cangku_red = 'Y'
+			find_red = 'Y'
+		elseif multi_col({
+				{ 1004,   57, 0xebca77},
+				{ 1015,   59, 0xe0d6a7},
+				{ 1003,   71, 0xd68142},
+				{ 1011,   64, 0xab7c4d},
+				{ 1011,   67, 0x420e10},
+				})  and  buy_cnt>5 then
+			ltap(1011,   67)
+			wwlog("1303 关闭药品商城")
+		elseif get_locked_red() then
+			mmsleep(100)
+			wwlog("1084 把红药水放仓库")
+		elseif get_locked_blue() then
+			mmsleep(100)
+			wwlog("1140 把蓝药水放仓库")
+		elseif get_locked_gold() then
+			mmsleep(100)
+			wwlog("1143 把太阳神水放仓库")
+		elseif get_unlocked_red() then
+			mmsleep(100)
+			wwlog("1146 购买红药水")
+		elseif get_unlocked_blue() then
+			mmsleep(100)
+			wwlog("1149 购买蓝药水")
+		elseif multi_col({
+				{ 1097,  319, 0xac9977},
+				{ 1079,  332, 0x665844},
+				{ 1088,  351, 0xccccbb},
+				{ 1105,  350, 0xefdece},
+				{ 1113,  353, 0xf3e3d2},
+				}) --and dialog_flag=='N' 
+		then
+			ltap(1113,  353)
+			wwlog("912 点击自动攻击按钮")
+		elseif multi_col({
+				{  314,  595, 0x664433},
+				{  332,  595, 0x974d33},
+				{  350,  603, 0xfffff2},
+				{  335,  609, 0xefdcc6},
+				{  501,  576, 0xfbf294},
+				}) then
+			ltap(314,  595)
+			wwlog("1327 点击背包")
+		elseif multi_col({
+	{ 1080,  349, 0xd9c9b9},
+	{ 1104,  353, 0xcdc2b1},
+	{ 1108,  356, 0xe1d1c2},
+	{  510,  576, 0xf8f294},
+	{  625,  577, 0xf0e88a},
+}) then
+			ltap(  564,  579) --点击红篮球
+			mmsleep(2000)
+			ltap(338,  575 ) --点击背包
+			wwlog("1339 点击红篮球 准备点击背包")	
+		elseif multi_col({
+				{  447,  244, 0xaa222f},
+				{  458,  246, 0xbe3335},
+				{  421,  151, 0xe4bc89},
+				{  662,  546, 0x57291a},
+				})then
+			ltap(662,  546)
+			mmsleep(80)
+			wwlog("1108 购买一个红药水")
+			cangku_red = 'Y'
+			find_red = 'N'
+			mmsleep(500)
+			ltap(1011,   64) --关闭药品商城
+		
+		
+		elseif multi_col({
+				{  510,  179, 0x261b17},
+				{  539,  177, 0xeac38f},
+				{  379,  439, 0x77442b},
+				{  387,  439, 0xcfa374},
+				{  411,  443, 0xdbb07f},
+				}) then
+			ltap(411,  443)
+			wwlog("1043 回城复活")
+			break
 		end
 	end
-	sys.msleep(200)
-	screen.unkeep()
-	sys.msleep(200)
+	run_app()
 
-	usex()
-	sys.msleep(200)
+	--长时间没有响应，点击左侧任务栏
+	wwlog("583 大循环")
 
-	find_puton_button()
-	sys.msleep(200)
-	find_puton_button2()
-	sys.msleep(200)
-	clickOkbutton()
-	sys.msleep(200)
+end  -- end while
 
-	sys.msleep(200)
-	gogogo()
-	sys.msleep(200) 
-	--clickback()
-	sys.msleep(200)
-	--closewindow()
-	if jingling_flag == false and move_jingling() then
-		jingling_flag= true
-	end
-end
 
+if TOUCH_MODE == true1 then
+	close_log(log_file)		
+end	
+
+wwlog("脚本结束")

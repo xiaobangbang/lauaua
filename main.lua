@@ -3,11 +3,24 @@ TOUCH_MODE= true
 XXT_MODE =false
 XXT_DAQU = 1
 
-local choose_flag = false
-
 if TOUCH_MODE == true then
 	require("TSLib")
 end
+
+local sleep_cnt = 1
+local renwu_flag = 1
+
+local level = 1
+--local jineng_flag ='N'
+local tianlei_flag = 'N'
+local yaoshui_shezhi = 'N' --暂时不进行药水的设置
+local fuli_flag = 'N'
+local in_game = 'N'
+local kuangqu_flag = 'N'
+--local dialog_flag = 'N'
+local buy_3_first = false
+
+local choose_flag = false
 
 local open_app
 local front_app
@@ -15,24 +28,183 @@ local mmsleep
 local init_screen
 local init_log
 local wt_log,wx_log
-
 local log_file = "chuanqishijie"
-
 local multi_col
-local press
+--local press
 local before_game = 'Y'
-local beibao_flag = 'N'
-local bag_is_full = false
+--local beibao_flag = 'N'
+--local bag_is_full = false
 local main_task = true
 local mail_get =false
 local bag_clean = false
-
 local bag_full = false  
-
-local luoxia_shua_guai = false
+--local luoxia_shua_guai = false
 local jiaoyi_flag ='N'
-
 local only_once1 = true
+local first_mail = false
+local bag_is_ready = false
+--local flag1 = true
+
+local tab_cangku = {
+	{  684,  180, 0x7c8a98},
+	{  777,  179, 0x251007},
+	{  872,  179, 0x251007},
+	{  965,  178, 0x251007},
+	{  682,  275, 0x251007},
+	{  777,  276, 0x251007},
+	{  874,  276, 0x251007},
+	{  970,  275, 0x251007},
+	{  683,  367, 0x251007},
+	{  778,  366, 0x251007},
+	{  872,  368, 0x251007},
+	{  966,  368, 0x251007},
+	{  680,  464, 0x251007},
+	{  779,  463, 0x251007},
+	{  873,  462, 0x251007},
+	{  968,  461, 0x251007},
+	{  681,  203, 0x251007},
+	{  778,  203, 0x251007},
+	{  869,  202, 0x251007},
+	{  969,  201, 0x251007},
+	{  681,  295, 0x251007},
+	{  782,  298, 0x251007},
+	{  871,  298, 0x251007},
+	{  965,  297, 0x251007},
+	{  680,  395, 0x251007},
+	{  777,  392, 0x251007},
+	{  871,  392, 0x251007},
+	{  966,  393, 0x251007},
+	{  681,  487, 0x251007},
+	{  778,  487, 0x251007},
+}
+
+local tab_yaopin={
+	{  675,  155, 0xbb6674},
+	{  772,  157, 0xb34b5a},
+	{  863,  156, 0x383030},
+	{  960,  156, 0x524141},
+}
+
+local tab_qita = {
+	{  294,  154, 0x8754ba},
+	{  386,  154, 0xff4459},
+}
+
+
+local tab_line = {
+	{  329,  202, 0x68351b},
+	{  440,  203, 0xc3976a},
+	{  329,  260, 0x724024},
+	{  444,  260, 0x643219},
+	{  332,  317, 0x7e4f30},
+	{  445,  316, 0x613118},
+	{  330,  373, 0x653319},
+	{  441,  373, 0x996844},
+	{  328,  428, 0xf3c992},
+	{  443,  428, 0x763c1d},
+}
+
+function trim1(s)
+	return (s:gsub("^%s*(.-)%s*$", "%1"))
+end
+
+function string.split(input, delimiter)
+	print("string.split(input, delimiter)")
+	input = tostring(input)
+	delimiter = tostring(delimiter)
+	if (delimiter=='') then return false end
+	local pos,arr = 0, {}
+	-- for each divider found
+	for st,sp in function() return string.find(input, delimiter, pos, true) end do
+		table.insert(arr, string.sub(input, pos, st - 1))
+		pos = sp + 1
+	end
+	table.insert(arr, string.sub(input, pos))
+	return arr
+end
+
+local function split(str, d) --str是需要查分的对象 d是分界符
+	print("local function split(str, d) ")
+	local lst = { }
+	local n = string.len(str)--长度
+	local start = 1
+	while start <= n do
+		local i = string.find(str, d, start) -- find 'next' 0
+		if i == nil then 
+			table.insert(lst, string.sub(str, start, n))
+			break 
+		end
+		table.insert(lst, string.sub(str, start, i-1))
+		if i == n then
+			table.insert(lst, "")
+			break
+		end
+		start = i + 1
+	end
+	return lst
+end
+
+function get_cangku_position(j)
+	local ret,x,y
+	for i,v in ipairs(tab_cangku) do
+		if i == j then
+			ret = true
+			x = v[1]		y = v[2]
+			print(i,x,y)
+			break		
+		end
+	end
+	return ret,x,y
+	-- body
+end
+
+
+function get_yappin_position(j)
+	local ret,x,y
+	for i,v in ipairs(tab_yaopin) do
+		if i == j then
+			ret = true
+			x = v[1]		y = v[2]
+			print(i,x,y)
+			break		
+		end
+	end
+	return ret,x,y
+	-- body
+end
+
+
+function get_qita_position(j)
+	local ret,x,y
+	for i,v in ipairs(tab_qita) do
+		if i == j then
+			ret = true
+			x = v[1]		y = v[2]
+			print(i,x,y)
+			break		
+		end
+	end
+	return ret,x,y
+	-- body
+end
+
+
+function get_line_xy(j)
+	local ret,x,y
+	for i,v in ipairs(tab_line) do
+		if i == j then
+			ret = true
+			x = v[1]		y = v[2]
+			--print(i,x,y)
+			--wwlog("199x:"..x.."xxx")
+			break		
+		end
+	end
+	--wwlog("203j:"..j.."jjj")
+	return ret,x,y
+	-- body
+end
+
 
 if TOUCH_MODE == true then
 	open_app= runApp
@@ -73,13 +245,13 @@ init_screen(1)
 mmsleep(200)
 
 function showuii(json_str)
-	local ret, input1
+	local ret, input1,input2,input3
 	if TOUCH_MODE == true then		
-		ret, input1 =  showUI(json_str)
+		ret, input1,input2,input3 =  showUI(json_str)
 	elseif XXT_MODE == true then
-		ret, input1 = 1, XXT_DAQU
+		ret, input1,input2,input3 = 1, XXT_DAQU,"555 555",5
 	end	
-	return  ret, input1
+	return  ret, input1,input2,input3
 end 
 
 function run_app_first(...)
@@ -107,26 +279,34 @@ function run_app(...)
 		open_app("com.tencent.cqsj")
 		wwlog("game start")
 		mmsleep(2000)
-		before_game = 'Y'
+		--before_game = 'Y'
+		while true do
+			if login() then
+				break
+			end
+		end
+		mmsleep(1000)
 	end
 end
-
+local jy_x
+local jy_y
+local line = 4
 function check_right_corder(...)
-		local ret = false
-		mmsleep(500)
-		local ret = false
-		wwlog("2490 检查右上角 ，判定角色是否移动")
-		x, y = findImageInRegionFuzzy("right_corner.png", 90,  1011,   26,  1129,   64,0,2);
-		if x ~= -1 and y ~= -1 then        --如果在指定区域找到某图片符合条件
-			--ltap( 87,  197) 
-			ret = true
-			wwlog("1639 点击左侧任务栏，让角色动起来 ")   
-		else                               --如果找不到符合条件的图片
-			wwlog("1641 任务-跑腿中")   
-		end
-		return ret
-		-- body
+	local ret = false
+	mmsleep(500)
+	local ret = false
+	wwlog("2490 检查右上角 ，判定角色是否移动")
+	x, y = findImageInRegionFuzzy("right_corner.png", 90,  1011,   26,  1129,   64,0,2);
+	if x ~= -1 and y ~= -1 then        --如果在指定区域找到某图片符合条件
+		--ltap( 87,  197) 
+		ret = true
+		wwlog("1639 点击左侧任务栏，让角色动起来 ")   
+	else                               --如果找不到符合条件的图片
+		wwlog("1641 任务-跑腿中")   
 	end
+	return ret
+	-- body
+end
 
 function choose_fuwuqi(...)
 
@@ -137,12 +317,12 @@ function choose_fuwuqi(...)
   "width": ]]..w..[[,
   "height": ]]..h..[[,
   "config": "save_111.dat",
-  "timer": 15,
+  "timer": 20,
   "views": [
     {
       "type": "Label",
       "text": "设置",
-      "size": 25,
+      "size": 30,
       "align": "center",
       "color": "0,0,255"
     },
@@ -153,16 +333,52 @@ function choose_fuwuqi(...)
       "size": 15,
       "align": "left",
       "color": "255,0,0"
+    },  
+	{
+      "type": "Edit",
+      "prompt": "输入落霞岛右上角小地图中的合法坐标，需要自己来截图，用空格来分割",
+      "text": "367 440",
+      "size": 15,
+      "align": "left",
+      "color": "255,0,0"
+    },  
+	{
+      "type": "Edit",
+      "prompt": "输入线路 1-10",
+      "text": "5",
+      "size": 15,
+      "align": "left",
+      "color": "255,0,0"
     },   
   ]
 }
 ]]
-	ret, input1 = showuii(MyJsonString);
+	ret, input1,input2,input3 = showuii(MyJsonString);
 	local fuwuqi
+	local zuobiao 
+	--local line
 	if ret == 1 then
 		fuwuqi = input1	
+		zuobiao = input2
+		line = input3
 	end
-	nLog(fuwuqi)
+	wwlog(fuwuqi)
+	wwlog("363 交易坐标:"..zuobiao)	
+	wwlog("364 所选线路:"..line)
+	--local ret, x_line,y_line = get_line_xy(tonumber( line))
+	--wwlog("369x_line:"..x_line.."x_line")
+	local zuobiao1 =string.gsub(trim1(zuobiao), " ", "," ) 
+--local tab_zuobiao = split(zuobiao1,',')
+--print( tab_zuobiao[1],tab_zuobiao[2])
+	local tab_zuobiao2 = string.split(zuobiao1,',')
+	nLog( tab_zuobiao2[1].." "..tab_zuobiao2[2])	
+
+	jy_x = trim1(tab_zuobiao2[1])
+	jy_y = trim1(tab_zuobiao2[2])
+
+	--ltap(jy_x,jy_y)
+	nLog( jy_x.." "..jy_y)	
+
 	tab_right = {
 		{  415,  150, 0x452e20},
 		{  655,  150, 0x452e20},
@@ -320,6 +536,58 @@ function check_zhuangbei_hongbao(...)
 	return ret
 end
 
+function check_hongbao(...)
+	local ret = false
+	wwlog("214 看是否有红包和元宝商城")
+	mmsleep(500)
+	if multi_col({
+			{  982,  257, 0xde9f26},
+			{ 1001,  238, 0xac282a},
+			{ 1019,  255, 0xde9f26},
+			{  998,  282, 0xde9f26},
+			{ 1000,  302, 0x9f2123},
+			})then
+		ltap(998,  282)
+		wwlog("458 打开红包")
+		ret = true
+
+	elseif multi_col({
+			{ 1035,  192, 0xdbaf6e},
+			{  870,  243, 0x34100d},
+			{  988,  254, 0x2f0e0d},
+			{  993,  203, 0x572120},
+			{  881,  203, 0x562120},
+			}) then
+		ltap(933,  400)
+		wwlog("469 立即装备")
+		ret = true
+	elseif multi_col({
+			{  676,  480, 0x007aff},
+			{  665,  506, 0x007aff},
+			{  663,  502, 0xe4e4e4},
+			{  671,  438, 0x007aff},
+			{  667,  403, 0x007aff},
+			})then
+		ltap(667,  403)
+		wwlog("479 不在提示")
+		ret = true
+		--[[
+	elseif multi_col({
+			{  510,  203, 0x3c2e27},
+			{  626,  202, 0x362720},
+			{  558,  204, 0xebc48f},
+			{  644,  413, 0x71371f},
+			{  673,  419, 0xefc58f},
+			}) then
+		ltap(673,  419)
+		wwlog("466 断线点击确定")
+	--]]	
+
+	end	
+	-- body
+	return ret
+end
+
 function  get_tianlei_flag(...)
 	local ret = 'N'
 	mmsleep(200)
@@ -403,7 +671,7 @@ function resethome(...)
 			{  631,  585, 0xf6ec9e},
 			}) then
 		ltap(562,  577)
-		wwlog("272 点击红篮球，复位底部任务栏")
+		wwlog("581 点击红篮球，复位底部任务栏")
 	end
 	mmsleep(2000)
 
@@ -415,7 +683,7 @@ function resethome(...)
 			{  994,   50, 0x794927},
 			}) then
 		ltap(994,   50)
-		wwlog("复位顶部活动栏")
+		wwlog("593 复位顶部活动栏")
 		-- body
 	end
 end
@@ -430,516 +698,12 @@ function is_in_game(...)
 			{   65,  136, 0xb63232},
 			}) then
 		ret = 'Y'
+		wwlog("650 is in game")
 	end
 	return  ret
 	-- body
 end
 
-
-function find_lock_icon_inbag(...)
-	mmsleep(80)
-	local ret = false
-	x,y = findMultiColorInRegionFuzzy( 0x1c1713, "-17|-7|0x423f3a,4|-3|0x43403b,-4|12|0x1d1a15,-14|12|0x3e3b36", 90, 239,  101, 990,  473)
-	if x~= -1 and y ~= -1 then
-		ret = true	
-		wwlog("617  背包到底了，不用往下拉拉")
-		--cangku_red ='N'				
-	else 
-		wwlog("620 没有到底，继续往下拉")
-	end
-	return ret
-	-- body
-end
-
-function find_lock_icon_in_warehouse(...)
-	local ret = false
-	x,y = findMultiColorInRegionFuzzy( 0x1c1713, "-17|-7|0x423f3a,4|-3|0x43403b,-4|12|0x1d1a15,-14|12|0x3e3b36", 90, 642,  134, 1005,  534)
-	if x~= -1 and y ~= -1 then
-		ret = true	
-		wwlog("631  仓库到底了，不用往下拉拉")
-		--cangku_red ='N'				
-	end
-
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0x44413c, "21|0|0x44413c,14|12|0x44413c,13|18|0x1d1a15", 90, 642,  134, 1005,  534)
-		if x~= -1 and y ~= -1 then
-			ret = true	
-			wwlog("640  仓库到底了，不用往下拉拉")
-			--cangku_red ='N'				
-		end
-	end
-
-	return ret
-	-- body
-end
-
-function get_locked_red_bak(...)
-	local ret = false
-	x,y = findMultiColorInRegionFuzzy( 0xc53838, "-21|9|0x6b3d07,-25|7|0xab7108,-12|20|0xcecece,-13|-4|0xffffff", 85,  243,  105, 1010,  474)
-	mmsleep(80)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		ltap(x,y)
-		wwlog("1001 点击背包中红色药水")		
-	end
-	-- body
-	return ret
-end
-
-function get_locked_red(...)
-	mmsleep(500)
-	local ret = false
-	local x,y
-	x,y = findMultiColorInRegionFuzzy( 0xc53838, "-21|9|0x6b3d07,-25|7|0xab7108,-12|20|0xcecece,-13|-4|0xffffff", 85,  243,  105, 1010,  474)
-	mmsleep(80)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		--ltap(x,y)
-		--wwlog("659 点击背包中红色药水")		
-	end
-	mmsleep(500)
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0xbd3335, "7|-1|0xac3340,4|-4|0xfffcfc,-8|1|0x9d6a05,-7|8|0xbb7d0a", 90, 243,  105, 1010,  474)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("669 点击背包中红色药水")			
-		end	
-	end 
-	mmsleep(80)
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0xbc4447, "-5|0|0xffffff,-2|5|0x8e2222,-17|5|0x9f6b06,-17|12|0xb87907", 90, 243,  105, 1010,  474)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("680 点击背包中红色药水")			
-		end	
-	end 
-
-	mmsleep(80)
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0xbd7c08, "4|0|0xd19213,19|-11|0xd5434a,13|-13|0xffffff,22|-34|0x400f11", 90, 243,  105, 1010,  474)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("680 点击背包中红色药水")			
-		end	
-	end 
-
-
-	if ret == false then
-		wwlog("672 not found locked red")
-		mmsleep(200)
-		if not find_lock_icon_inbag() then 
-			mmsleep(80)
-			moveTo(860,  446,860,  235,3)	
-			mmsleep(1000)
-			return get_locked_red()
-		end
-	end	
-	-- body
-	return ret,x,y
-end
-
---仓库中取出红色药水
-function fetch_locked_red(...)
-	mmsleep(500)
-	local ret = false
-	x,y = findMultiColorInRegionFuzzy( 0xc53838, "-21|9|0x6b3d07,-25|7|0xab7108,-12|20|0xcecece,-13|-4|0xffffff", 85,  642,  134, 1005,  534)
-	mmsleep(80)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		ltap(x,y)
-		wwlog("693 点击仓库中红色药水")
-		--cangku_red ='N'					
-	end
-
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0xbd3335, "7|-1|0xac3340,4|-4|0xfffcfc,-8|1|0x9d6a05,-7|8|0xbb7d0a", 90, 642,  134, 1005,  534)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			ltap(x,y)
-			wwlog("703 点击仓库中红色药水")
-			--cangku_red ='N'		
-		end	
-	end 
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0x9f2525, "3|-1|0xddacb4,3|4|0x863838", 90, 642,  134, 1005,  534)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			ltap(x,y)
-			wwlog("713 点击仓库中红色药水")
-			--cangku_red ='N'		
-		end	
-	end 
-
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0xbb444f, "-5|0|0xeeeeee,1|4|0xc73944", 90, 642,  134, 1005,  534)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			ltap(x,y)
-			wwlog("724 点击仓库中红色药水")
-			--cangku_red ='N'		
-		end	
-	end 
-	mmsleep(80)
-	if ret == false then
-		wwlog("730 not found locked red")
-		if not find_lock_icon_in_warehouse() then 
-			mmsleep(80)
-			moveTo(775,  503,774,  240,5)	
-			mmsleep(1000)
-			return fetch_locked_red()
-		end
-	end	
-	-- body
-	return ret
-end
-
-
---仓库中取出锁定药水
-function fetch_locked(...)
-	wwlog("771 取出仓库中的药水")
-	mmsleep(500)
-	local ret = false
-	local x,y
-
-	x,y = findMultiColorInRegionFuzzy( 0xc0c0c0, "-1|4|0xcecece,3|6|0xc2c2c2,6|5|0xdadada", 90, 642,  134, 1005,  534)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		--ltap(x,y)
-		--wwlog("779 点击仓库中的锁定药水")	
-		x = x + 30
-		y = y - 20
-		wwlog("781 找白边")
-	end
-
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0x4bc64d, "-1|5|0x52d855,3|8|0x53db55,5|9|0x4ac54c", 90, 642,  134, 1005,  534)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("779 点击仓库中的锁定药水")		
-			x = x + 35
-			y = y - 25
-			wwlog("781 找绿边")
-		end
-	end
-
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0xc38407, "-3|7|0x9e6807,5|13|0x764a1c", 90, 642,  134, 1005,  534)	
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("779 点击仓库中的锁定药水")				
-		end
-	end
-
-
-
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0xca8e10, "-4|0|0xb27408,2|3|0x794a12", 90, 642,  134, 1005,  534)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("789 点击仓库中的锁定药水")			
-		end	
-	end 
-
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0xbe8107, "-3|7|0x9a6406,3|7|0xb9800e", 90, 642,  134, 1005,  534)		
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("800 点击仓库中的锁定药水")			
-		end	
-	end 
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0xdda10a, "-5|0|0xab7208,-6|-7|0xb67c06", 90, 642,  134, 1005,  534)
-
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("811 点击仓库中的锁定药水")			
-		end	
-	end 
-
-
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0x966405, "5|8|0xbb8012,-1|7|0x845606", 90, 642,  134, 1005,  534)
-
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("813 点击仓库中的锁定药水")			
-		end	
-	end  
-
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0x9e6a05, "0|7|0xb47507,6|7|0xf3b60c", 90, 642,  134, 1005,  534)
-
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("825 点击仓库中的锁定药水")			
-		end	
-	end  
-
-	mmsleep(80)
-	if ret == false then
-		wwlog(100)
-		wwlog("797 not found locked ")
-		if not find_lock_icon_in_warehouse() then 
-			mmsleep(80)
-			moveTo(775,  503,774,  280,5)	
-			mmsleep(1000)
-			return fetch_locked()
-		end
-	end	
-	-- body
-	return ret,x,y
-end
-
-
-function get_locked_blue(...)
-	local ret = false
-	local x,y
-	x,y = findMultiColorInRegionFuzzy( 0xe8f7fc, "-2|4|0x363bbd,-9|6|0xcb8a07,-10|13|0xb47707", 85,  243,  105, 1010,  474)
-	mmsleep(80)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		--ltap(x,y)
-		--wwlog("1016 点击背包中蓝色药水")		
-	end
-
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0x393ac1, "0|2|0x4046cc,-7|2|0xa76f06,-8|9|0xb67607", 90, 243,  105, 1010,  474)
-		mmsleep(80)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("1027 点击背包中蓝色药水")			
-		end
-	end
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0x3d44c4, "4|-1|0xecedef,2|4|0x322287,-7|2|0xba7e07", 90, 0, 0, 1135, 639)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("372 点击背包中蓝色药水")			
-		end
-	end
-
-	if ret == false then
-		wwlog("903 not found locked blue")
-		mmsleep(5000)
-		if not find_lock_icon_inbag() then 
-			mmsleep(80)
-			moveTo(860,  446,860,  280,3)	
-			mmsleep(1000)
-			return get_locked_blue()
-		end
-	end		
-	return ret,x,y
-end
-
-function get_locked_gold(...)
-	local ret = false
-	local x,y
-	x,y = findMultiColorInRegionFuzzy( 0xb07709, "3|0|0xc0850f,12|-13|0xfdcd45,12|-18|0xffe766", 90, 243,  105, 1010,  474)
-	mmsleep(80)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		--ltap(x,y)
-		--wwlog("896 点击背包中太阳神水")		
-	end
-
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0x885907, "-4|0|0x734905,12|-2|0xbb5502,17|-7|0xebc95f", 90, 243,  105, 1010,  474)
-		mmsleep(80)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("907 点击背包中太阳神水")			
-		end
-	end	
-
-	if ret == false then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0xc6850a, "3|0|0xd19213,16|-3|0xcc9254,16|-12|0xf5cc88", 90, 243,  105, 1010,  474)		
-		mmsleep(80)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("907 点击背包中太阳神水")			
-		end
-	end	
-
-	if ret == false then
-		mmsleep(500)		
-		x,y = findMultiColorInRegionFuzzy( 0xffbb22, "6|-1|0xdd7700,1|10|0xc57534,7|5|0xedca43", 90, 243,  105, 1010,  474)
-		mmsleep(80)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("907 点击背包中太阳神水")			
-		end
-	end	
-
-	if ret == false then
-		mmsleep(500)		
-		x,y = findMultiColorInRegionFuzzy( 0xd2a533, "8|0|0xb8912e,10|11|0x57e65a,4|4|0xfbe882", 90, 243,  105, 1010,  474)		
-		mmsleep(80)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			--ltap(x,y)
-			--wwlog("907 点击背包中太阳神水")			
-		end
-	end	
-
-
-
-	if ret == false then
-		wwlog("923 not found locked gold")
-		mmsleep(5000)
-		if not find_lock_icon_inbag() then 
-			mmsleep(80)
-			moveTo(860,  446,860,  280,3)	
-			mmsleep(1000)
-			return get_locked_gold()
-		end 
-	end	
-
-	return ret,x,y
-end
-
-function get_locked_gold_back(...)
-	local ret = false
-	x,y = findMultiColorInRegionFuzzy( 0xffd54c, "2|8|0xf7b322,-8|22|0x4f2d09,-12|12|0xce8d07", 85,  243,  105, 1010,  474)
-	mmsleep(80)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		ltap(x,y)
-		wwlog("1030 点击背包中太阳神水")			
-	end
-	mmsleep(100)
-	x,y = findMultiColorInRegionFuzzy( 0xf4d04c, "-1|4|0xc6a328,1|14|0xe0b83c,-11|7|0xa76f06,-11|14|0xbc7e0a", 90, 243,  105, 1010,  474)
-	mmsleep(80)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		ltap(x,y)
-		wwlog("1049 点击背包中太阳神水")			
-	end
-	-- body
-	return ret
-end
-
-function get_unlocked_blue(...)
-	local ret = false
-	x,y = findMultiColorInRegionFuzzy( 0x3332aa, "5|5|0x4433bb,-14|19|0xdedddd,-25|-12|0xd6d6d6,4|-47|0xfcfcfc", 85, 244,  107, 999,  193)
-	mmsleep(80)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		ltap(x,y)
-		wwlog("979 点击背包中蓝色药水")
-		--find_red ='Y'
-	end
-
-	if ret == false then
-		mmsleep(100)
-		x,y = findMultiColorInRegionFuzzy( 0x392e9d, "2|-4|0xf4f4ee,17|-1|0x5577c4", 90, 244,  107, 999,  193)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			ltap(x,y)
-			wwlog("989 点击背包中蓝色药水")
-			--find_red ='Y'
-		end
-	end
-	-- body
-	return ret
-end
-
-function get_unlocked_red(...)
-	local ret = false
-	--x,y = findMultiColorInRegionFuzzy( 0xbb4447, "8|0|0xf1e3e3,1|4|0xbb3333,34|-5|0xc3c3c3,4|-21|0x431111", 85,  243,  105, 1010,  474)
-	x,y = findMultiColorInRegionFuzzy( 0xa4383c, "2|-3|0xfcefef,4|0|0xb6414f,-12|8|0x251007", 90, 244,  107, 999,  193)
-	mmsleep(80)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		ltap(x,y)
-		wwlog("1005 点击背包中红色药水")
-		--find_red ='Y'
-	end
-	if ret == false  then
-		mmsleep(500)
-		x,y = findMultiColorInRegionFuzzy( 0xce4446, "-8|2|0xfff8f8,7|6|0xcf3f44,6|-1|0xf9f6f6", 90, 244,  107, 999,  193)
-		if x~= -1 and y ~= -1 then
-			ret = true
-			ltap(x,y)
-			wwlog("1014 点击背包中红色药水")
-			--find_red ='Y'
-		end
-	end
-	-- body
-	return ret
-end
-
-function find_locked_gold(...)
-	local ret = false
-	x,y = findMultiColorInRegionFuzzy( 0xd9990a, "-3|-1|0xb87d06,0|11|0x623b11,-6|12|0x52300b", 85,  642,  134, 1005,  534)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		ltap(x,y)
-		wwlog("1028 点击仓库中的太阳神水")			
-	end
-	return ret
-	-- body
-end
-
-function find_locked_blue(...)
-	local ret = false
-	x,y = findMultiColorInRegionFuzzy( 0xce9009, "-3|-1|0xb67c06,2|7|0xb97e0d,-6|7|0x774706", 85,  642,  134, 1005,  534)
-
-	if x~= -1 and y ~= -1 then
-		ret = true
-		ltap(x,y)
-		wwlog("1041 点击仓库中的蓝色药水")			
-	end
-	wwlog("1086 find blue in cangku")
-	return ret
-	-- body
-end
-
-
-function find_locked_red(...)
-	local ret = false
-
-	x,y = findMultiColorInRegionFuzzy( 0xbe8107, "-5|7|0x8e5909,-1|7|0x9f6706,-4|11|0x573209", 85,  642,  134, 1005,  534)
-	if x~= -1 and y ~= -1 then
-		ret = true
-		ltap(x,y)
-		wwlog("1056 点击仓库中的红色药水")			
-	end
-	return ret
-	-- body
-end
 
 function check_bag2(...)
 	wwlog("645 检测背包是否已满，打开背包是否等于76")
@@ -991,23 +755,6 @@ function check_bag2(...)
 	return ret
 end
 
-function debug_func(...)
-	if multi_col({
-			{   79,  167, 0xd7b362},
-			{   50,  169, 0xc02835},
-			{   73,  165, 0xf7e574},
-			{   98,  168, 0xf0d970},
-			{  125,  165, 0xf0dc71},
-			{  138,  171, 0xf1df71},
-			{  135,  168, 0xd5ba64},
-			})then
-		wwlog("760 调试模式，设置全局变量")
-		beibao_flag = 'Y'
-		--main_task = false
-	end
-	-- body
-end
-
 function safe_place(...)
 	local ret = false
 	x,y = findMultiColorInRegionFuzzy( 0x65f663, "-2|5|0x5cd457,3|5|0x65e95f,-4|11|0x61ec60", 90, 0, 0, 1135, 639)
@@ -1027,92 +774,138 @@ function safe_place(...)
 	-- body
 end
 
-local sleep_cnt = 1
-local renwu_flag = 1
-run_app_first()
-local level = 1
---local jineng_flag ='N'
-local tianlei_flag = 'N'
-local yaoshui_shezhi = 'N'
-local fuli_flag = 'N'
-local in_game = 'N'
-local kuangqu_flag = 'N'
---local dialog_flag = 'N'
-local buy_3_first = false
---local check_bag = 'N'
---启动游戏并进入游戏
------------------------------------------------------------------------------------------
-while (true) do 
-	renwu_flag = renwu_flag +1
-	mmsleep(500)
-	resethome()
-	mmsleep(500)
-	level =getcurlevel()
-	mmsleep(500)
-	in_game = is_in_game()
-	mmsleep(500)
+function fenjie_1(...)		
+	wwlog("1333 分解装备 ")	
+	mmsleep(1000)
 
-	if tianlei_flag =='N' then
-		tianlei_flag =get_tianlei_flag()
-	end
-	--[[
-	if level >0 or tianlei_flag =='Y' or in_game =='Y' then
-		before_game = 'N'
-	end 
-	--]]
+	if multi_col({
+			{  510,  575, 0xfff798},
+			{  510,  578, 0xf9e28e},
+			{  508,  582, 0xedcd7a},
+			{  625,  575, 0xfff599},
+			{  628,  582, 0xebd17d},
+			})then
+		ltap(565,  576)
+		wwlog("1461 点击红篮球，展开底部按钮栏")
+	end			
+	mmsleep(2000)
+	ltap(  341,  579) --点击背包
+	mmsleep(500)
+	ltap(473,  510) --点击分解
+	mmsleep(1000)
+	if multi_col({
+			{  520,  391, 0x604d31},
+			{  510,  402, 0x130b07},
+			{  504,  408, 0x100906},
+			{  498,  400, 0x130b07},
+			})then 
+		ltap(506,  401)	 --勾选白色装备
+	end	
+	mmsleep(1000)
+	if multi_col({
+			{  682,  392, 0x56442c},
+			{  666,  408, 0x100906},
+			{  660,  398, 0x130b07},
+			}) then	
+		ltap(667,  397)	 --勾选绿色装备
+	end		
+	mmsleep(1000)
+	if multi_col({
+			{  844,  391, 0x403220},
+			{  828,  408, 0x100906},
+			{  822,  399, 0x130b07},
+			}) then
+		ltap(830,  399)	 --勾选蓝色装备
+	end	
+	mmsleep(200)
+	ltap(865,  530) --开始分解
+	mmsleep(3000)			
+	ltap(953,   80) --点击关闭分解窗口
+	mmsleep(1000)
+	--ltap(928,  507) --点击背包的整理按钮----
+	--mmsleep(1000)
+	ltap(1010,65 ) --关闭背包对话框
+	mmsleep(2000)
+	-- body
+end		
 
-	if before_game =='N' then
-		if check_bag2() then
-			tianlei_flag ='Y'
-			yaoshui_shezhi = 'Y'
-			--kuangqu_flag = 'Y'
-			--beibao_flag = 'Y'
+function change_line(...)
+	mmsleep(1000)
+	wwlog("757 换线")
+	local cnt_1 = 0
+	while (not multi_col({
+				{  315,  123, 0xdfba87},
+				{  289,  125, 0xf1c993},
+				{  342,  126, 0xf1c992},
+				{  365,  133, 0xc9a779},
+				})) do
+		-- body
+		mmsleep(1000)
+		if multi_col({
+				{  212,   80, 0xb7ae98},
+				{  212,   83, 0xb5ad98},
+				{  212,   87, 0xb5ad98},
+				{  237,   77, 0xc0b8a1},
+				}) then
+			ltap(212,   80)
+			wwlog("847 点击换线")
 
-			bag_full = true
+		end
+		mmsleep(500)
+		cnt_1 =cnt_1 +1
+		if cnt_1 >10 then
+			ltap(212,   80) --点击换线
+			wwlog("854 点击换线")
+			break
 		end
 	end
-	
-	mmsleep(100)
-	--debug_func()
-	mmsleep(100)
+	mmsleep(3000)
+	local ret, x_line,y_line = get_line_xy(tonumber(line))
+	--ltap(426,  130) --点击推荐线路
+	ltap(x_line,y_line)
+	--wwlog("787 点击推荐线路")
+	wwlog("863 点击所选线路")
+	mmsleep(200)
+end
 
-	while (before_game == 'Y') do
-		mmsleep(1000)
-		wwlog("1081 before log in game"..before_game)
-		if multi_col({
-				{  919,   75, 0x9d702a},
-				{  922,   95, 0xdbb16a},
-				{  923,  116, 0xfada80},
-				{  891,   99, 0xa97144},
-				{  886,   96, 0xae8050},
-				{  882,   95, 0x4f1415},
-				})then
-			ltap(882,   95)
-			wwlog("1286 点击公告")
-		elseif multi_col({
-				{  211,  516, 0x82d943},
-				{  226,  524, 0xeff3f3},
-				{  238,  514, 0x415f2b},
-				{  282,  509, 0x43642c},
-				{  298,  518, 0xdedfdc},
-				}) then
-			ltap(298,  518)
-			wwlog("1295 点击微信")
-			mmsleep(5000)
-			--break
+function login(...)
+	local ret = false
+	mmsleep(1000)
+	wwlog("876 before login game")
+	if multi_col({
+			{  919,   75, 0x9d702a},
+			{  922,   95, 0xdbb16a},
+			{  923,  116, 0xfada80},
+			{  891,   99, 0xa97144},
+			{  886,   96, 0xae8050},
+			{  882,   95, 0x4f1415},
+			})then
+		ltap(882,   95)
+		wwlog("1286 点击公告")
+	elseif multi_col({
+			{  211,  516, 0x82d943},
+			{  226,  524, 0xeff3f3},
+			{  238,  514, 0x415f2b},
+			{  282,  509, 0x43642c},
+			{  298,  518, 0xdedfdc},
+			}) then
+		ltap(298,  518)
+		wwlog("1295 点击微信")
+		mmsleep(5000)
+		--break
 
-		elseif multi_col({
-				{  874,  379, 0x04be02},
-				{  876,  349, 0xfbfefb},
-				{  876,  339, 0x04be02},
-				{  879,  332, 0xf0fbf0},
-				{  877,  302, 0xe9f9e9},
-				{  878,  271, 0xffffff},
-				{  892,  285, 0x04be02},
-				})then
-			ltap(892,  285)
-			wwlog("1309 微信确认登陆")
-			--[[
+	elseif multi_col({
+			{  874,  379, 0x04be02},
+			{  876,  349, 0xfbfefb},
+			{  876,  339, 0x04be02},
+			{  879,  332, 0xf0fbf0},
+			{  877,  302, 0xe9f9e9},
+			{  878,  271, 0xffffff},
+			{  892,  285, 0x04be02},
+			})then
+		ltap(892,  285)
+		wwlog("1309 微信确认登陆")
+		--[[
 		elseif multi_col({
 				{  676,  480, 0x007aff},
 				{  665,  506, 0x007aff},
@@ -1123,167 +916,257 @@ while (true) do
 			ltap(667,  403)
 			wwlog("305 不在提示")
 			]]--	
-		elseif multi_col({
-				{  390,  372, 0xd1daee},
-				{  407,  371, 0x007aff},
-				{  407,  381, 0x007aff},
-				{  443,  369, 0x007aff},
-				{  457,  380, 0x007aff},
-				{  449,  374, 0xd5daec},
-				})then
-			ltap(449,  374)
-			wwlog("1330 打开微信")
-		elseif multi_col({
-				{  664,  476, 0xf5c26a},
-				{  684,  479, 0xf4b75e},
-				{  703,  476, 0xd9c06d},
-				{  721,  479, 0xbc8946},
-				{  507,  550, 0x681912},
-				{  549,  552, 0xe6be00},
-				{  569,  549, 0xb28209},
-				}) then
-			if choose_flag == true then
-				ltap(564,  557) --点击进入游戏				
-				wwlog("1342 点击进入游戏")			
-			else
-				ltap(692,  480) --点击换服
-				mmsleep(1000)
-				v_choose = choose_fuwuqi()
-				mmsleep(1000)
-				if v_choose ~= nil then
-					choose_flag = true
-				end
-				wwlog("1351 点击换服")
+	elseif multi_col({
+			{  390,  372, 0xd1daee},
+			{  407,  371, 0x007aff},
+			{  407,  381, 0x007aff},
+			{  443,  369, 0x007aff},
+			{  457,  380, 0x007aff},
+			{  449,  374, 0xd5daec},
+			})then
+		ltap(449,  374)
+		wwlog("1330 打开微信")
+	elseif multi_col({
+			{  664,  476, 0xf5c26a},
+			{  684,  479, 0xf4b75e},
+			{  703,  476, 0xd9c06d},
+			{  721,  479, 0xbc8946},
+			{  507,  550, 0x681912},
+			{  549,  552, 0xe6be00},
+			{  569,  549, 0xb28209},
+			}) then
+		if choose_flag == true then
+			ltap(564,  557) --点击进入游戏				
+			wwlog("1342 点击进入游戏")			
+		else
+			ltap(692,  480) --点击换服
+			mmsleep(1000)
+			v_choose = choose_fuwuqi()
+			mmsleep(1000)
+			if v_choose ~= nil then
+				choose_flag = true
 			end
-		elseif multi_col({
-				{  543,  409, 0x6a341a},
-				{  547,  423, 0x5a2718},
-				{  557,  419, 0xf2c892},
-				{  581,  418, 0xf3ca93},
-				{  570,  419, 0x582818},
+			wwlog("1351 点击换服")
+		end
+	elseif multi_col({
+			{  509,  201, 0x30231d},
+			{  626,  201, 0x362720},
+			{  637,  411, 0x6b341b},
+			{  665,  416, 0xecc38e},
+			}) then
+		ltap(665,  416)
+		wwlog("775 更新游戏")
+	elseif multi_col({
+			{  543,  409, 0x6a341a},
+			{  547,  423, 0x5a2718},
+			{  557,  419, 0xf2c892},
+			{  581,  418, 0xf3ca93},
+			{  570,  419, 0x582818},
+			})then
+		ltap(570,  419)
+		wwlog("1361 角色名称重复 ,点击确定")
+	elseif multi_col({
+			{  698,  575, 0xce9c61},
+			{  698,  586, 0xba703c},
+			{  700,  578, 0x221108},
+			{  706,  578, 0x231108},
+			{  928,  576, 0x601213},
+			}) then
+		ltap(928,  576)
+		before_game = 'N'
+		wwlog("1371 直接点击开始游戏")
+		--break
+		ret = true
+	elseif multi_col({
+			{  677,  564, 0xba901e},
+			{  694,  566, 0xc38a0d},
+			{  685,  579, 0xaa7c00},
+			{  865,  569, 0x6c1c13},
+			{  929,  573, 0x561311},
+			}) then
+		mmsleep(200)
+		local fashi_flag = 'N'
+		if multi_col({
+				{   80,  221, 0x2a1c0d},
+				{   90,  227, 0xcaad7d},
+				{   96,  243, 0xe4cb96},
+				{   93,  288, 0xf3da9a},
+				{   99,  286, 0x644d26},
 				})then
-			ltap(570,  419)
-			wwlog("1361 角色名称重复 ,点击确定")
+			ltap(753,  343)
+			wwlog("382 战士转法师")
+			mmsleep(1000)
+			fashi_flag = 'Y'
 		elseif multi_col({
-				{  698,  575, 0xce9c61},
-				{  698,  586, 0xba703c},
-				{  700,  578, 0x221108},
-				{  706,  578, 0x231108},
-				{  928,  576, 0x601213},
-				}) then
-			ltap(928,  576)
-			before_game = 'N'
-			wwlog("1371 直接点击开始游戏")
-			break
+				{   80,  229, 0x90d072},
+				{  101,  230, 0x85c75c},
+				{   90,  278, 0xb0e481},
+				{   90,  298, 0xadd887},
+				})then
+			ltap(378,  320)
+			wwlog("382 道士转法师")
+			mmsleep(1000)
+			fashi_flag = 'Y'
+		end
+		mmsleep(200)
+		if multi_col({
+				{  115,  218, 0x9d5685},
+				{   83,  232, 0xac6ca2},
+				{   99,  284, 0xde9fce},
+				}) or fashi_flag == 'Y' then
+			ltap(677,  564) --点击色子
+			mmsleep(1000)
+			ltap(929,  573) --点击开始游戏
+			wwlog("396 点击色子，更换名字，然后点击开始游戏，直到成功开始游戏")
+		end
+	elseif multi_col({
+			{  910,  608, 0xfbfbfa},
+			{  924,  611, 0xfdfdfd},
+			{  941,  608, 0xfbfbfb},
+			{  961,  610, 0xfdfdfd},
+			{  989,  609, 0xfbfbfa},
+			}) then
+		ltap(989,  609)
+		wwlog("1015 请点击继续")
+		before_game = 'N'
+	elseif multi_col({
+			{  518,  175, 0x816856},
+			{  539,  177, 0xeac38f},
+			{  369,  438, 0x652f1b},
+			{  416,  439, 0x67311c},
+			})then
+		ltap(416,  439)
+		wwlog("1024 回城复活")			
+	end	
+	return ret
+	-- body
+end
 
-		elseif multi_col({
-				{  677,  564, 0xba901e},
-				{  694,  566, 0xc38a0d},
-				{  685,  579, 0xaa7c00},
-				{  865,  569, 0x6c1c13},
-				{  929,  573, 0x561311},
-				}) then
-			mmsleep(200)
-			local fashi_flag = 'N'
-			if multi_col({
-					{   80,  221, 0x2a1c0d},
-					{   90,  227, 0xcaad7d},
-					{   96,  243, 0xe4cb96},
-					{   93,  288, 0xf3da9a},
-					{   99,  286, 0x644d26},
-					})then
-				ltap(753,  343)
-				wwlog("382 战士转法师")
-				mmsleep(1000)
-				fashi_flag = 'Y'
-			elseif multi_col({
-					{   80,  229, 0x90d072},
-					{  101,  230, 0x85c75c},
-					{   90,  278, 0xb0e481},
-					{   90,  298, 0xadd887},
-					})then
-				ltap(378,  320)
-				wwlog("382 道士转法师")
-				mmsleep(1000)
-				fashi_flag = 'Y'
-			end
-			mmsleep(200)
-			if multi_col({
-					{  115,  218, 0x9d5685},
-					{   83,  232, 0xac6ca2},
-					{   99,  284, 0xde9fce},
-					}) or fashi_flag == 'Y' then
-				ltap(677,  564) --点击色子
-				mmsleep(1000)
-				ltap(929,  573) --点击开始游戏
-				wwlog("396 点击色子，更换名字，然后点击开始游戏，直到成功开始游戏")
-			end
-		elseif multi_col({
-				{  910,  608, 0xfbfbfa},
-				{  924,  611, 0xfdfdfd},
-				{  941,  608, 0xfbfbfb},
-				{  961,  610, 0xfdfdfd},
-				{  989,  609, 0xfbfbfa},
-				}) then
-			ltap(989,  609)
-			wwlog("405 请点击继续")
-			before_game = 'N'
-		elseif multi_col({
-				{  518,  175, 0x816856},
-				{  539,  177, 0xeac38f},
-				{  369,  438, 0x652f1b},
-				{  416,  439, 0x67311c},
-				})then
-			ltap(416,  439)
-			wwlog("368 回城复活")	
-		elseif multi_col({
-				{  910,  608, 0xfbfbfa},
-				{  924,  611, 0xfdfdfd},
-				{  941,  608, 0xfbfbfb},
-				{  961,  610, 0xfdfdfd},
-				{  989,  609, 0xfbfbfa},
-				}) then
-			ltap(989,  609)
-			wwlog("423 请点击继续")
-		end	
+run_app_first()
+
+
+--local check_bag = 'N'
+--启动游戏并进入游戏
+-----------------------------------------------------------------------------------------
+while (true) do 
+	renwu_flag = renwu_flag +1
+	mmsleep(500)
+	resethome()
+	mmsleep(500)
+	--level =getcurlevel()
+	mmsleep(500)
+	in_game = is_in_game()
+	mmsleep(500)
+
+	--[[
+	if tianlei_flag =='N' then
+		tianlei_flag =get_tianlei_flag()
+	end
+	--]]
+
+	if  in_game =='Y' then
+		before_game = 'N'
+	end 	
+
+	if before_game =='N' then
+		if check_bag2() then
+			tianlei_flag ='Y'
+			yaoshui_shezhi = 'Y'
+			fuli_flag= 'Y'
+			first_mail = true
+			bag_is_ready = true
+
+			bag_full = true
+		end
+	end
+
+	mmsleep(200)
+
+	while (before_game == 'Y') do
+		if login() then
+			break
+		end
 	end
 	-----------------------------------------------------------------------------------------------------
 	-----------------------------------------------------------------------------------------------------
+	mmsleep(2000)
+	local v_cnt1 = 0
+	while (not multi_col({
+				{ 1039,   37, 0x66332e},
+				{ 1053,   31, 0xf3c892},
+				{ 1030,   51, 0x63d25b},
+				}) ) do
+		wwlog("1038 等待游戏主界面")
+		mmsleep(1000)
+		v_cnt1 = v_cnt1 +1
+
+		if v_cnt1 >30 then
+			-- body			
+			break
+		end	
+	end
+
+
 	function before_tianlei(...)
 		-- body
 	end    
+
+	local run_cnt1 = 0
 	while tianlei_flag =='N' do
-		wwlog("1249 配置完天雷技能之前的任务")	
+		run_cnt1 = run_cnt1 +1
+		wwlog("1054 配置完天雷技能之前的任务")	
+		snapshot("right_corner.png", 1036,   29,  1125,   59)
+		mmsleep(1000)
 		if only_once1 ==true then
+			mmsleep(5000)
 			ltap(79,  196) --第一次点击任务
-			wwlog("1259 第一次点击任务")
+			wwlog("1060 第一次点击任务")
 			only_once1 = false
 		end
-		
-		--snapshot("abc"..tostring(j)..".png", 0, 0, 1135, 639)
 		mmsleep(1000)
-		--[[
 		if multi_col({
-				{  848,  205, 0x4f1e1d},
-				{  846,  234, 0x4c1d1c},
-				{  846,  346, 0x4a1c1b},
-				{ 1037,  184, 0x8a2121},
-				{ 1035,  191, 0xd7bc7a},
-				{ 1027,  198, 0xba733f},
-				{ 1031,  272, 0x4a211c},
-				{ 1013,  393, 0x461a19},
+				{  928,  249, 0x1b1f33},
+				{  938,  261, 0x222251},
+				{  933,  290, 0x538bda},
+				{  934,  321, 0x5a76a6},
+				{  915,  328, 0x6084bb},
+				{  934,  308, 0x300e0d},
 				})then
-			ltap(938,  398)
-			wwlog("514 立即装备")
-			]]--	
-		if multi_col({
-				{  452,  376, 0xeeedeb},
-				{  487,  380, 0xdccd69},
-				{  496,  378, 0xf2e373},
-				{  465,  378, 0x4d3a2b},
-				}) then
-			ltap(115,  192)
-			wwlog("1475 第一次点击任务面板")
+			ltap(932,  401) --点击天雷咒
+			mmsleep(2000)
+			if multi_col({
+					{  510,  575, 0xfff798},
+					{  510,  578, 0xf9e28e},
+					{  508,  582, 0xedcd7a},
+					{  625,  575, 0xfff599},
+					{  628,  582, 0xebd17d},
+					})then
+				ltap(  564,  573) --点击红蓝球
+			end
+			mmsleep(3000)
+			if multi_col({
+					{  510,  575, 0xfff798},
+					{  510,  578, 0xf9e28e},
+					{  508,  582, 0xedcd7a},
+					{  625,  575, 0xfff599},
+					{  628,  582, 0xebd17d},
+					})then
+				ltap(  564,  573) --点击红蓝球
+			end
+
+			mmsleep(2000)
+			ltap(  251,  575) --点击技能书图标
+			mmsleep(2000)
+			ltap(  1057,  297) --点击设置标签
+			mmsleep(2000)
+			ltap( 455,  212) --点击天雷咒技能
+			mmsleep(2000)
+			ltap( 722,  423) --点击第一个技能槽
+			tianlei_flag = 'Y'
+			mmsleep(2000)	
+			ltap( 1012,   64) --技能设置--关闭
+			mmsleep(1000)
+			break
 		elseif multi_col({
 				{  398,  371, 0xbd56e2},
 				{  398,  403, 0xb955df},
@@ -1291,7 +1174,7 @@ while (true) do
 				{  464,  370, 0xe068ec},
 				{  761,  402, 0x362720},	
 				})then
-			ltap(834,  403)
+			ltap(839,  401)
 			wwlog("340 完成任务2")
 		elseif multi_col({
 				{  498,  370, 0x68a5ec},
@@ -1324,7 +1207,7 @@ while (true) do
 				{  672,  401, 0x783e1b},
 				}) then
 			ltap(672,  401)
-			wwlog("427 保持流畅模式")
+			wwlog("1018 保持流畅模式")
 		elseif multi_col({
 				{  910,  608, 0xfbfbfa},
 				{  924,  611, 0xfdfdfd},
@@ -1333,31 +1216,8 @@ while (true) do
 				{  989,  609, 0xfbfbfa},
 				}) then
 			ltap(989,  609)
-			wwlog("487 请点击继续")			
-		elseif multi_col({
-				{  928,  249, 0x1b1f33},
-				{  938,  261, 0x222251},
-				{  933,  290, 0x538bda},
-				{  934,  321, 0x5a76a6},
-				{  915,  328, 0x6084bb},
-				{  934,  308, 0x300e0d},
-				})then
-			ltap(932,  401) --点击天雷咒
-			mmsleep(2000)
-			ltap(  564,  573) --点击红蓝球
-			mmsleep(2000)
-			ltap(  251,  575) --点击技能书图标
-			mmsleep(2000)
-			ltap(  1057,  297) --点击设置标签
-			mmsleep(2000)
-			ltap( 455,  212) --点击天雷咒技能
-			mmsleep(2000)
-			ltap( 722,  423) --点击第一个技能槽
-			tianlei_flag = 'Y'
-			mmsleep(2000)	
-			ltap( 1012,   64) --技能设置--关闭
-			mmsleep(1000)
-			break
+			wwlog("1147 请点击继续")			
+
 		elseif multi_col({
 				{  521,   58, 0x7f2314},
 				{  547,   58, 0x7e2214},
@@ -1370,51 +1230,67 @@ while (true) do
 			ltap(  932,  401) --点击天雷咒
 			mmsleep(200)
 			wwlog("309 跳过引导")
-		--[[
-		elseif  check_right_corder() then
-			if renwu_flag %6 ==0 then
-				ltap(60,  195)
-				wwlog("1572 主线模式--长时间没有动--点击左侧第一个任务")
-			end
-		--]]	
-			--[[
-			elseif multi_col({
-					{   32,  121, 0xaa332e},
-					{   40,  127, 0xc6332e},
-					{   40,  134, 0xaa2222},
-					{   52,  126, 0xdd463f},
-					{   51,  134, 0xbd3333},
-					{   65,  136, 0xb63232},
-					})then
-				ltap(88,  202)
-				wwlog("849 点击主任务")
-				]]--
+		elseif multi_col({
+				{ 1035,  192, 0xdbaf6e},
+				{  870,  243, 0x34100d},
+				{  988,  254, 0x2f0e0d},
+				{  993,  203, 0x572120},
+				{  881,  203, 0x562120},
+				}) then
+			ltap(933,  400)
+			wwlog("833 立即装备")
+		elseif multi_col({
+				{  848,  205, 0x4f1e1d},
+				{  846,  234, 0x4c1d1c},
+				{  846,  346, 0x4a1c1b},
+				{ 1037,  184, 0x8a2121},
+				{ 1035,  191, 0xd7bc7a},
+				{ 1027,  198, 0xba733f},
+				{ 1031,  272, 0x4a211c},
+				{ 1013,  393, 0x461a19},
+				})then
+			ltap(938,  398)
+			wwlog("1061 立即装备")
+		elseif multi_col({
+				{  475,  381, 0xc3bcb7},
+				{  495,  382, 0xeadb6f},
+				{  511,  372, 0xf2e473},
+				{  532,  375, 0xebdc70},
+				}) then
+			wwlog("1068 第一次出现任务面板")
+			ltap(123,  191)
+		elseif multi_col({
+				{   24,  190, 0xd5b381},
+				{   24,  200, 0xd2b07f},
+				{   33,  197, 0xb89b6f},
+				{   94,  194, 0xf1f1f1},
+				{   84,  193, 0xe2e2e1},
+				})  then
+			mmsleep(5000)
+			ltap(83,  197)
+			wwlog("1079 第一次点击任务面板--对话村长")
+			mmsleep(5000)
+			--flag1 = false			
 		end	
-		if tianlei_flag =='N' then
-			tianlei_flag =get_tianlei_flag()	
-			--[[
-			if sleep_cnt  >10 then
-				ltap(60,  195)
-				wwlog("786 长时间没有响应，点击左侧任务栏")
-				sleep_cnt =1
-			end
-			--]]
-		end
-		sleep_cnt =sleep_cnt + 1
-		renwu_flag = renwu_flag +1
+		mmsleep(200)
+		if run_cnt1%5 ==0 and check_right_corder() then			
+			ltap(60,  195)
+			wwlog("1205 别傻站着，点击左侧第一个任务")
+		end		
+		mmsleep(1000)
+		run_app()
+		mmsleep(1000)
+		
 	end
 
-	----------------------------------------------------------------------
-	----------------------------------------------------------------------
-	--dialog_flag =find_dialog()
-	
 	resethome()
-	--设置，买药，领取奖励
-	while (tianlei_flag=='Y' and yaoshui_shezhi == 'N' 
-		--and dialog_flag =='N'
-		) do
+	function set_up_first(...)
+		-- body
+	end
+	--设置，
+	while (yaoshui_shezhi == 'N' ) do
 		mmsleep(1000)
-		wwlog("1223 药水设置")
+		wwlog("1112 初始设置")
 
 		if check_zhuangbei_hongbao() then
 			wwlog("1227 检测红包，跳过向导")
@@ -1427,7 +1303,38 @@ while (true) do
 				}) then
 			ltap(968,  577)
 			wwlog("1252 点击设置按钮")
+			mmsleep(3000)
+			ltap(1059,  526) --点击系统设置tab
+			mmsleep(2000)
+			local flag4 = false
+			if multi_col({
+					{  397,  225, 0x130b07},
+					{  385,  234, 0x120a07},
+					{  378,  226, 0x130b07},
+					}) then 
+				ltap(387,  222)  --点击流畅模式
+				wwlog("1134 点击流畅模式")
+				flag4 = true
+			end	
+			mmsleep(2000)
 
+			if flag4 == true then
+				moveTo(565,  541,565,  180,1)
+				mmsleep(3000)
+
+				ltap(176,  369) --屏蔽全屏玫瑰
+				mmsleep(1000)
+				ltap(388,  366) --屏蔽红包特效
+				mmsleep(1000)
+				ltap(388,  438) --屏蔽主播送花
+				mmsleep(1000)
+				ltap(177,  437) --屏蔽技能特效
+				mmsleep(1000)
+			end
+
+			ltap( 1011,   63) --关闭设置窗口
+			yaoshui_shezhi = 'Y'
+			--[[
 		elseif multi_col({
 				{  184,  178, 0xc48a53},
 				{  178,  189, 0xbf7f49},
@@ -1441,6 +1348,8 @@ while (true) do
 			yaoshui_shezhi = 'Y'
 			--dialog_flag = 'N'
 			break
+			--]]	
+			--[[
 		elseif multi_col({
 				{ 1049,  157, 0x4e0b05},
 				{ 1057,  170, 0xeaba87},
@@ -1459,6 +1368,13 @@ while (true) do
 				}) then
 			ltap(837,  484)
 			wwlog("1588 关闭蓝色药水")
+			mmsleep(500)
+			ltap(1011,   64)
+			wwlog("621 关闭设置窗口")
+			yaoshui_shezhi = 'Y'
+			break
+			--]]	
+			--[[
 		elseif multi_col({
 				{  845,  191, 0x444444},
 				{  900,  190, 0x201410},
@@ -1486,6 +1402,7 @@ while (true) do
 				}) then
 			ltap(171,  568)
 			wwlog("656 自动拾取金币")
+			--]]	
 		elseif multi_col({
 				{  507,  583, 0xeece79},
 				{  507,  593, 0x784827},
@@ -1498,26 +1415,27 @@ while (true) do
 	end	
 
 	----------------------------------------领取福利-------------------------------------------
+	function get_award(...)
+		-- body
+	end
 	mmsleep(1000)
 	local yaoshui_cnt =0
-	while (fuli_flag =='N' 
-		--and yaoshui_shezhi =='Y'
-		) do
-		wwlog("1330 设置药水")
+	while (fuli_flag =='N' ) do
+		wwlog("1330 领取福利")
 		yaoshui_cnt = yaoshui_cnt +1
 		mmsleep(500)
 		--[[
-			if not multi_col({
-					{  896,   11, 0xce4422},
-					{  902,    9, 0xdf4422},
-					{  897,   18, 0xb91101},
-					{  902,   18, 0xb91202},
-					}) then
-				wwlog("752 没有福利可以领取")
-				fuli_flag = 'Y'
-				break
-			end
-			]]--
+		if not multi_col({
+				{  896,   11, 0xce4422},
+				{  902,    9, 0xdf4422},
+				{  897,   18, 0xb91101},
+				{  902,   18, 0xb91202},
+				}) then
+			wwlog("752 没有福利可以领取")
+			fuli_flag = 'Y'
+			break
+		end
+		]]--
 		mmsleep(500)
 		if multi_col({
 				{  894,   13, 0xbe3322},
@@ -1549,6 +1467,8 @@ while (true) do
 				{  902,  221, 0x6e371c},
 				{  931,  220, 0x7b3d1d},
 				}) then
+			ltap(358,  133) --点击第一天
+			mmsleep(1000)
 			ltap(931,  220)
 			wwlog("739 领取七日盛典第一天的礼包")
 		elseif multi_col({
@@ -1642,170 +1562,89 @@ while (true) do
 			fuli_flag = 'Y'
 			break
 		end
-		if yaoshui_cnt >100 then
+		if yaoshui_cnt >20 then
 			yaoshui_cnt = 0
 			break
 		end
 
 	end
 
-
------------------------------落霞岛药水-------------------------------------
-	local cnt1 = 0
-	resethome()
-	while luoxia_shua_guai == false do 
-		wwlog("1568 打怪刷药水 ")
-		cnt1 =cnt1 +1
-		mmsleep(1000)
-		if multi_col({
-				{ 1080,  311, 0xefddca},
-				{ 1080,  317, 0xfffedc},
-				{ 1113,  312, 0xffffec},
-				{ 1112,  321, 0xffffff},
-				{ 1096,  311, 0xfdecea},
-				}) then
-			ltap(1096,  311)
-			wwlog("1576 自动攻击")
-		end
-
-		if cnt1 > 90 then -- 打怪刷药水 3分钟
-			wwlog("1583 打怪刷药水 3分钟")
-
-			ltap(1083,   45) -- 点击右上角落霞岛地图
-			mmsleep(500)
-			ltap( 876,  454) --点击书店老板
-			mmsleep(15000)  --15秒的路程
-			ltap(565,  576) --点击屏幕底部，
-			mmsleep(100)
-			if multi_col({
-					{  510,  575, 0xfff798},
-					{  510,  578, 0xf9e28e},
-					{  508,  582, 0xedcd7a},
-					{  625,  575, 0xfff599},
-					{  628,  582, 0xebd17d},
-					})then
-				ltap(565,  576)
-				wwlog("1461 点击红篮球，展开底部按钮栏")
-			end			
-			mmsleep(2000)
-			ltap(  341,  579) --点击背包
-			mmsleep(300)
-			ltap(473,  510) --点击分解
-			mmsleep(2000)
-			if multi_col({
-					{  520,  391, 0x604d31},
-					{  510,  402, 0x130b07},
-					{  504,  408, 0x100906},
-					{  498,  400, 0x130b07},
-					})then 
-				ltap(506,  401)	 --勾选白色装备
-			end	
-			mmsleep(2000)
-			if multi_col({
-					{  682,  392, 0x56442c},
-					{  666,  408, 0x100906},
-					{  660,  398, 0x130b07},
-					}) then	
-				ltap(667,  397)	 --勾选绿色装备
-			end		
-			mmsleep(2000)
-			if multi_col({
-					{  844,  391, 0x403220},
-					{  828,  408, 0x100906},
-					{  822,  399, 0x130b07},
-					}) then
-				ltap(830,  399)	 --勾选蓝色装备
-			end	
-			mmsleep(200)
-			ltap(865,  530) --开始分解
-			mmsleep(3000)			
-			ltap(953,   80) --点击关闭分解窗口
-			mmsleep(100)
-			--ltap(928,  507) --点击背包的整理按钮----
-			--mmsleep(12000) --整理背包冷却时间
-			ltap(1010,65 ) --关闭背包对话框
-			mmsleep(200)
-			luoxia_shua_guai = true
-			break
-		end
-	end
-
-	function buy_3_things(...) --左侧函数栏定位函数
+	function get_first_mail(...)
 		-- body
 	end
-	while (buy_3_first == false) do
-		mmsleep(1000)
-		wwlog("2044 先购买3瓶绑定药水占个好位置")
-		if multi_col({
-				{  510,  575, 0xfff798},
-				{  510,  578, 0xf9e28e},
-				{  508,  582, 0xedcd7a},
-				{  625,  575, 0xfff599},
-				{  628,  582, 0xebd17d},
-				})then
-			ltap(565,  576)
-			wwlog("1461 点击红篮球，展开底部按钮栏")
 
-		elseif multi_col({
-				{  500,  574, 0xfcfc94},
-				{  500,  576, 0xfdfc9f},
-				{  500,  599, 0xc7964c},
+	while first_mail == false do	
+		wwlog("3026 领取邮件")
+		mmsleep(1000)
+		--safe_place()
+		mmsleep(100)
+		if multi_col({
+				{  500,  575, 0xfffe93},
+				{  500,  578, 0xfef9ac},
+				{  500,  597, 0xa77542},
 				{  635,  575, 0xffff92},
 				{  635,  596, 0xa06d43},
-				})then
-			wwlog("1471 按钮栏为展开状态")
-		end
-
-		mmsleep(3000) --展开按钮栏延迟准备时间
-
-		if multi_col({
-				{ 1005,   57, 0xfae18b},
-				{ 1017,   58, 0xf5e392},
-				{ 1007,   67, 0xd19455},
-				{ 1011,   63, 0xe9c77d},
 				}) then
-			ltap(1010,65) --背包忘关的话，赶紧关了
-		end
-		mmsleep(200)
-		--snapshot("abc"..tostring(j)..".png", 0, 0, 1135, 639)
-		--for i=1, 30,1 do --背包的仓库，有30个格子
-		--for i=1, 30,1 do--暂时开发测试，一遍循环
-		mmsleep(200)
-		ltap(338,  576) --点击背包
-		mmsleep(500)
-		local get_unlocked ,get_locked
-
-		get_unlocked = get_unlocked_blue
-
-		if get_unlocked() then					
-			mmsleep(1000)
-			ltap(568,  373) --点击药店
-			mmsleep(1000)
-
-			ltap(  596,  160) --点击第一个红药水
+			ltap( 793,  572) --点击社交
 			mmsleep(2000)
-			ltap(656,  543) --点击确定--购买
-			mmsleep(1000)
-			ltap(  783,  163) --点击第二个蓝药水
-			mmsleep(2000) 
-			ltap(656,  543) --点击确定--购买
-			mmsleep(1000)
-			ltap(501,  268) --点击第三个太阳神水
+			ltap(879,  476) --点击邮件
+		elseif multi_col({
+				{  535,   82, 0x540905},
+				{  548,   82, 0xf2c891},
+				{  556,   89, 0xf4cb93},
+				{  575,   85, 0xf5cc94},
+				{  301,  532, 0x652e17},
+				{  322,  536, 0xd2a777},
+				})then
+			ltap(322,  536) --一键领取
+			mmsleep(5000)
+			ltap(955,   82)  --关闭邮件窗口
+			mmsleep(80)
+			first_mail = true
+			--main_task = true
+			wwlog("3054 一键领取")
+			break
+
+		elseif multi_col({
+				{  511,  576, 0xf8f8a0},
+				{  507,  579, 0xfef38e},
+				{  510,  598, 0xb9864b},
+				{  624,  575, 0xffff92},
+				{  624,  599, 0xcc994c},
+				}) then
+			ltap(568,  578) --点击圆球
 			mmsleep(2000)
-			ltap(656,  543) --点击确定--购买
-			mmsleep(1000)										
-
-			ltap( 1011,   65) --点击关闭药店
-
-			mmsleep(1000)
-			ltap(1010,65 ) --关闭背包
-			buy_3_first =true
-		end				
+			ltap( 793,  572) --点击社交
+			mmsleep(2000)
+			ltap(876,  477) --点击邮件
+		else
+			ltap(568,  578) --点击圆球			
+			-- body
+		end		
 	end
 
-	while (bag_full == false) do
+
+
+	function init_bag(...)
+		-- body
+	end
+	--整理背包
+	local flag2 = true
+	while(bag_is_ready == false) do
 		mmsleep(1000)
-		wwlog("1452 购买药水，以便塞满背包")
+
+		if flag2 == true then
+			resethome()
+			mmsleep(1000)
+			fenjie_1()
+			mmsleep(1000)
+			change_line()
+			mmsleep(1000)
+			flag2 = false
+		end
+
+		wwlog("1237 整理背包，打开新兵礼包")		
+
 		if multi_col({
 				{  510,  575, 0xfff798},
 				{  510,  578, 0xf9e28e},
@@ -1815,7 +1654,68 @@ while (true) do
 				})then
 			ltap(565,  576)
 			wwlog("1461 点击红篮球，展开底部按钮栏")
+		elseif multi_col({
+				{  500,  574, 0xfcfc94},
+				{  500,  576, 0xfdfc9f},
+				{  500,  599, 0xc7964c},
+				{  635,  575, 0xffff92},
+				{  635,  596, 0xa06d43},
+				})then
+			wwlog("1471 按钮栏为展开状态，点击背包")
+			ltap(338,  576) --点击背包
+			mmsleep(2000)
+			ltap( 928,  510) --点击整理
+			mmsleep(12000)
+		elseif multi_col({
+				{  291,  152, 0xdd1121},
+				{  299,  153, 0xd52122},
+				}) then
+			ltap(299,  153) --点击新兵礼包
+			wwlog("1488 点击新兵礼包")	
+			mmsleep(2000)
+			ltap(649,  536) --点击使用
+			mmsleep(3000)
+			ltap(931,  506) --点击整理背包
+			mmsleep(12000)
 
+			ltap(  293,  154) --点击第一个格子--邮件赠送的太阳药水
+			mmsleep(3000)
+
+			ltap(568,  373) --点击药店
+			mmsleep(5000)
+
+			ltap(  596,  160) --点击第一个红药水
+			mmsleep(5000)
+			ltap(656,  543) --点击确定--购买
+			mmsleep(10000)
+			ltap(  783,  163) --点击第二个蓝药水
+			mmsleep(5000) 
+			ltap(656,  543) --点击确定--购买
+			mmsleep(10000)
+			ltap( 1011,   65) --点击关闭药店
+			mmsleep(3000)
+			ltap(931,  506) --点击整理背包
+			mmsleep(10000)
+			ltap(1010,65 ) --关闭背包									
+			bag_is_ready = true
+		end
+	end
+
+	function buy_enough2(...) --左侧函数栏定位函数
+		-- body
+	end
+	while (bag_full == false) do
+		mmsleep(1000)
+		wwlog("1523 购买药水，以便塞满背包")
+		if multi_col({
+				{  510,  575, 0xfff798},
+				{  510,  578, 0xf9e28e},
+				{  508,  582, 0xedcd7a},
+				{  625,  575, 0xfff599},
+				{  628,  582, 0xebd17d},
+				})then
+			ltap(565,  576)
+			wwlog("1461 点击红篮球，展开底部按钮栏")
 		elseif multi_col({
 				{  500,  574, 0xfcfc94},
 				{  500,  576, 0xfdfc9f},
@@ -1827,11 +1727,14 @@ while (true) do
 		end
 
 		mmsleep(3000) --展开按钮栏延迟准备时间
-		function location(...) --左侧函数栏定位函数
-			-- body
-		end
-		--for j = 1 ,3,1 do --1 ：处理红色药水， 2： 处理蓝色药水，3：处理太阳神水
-		for j = 1 ,3,1 do --1  开发测试阶段暂时只处理红色药水	
+
+		for j = 1 ,3,1 do --1  开发测试阶段暂时只处理红色药水
+			local var_cnt = 30
+			local var_cnt1 = 30
+			if j==3 then
+				var_cnt = 20
+				var_cnt1 = 20
+			end
 			mmsleep(500)
 			wwlog(j)
 			if multi_col({
@@ -1843,111 +1746,454 @@ while (true) do
 				ltap(1010,65) --背包忘关的话，赶紧关了
 			end
 			mmsleep(200)
-			snapshot("abc"..tostring(j)..".png", 0, 0, 1135, 639)
-			--for i=1, 30,1 do --背包的仓库，有30个格子
-			for i=1, 30,1 do--暂时开发测试，一遍循环
-				mmsleep(200)
-				ltap(338,  576) --点击背包
-				mmsleep(500)
-				local get_unlocked ,get_locked
-				if j == 1 then
-					get_unlocked = get_unlocked_blue -- get_unlocked_red
-					get_locked = get_locked_red
-				elseif j == 2 then
-					get_unlocked = get_unlocked_blue
-					get_locked = get_locked_blue
-				elseif j == 3 then
-					get_unlocked = get_unlocked_blue -- get_unlocked_red --太阳神水没有非绑定的，通过买蓝进入药店
-					get_locked = get_locked_gold
-				end	
-				if get_unlocked() then
-					local ret,x,y
-					mmsleep(1000)
-					if multi_col({
-							{  545,  362, 0x4d3a2b},
-							{  559,  365, 0x9f775a},
-							{  578,  365, 0x926d52},
-							{  579,  371, 0xb18564},
-							}) then
-						ltap(568,  373) --点击药店
-						mmsleep(3000)
-					end		
-					mmsleep(1000)
-					if j ==1 then
-						ltap(  596,  160) --点击第一个红药水
-					elseif j ==2 then
-						ltap(  783,  163) --点击第二个蓝药水
-					elseif j ==3 then
-						ltap(501,  268)
-					end
-					mmsleep(1000)
-					if j ==3 then
-						for i=1,5,1 do -- 测试，先一组买6个太阳神水,以免金币花光，无法测试
-							mmsleep(200)
-							ltap(690,  366)
-						end	
-					end
-					mmsleep(1000)
-					ltap(656,  543) --点击确定--购买
-					mmsleep(3000)
-					ltap( 1011,   65) --点击关闭药店
-					mmsleep(500)
-					ret,x,y = get_locked()
-					if ret == true then
-						ltap(x,y) --点击找到的locked药水坐标	
-						mmsleep(1000)
-						ltap(478,  534) --点击更多
-						mmsleep(500)
-						if multi_col({
-								{  444,  405, 0x793f1f},
-								{  477,  414, 0xdbb180},
-								{  504,  418, 0xf4cb93},
-								}) then
-							ltap(476,  414) --放仓库
-							mmsleep(3000)
-						end
-					end					
-					mmsleep(1000)
-					ltap(1010,65 ) --关闭背包
-				end
-			end
-			mmsleep(500)
 			ltap(338,  576) --点击背包
+			mmsleep(1000)
+			ltap( 1078,  297) --点击仓库
 			mmsleep(500)
-			ltap(1079,  292) --点击仓库
-			mmsleep(500)
-			for i= 1,30,1 do 
-				mmsleep(1000)
-				local ret ,x,y = fetch_locked()
-
-				if ret ==  true  then
+			--snapshot("abc"..tostring(j)..".png", 0, 0, 1135, 639)						
+			local i = 0
+			repeat
+				mmsleep(200)
+				local cang_ku_in_flag = false
+				--local get_unlocked ,get_locked				
+				if multi_col({
+						{  634,  402, 0x7e421e},
+						{  643,  415, 0xe8bd89},
+						{  667,  413, 0xe9be89},
+						{  694,  420, 0xf1c791},
+						{  564,  435, 0x604d3f},
+						}) then
+					ltap(667,  413)
+					wwlog("1586 点击我知道了")
 					mmsleep(500)
-					ltap(x,y) --点击药水
+				elseif multi_col({
+						{  426,  352, 0x130b07},
+						{  438,  352, 0x130b07},
+						{  425,  365, 0x130b07},
+						{  672,  401, 0x783e1b},
+						}) then
+					ltap(672,  401)
+					wwlog("1594 保持流畅模式")
+				elseif multi_col({
+						{  426,  352, 0x130b07},
+						{  438,  352, 0x130b07},
+						{  425,  365, 0x130b07},
+						{  672,  401, 0x783e1b},
+						}) then
+					ltap(672,  401)
+					wwlog("1602 保持流畅模式")			
+				end
+				mmsleep(200)
+				local cnt5 = 0
+				while (not multi_col({
+							{  614,  342, 0x372217},
+							{  613,  386, 0x3b2418},
+							{  612,  452, 0x3d2418},
+							{  629,  390, 0x180f0b},
+							})) do
+					wwlog("1583 等待出现仓库主界面")
 					mmsleep(500)
-					ltap( 563,  533) --点击取出
-				else
-					wwlog("1632 仓库没有药水了")
-					mmsleep(200)
-					ltap(1010,65 ) --关闭背包
-					break
+					cnt5 = cnt5 +1
+					if cnt5 >20 then
+						wwlog("1588 等待出现仓库主界面 延迟，强制退出")
+						break			
+					end
+					mmsleep(500)
+					-- body
+				end
+				if j == 1 then
+					if multi_col({
+							{  208,  193, 0x57e459},
+							{  214,  193, 0x54dc56},
+							{  215,  190, 0x50d552},
+							})then
+						ltap(183,  164) --点击第一个格子--太阳药水
+						wwlog("1584 点击背包第一个格子--太阳药水")
+					end
+				elseif j == 2 then
+					if multi_col({
+							{  208,  193, 0x57e459},
+							{  214,  193, 0x54dc56},
+							{  215,  190, 0x50d552},
+							}) then
+						ltap(183,  164)--点击第一个格子--太阳药水
+						wwlog("1584 点击背包第一个格子--太阳药水")
+					end	
+				elseif j == 3 then
+					if multi_col({
+							{  304,  193, 0xdedede},
+							{  309,  193, 0xd8d8d8},
+							{  310,  190, 0xc6c6c6},
+							}) then 
+						ltap( 281,  169)--点击第二个格子--蓝药水
+						wwlog("1584 点击背包第二个格子--蓝药水")
+					end
 				end	
-			end
-			if j ==3 then
-				bag_full = true
-			end
-		end
+				---------------------------------------------------------------------------
+				mmsleep(2000)
+				local cnt2= 0
+				while (not multi_col({
+							{  552,  536, 0xedc38e},
+							{  555,  539, 0xf3ca92},
+							{  563,  532, 0xeec38d},
+							{  562,  541, 0xf6cd95},
+							})) do
+					cnt2 = cnt2 +1
+					wwlog("1613 等待放入按钮出现")
+					mmsleep(1000)
+					if cnt2>20 then
+						wwlog("1618  等待放入按钮出现延迟，强制退出")
+						break
+					end
+				end
+				mmsleep(500)
+				if multi_col({
+						{  545,  369, 0x4d3a2b},
+						{  566,  372, 0xbd8e6b},
+						{  562,  370, 0xa77e5e},
+						{  572,  370, 0xbc8d6a},
+						{  578,  373, 0xad8262},
+						})  then
+					ltap(568,  373) --点击药店
+					wwlog("1649 红蓝药水-->点击药店")
+				elseif multi_col({
+						{  553,  391, 0xb78a68},
+						{  562,  392, 0xbd8e6b},
+						{  566,  400, 0xbd8e6b},
+						{  580,  399, 0xba8b69},
+						})then
+					ltap(568,  373) --点击药店
+					wwlog("1649 太阳药水-->点击药店")
+				end	
 
-		if bag_full == true then
-			break
+				----------------------------------------------------------------------------
+
+				mmsleep(1000) --进入药店的延迟等待
+				local loop_cnt1 = 0
+				while not multi_col({
+						{  494,  296, 0x5aeb5c},
+						{  501,  297, 0x4ecd50},
+						{  535,  292, 0x4fb450},
+						}) do
+					wwlog("1651 进入药品商城出现延迟")
+					mmsleep(1000)
+					loop_cnt1 = loop_cnt1 + 1
+					if loop_cnt1 >10 then
+						wwlog("1673 进入药品商城延迟10秒")
+						break
+					end
+				end
+
+				mmsleep(1000)
+				if j ==1 then
+					if multi_col({
+							{  526,  191, 0xdedede},
+							{  534,  191, 0xc4c4c4},
+							{  534,  183, 0xc3c3c3},
+							{  529,  190, 0x7a7775},
+							}) then
+						ltap(  615,  160) --点击第一个红药水
+						wwlog("1712 点击药店第一个红药水")
+					end
+				elseif j ==2 then
+					if multi_col({
+							{  815,  186, 0xc9c9c9},
+							{  814,  192, 0xc1c1c1},
+							{  813,  190, 0x8c8887},
+							{  809,  191, 0xdcdcdc},
+							} ) then
+						ltap(  783,  163) --点击第二个蓝药水
+						wwlog("1722 点击药店第二个蓝药水")
+					end 
+				elseif j ==3 then
+					if multi_col({
+							{  530,  296, 0x58e55a},
+							{  532,  296, 0x56e058},
+							{  533,  294, 0x51d653},
+							{  534,  293, 0x4dcc4f},
+							}) then
+						ltap(615,  268) --点击第三个太阳神水
+						wwlog("1732 点击药店第三个太阳神水")
+					end
+				end
+				mmsleep(1000)
+				-----------------------------------------------------------------------------
+				local cnt6 = 0
+				while (not multi_col({
+							{  689,  355, 0xefbe5c},
+							{  690,  373, 0xb9713d},
+							{  439,  358, 0xffed9a},
+							{  439,  373, 0xb9713c},
+							})) do
+					wwlog("1813 等待购买药水界面")
+					mmsleep(1000)
+					cnt6 =cnt6 +1
+					if cnt6 >15 then
+						wwlog("1747 等待购买药水界面 出现延迟")						
+						if j ==1 then					
+							ltap(  615,  160) --点击第一个红药水
+							wwlog("1712 点击药店第一个红药水")					
+						elseif j ==2 then					
+							ltap(  783,  163) --点击第二个蓝药水
+							wwlog("1640 点击药店第二个蓝药水")					
+						elseif j ==3 then					
+							ltap(615,  268) --点击第三个太阳神水
+							wwlog("1650 点击药店第三个太阳神水")					
+						end
+						--break
+					end
+					if cnt6 >20 then
+						break
+					end
+				end
+				mmsleep(1000)
+				local cnt4 = 0
+				--[[
+				while (not multi_col({
+							{  689,  355, 0xefbe5c},
+							{  690,  373, 0xb9713d},
+							{  439,  358, 0xffed9a},
+							{  439,  373, 0xb9713c},
+							})) do
+					-- body
+					wwlog("1710 等待出现购买物品弹窗")
+					mmsleep(500)
+					cnt4 = cnt4 + 1
+					if cnt4 > 20 then
+						wwlog("1715 等待出现购买物品弹窗 出现延迟，强制退出")
+						break
+					end
+				end
+				--]]
+				mmsleep(500)	
+				local buy_cnt =1
+				if j ==1 then
+					buy_cnt = 4
+				elseif j==2 then
+					buy_cnt = 2
+				elseif j ==3 then
+					buy_cnt = 3 
+				end
+				if multi_col({
+						{  687,  355, 0xefbe5c},
+						{  691,  373, 0xb9713d},
+						{  688,  366, 0x971b19},
+						{  698,  365, 0xd2a367},
+						}) then
+					for i=1,buy_cnt,1 do 
+						mmsleep(200)
+						ltap(690,  366)
+					end	
+					wwlog("1666 点击购买多个药品")
+				end
+				-----------------------------------------------------------------------------
+				--end
+				mmsleep(500)
+				local break1 = 0
+				while not multi_col({
+						{  468,  185, 0xc2c2c2},
+						{  468,  191, 0xc3c3c3},
+						{  471,  191, 0xd9d9d9},
+						{  468,  132, 0xc3c3c3},
+						}) do
+					ltap(656,  543) --点击确定--购买
+					mmsleep(2000)
+					break1 = break1 +1
+					if break1 >5 then
+						wwlog("1721 购买延迟")
+						break
+					end
+				end	
+				mmsleep(500)
+				local cnt3 = 0
+				while (not multi_col({
+							{  526,   36, 0xf7ce96},
+							{  553,   35, 0xf6cd95},
+							{  575,   36, 0xf6cc94},
+							{ 1011,   63, 0xe9c77d},
+							{ 1015,   60, 0xe6d490},
+							})) do
+					wwlog("1741 等待购买完成")
+					mmsleep(500)
+					cnt3 = cnt3 +1
+					if cnt3 >20 then
+						wwlog("1747 购买药品出现延迟，强制退出")
+						break
+					end
+
+					-- body
+				end
+				-----------------------------------------------------------------------------
+				--mmsleep(1000) --购买药水的延迟
+				if multi_col({
+						{  526,   36, 0xf7ce96},
+						{  553,   35, 0xf6cd95},
+						{  575,   36, 0xf6cc94},
+						{ 1011,   63, 0xe9c77d},
+						{ 1015,   60, 0xe6d490},
+						}) then
+					ltap( 1011,   65) --点击关闭药店
+					wwlog("1718 关闭药店")
+				end
+				-----------------------------------------------------------------------------
+				mmsleep(500)
+				if j == 1 then
+					if multi_col({
+							{  400,  193, 0xdbdbdb},
+							{  404,  193, 0xd8d8d8},
+							{  406,  190, 0xc6c6c6},
+							})then
+						ltap(376,  166)  --点击第三个格子--红药水
+						wwlog("点击背包第三个格子--红药水")
+					end	
+				elseif j ==2 then
+					if multi_col({
+							{  304,  193, 0xdedede},
+							{  308,  193, 0xd8d8d8},
+							{  310,  189, 0xc8c8c8},
+							}) then
+						ltap( 281,  166)  --点击第二个格子--蓝药水
+						wwlog("1737 点击背包第二个格子--蓝药水")
+					end
+				elseif j ==3 then
+					if multi_col({
+							{  211,  193, 0x56e158},
+							{  214,  193, 0x54dc56},
+							{  215,  188, 0x52d854},
+							})then
+						ltap(184,  166) --点击第一个格子--太阳神水
+						wwlog("1745 点击背包第一个格子--太阳神水")
+					end
+				end	
+				-----------------------------------------------------------------------------
+				mmsleep(1000)
+				if multi_col({
+						{  546,  529, 0x6a341a},
+						{  550,  534, 0xf5cb94},
+						{  555,  539, 0xf3ca92},
+						{  579,  533, 0xf7ce96},
+						}) then
+					ltap(564,  534) --点击放入仓库
+					wwlog("1756 点击放入仓库")
+					cang_ku_in_flag = true
+				end
+				-----------------------------------------------------------------------------
+				mmsleep(500)	
+				if cang_ku_in_flag == false then
+					var_cnt = var_cnt +1
+				end
+
+				i = i+1
+				if i >90 then
+					wwlog("1719 循环超过60次，延迟非常严重")
+					break
+				end						
+			until (i >=var_cnt )
+			mmsleep(3000)
+			wwlog("1909 开始从仓库取药水")
+			for i= 1,var_cnt1,1 do 
+				local out_flag = false
+				mmsleep(1000)
+				if  multi_col({
+						{  982,  257, 0xde9f26},
+						{ 1001,  238, 0xac282a},
+						{ 1019,  255, 0xde9f26},
+						{  998,  282, 0xde9f26},
+						{ 1000,  302, 0x9f2123},
+						})then
+					ltap(998,  282)
+					wwlog("1877 打开红包")
+				elseif multi_col({
+						{  982,  257, 0xde9f26},
+						{ 1001,  238, 0xac282a},
+						{ 1019,  255, 0xde9f26},
+						{  998,  282, 0xde9f26},
+						{ 1000,  302, 0x9f2123},
+						})then
+					ltap(998,  282)
+					wwlog("1886 打开红包")			
+				end		
+
+				--mmsleep(1000)
+				if i ==17 then
+					mmsleep(3000)
+					moveTo(968,  500, 968,  125,1)
+					mmsleep(3000)
+				end	
+				local ret ,x,y = get_cangku_position(i)
+
+				--if ret ==  true  then
+				mmsleep(1000)
+				local flag3 = false
+				if multi_col({
+						{  600,   43, 0x50130f},
+						{ 1077,  297, 0x560b05},
+						{  818,  550, 0x763f1b},
+						{  686,  548, 0x433429},
+						}) then
+					wwlog("2012 判断仓库，开始点击药水")
+					mmsleep(200)
+					if (not isColor( x,  y, 0x251007, 100)) then
+						ltap(x,y) --点击药水									
+						wwlog("2013 点击仓库药水")
+						flag3 = true
+					else
+						wwlog("2015 仓库颜色没有匹配到,无法取出")
+					end
+				end	
+
+				if flag3 == false then
+					mmsleep(1000)
+					ltap(x,y) --点击药水									
+					wwlog("2024 颜色判断失败，直接点击仓库药水")
+				end
+				-----------------------------------------------------------------------------
+				mmsleep(2000)
+				local cnt1 = 0
+				while not multi_col({
+						{  551,  529, 0xecc28c},
+						{  555,  537, 0xf2c992},
+						{  578,  536, 0xf4cb93},
+						}) do
+					wwlog("2024 等待取出按钮")
+					mmsleep(1000)
+					cnt1 =cnt1 +1
+					if cnt1 >10 then
+						wwlog("2028 取药延迟强制退出")
+						break
+					end
+				end
+				mmsleep(1000)
+				if multi_col({
+						{  537,  522, 0x8e4f23},
+						{  563,  522, 0x7f431e},
+						{  555,  536, 0xf2c992},
+						{  578,  536, 0xf4cb93},
+						}) then --判定取出按钮
+					ltap( 563,  533) --点击取出
+					wwlog("2040 从仓库取出药水")
+					out_flag = true						
+					-----------------------------------------------------------------------------
+				end				
+				--end	
+				--[[
+				if out_flag  == false then
+					var_cnt = var_cnt +1
+				end
+				--]]
+			end	--end for
 		end
+		--if check_bag2() ==true then
+		bag_full = true
+		--end
 	end
-	
+
 	resethome()	
 
 	renwu_flag = 1
 	local auto_click = false
 	while (main_task == true) do
-		wwlog("2335 继续做主线任务")
+		wwlog("2135 继续做主线任务")
 		mmsleep(1000)
 		--ltap( 94,  196)
 		mmsleep(80)
@@ -1973,13 +2219,13 @@ while (true) do
 			auto_click = true
 			wwlog("2530 狩魔任务--自动点击任务栏")
 		elseif multi_col({
-	{   19,  161, 0xdd11ed},
-	{   19,  170, 0xe10eef},
-	{   35,  169, 0xd714eb},
-	{   40,  169, 0xd612e8},
-})then
-	auto_click = true
-	wwlog("1982 紫色诏令--自动点击任务栏")
+				{   19,  161, 0xdd11ed},
+				{   19,  170, 0xe10eef},
+				{   35,  169, 0xd714eb},
+				{   40,  169, 0xd612e8},
+				})then
+			auto_click = true
+			wwlog("1982 紫色诏令--自动点击任务栏")
 		elseif multi_col({
 				{   18,  165, 0xf0cf6d},
 				{   18,  173, 0xebc86a},
@@ -1987,9 +2233,8 @@ while (true) do
 				{   42,  173, 0xfdec77},
 				}) then
 			auto_click = false
-			wwlog("2538 主线任务关闭自动点击任务栏")
+			wwlog("2100 主线任务关闭自动点击任务栏")
 		end
-
 		mmsleep(1000)
 		if  multi_col({
 				{  982,  257, 0xde9f26},
@@ -2029,57 +2274,7 @@ while (true) do
 			if mail_get == false then
 				main_task = false
 				break
-			end
-			--[[
-		elseif multi_col({
-				{   79,  167, 0xd7b362},
-				{   50,  169, 0xc02835},
-				{   73,  165, 0xf7e574},
-				{   98,  168, 0xf0d970},
-				{  125,  165, 0xf0dc71},
-				{  138,  171, 0xf1df71},
-				{  135,  168, 0xd5ba64},
-				}) and mail_get == false then
-
-			wwlog("2404 机关力量--分解装备--领取邮件")
-			if mail_get == false then
-				main_task = false
-				break
-			end
-			--]]
-		--[[
-		elseif multi_col({
-				{   19,  193, 0xc3a479},
-				{   41,  193, 0xdfba88},
-				{   78,  193, 0xbbbab8},
-				{   97,  195, 0xdbdada},
-				{  115,  196, 0xf0f0f0},
-				{  122,  196, 0xd0cfcf},
-				}) then
-			ltap(342,  302)
-			mmsleep(5000)
-			wwlog("2577 将军坟 --自动打怪--点击屏幕中间一次,防止卡屏")
-		--]]	
-		--[[
-		elseif multi_col({
-				{ 1034,   56, 0xf52a1c},
-				{ 1035,   62, 0xf2291b},
-				{ 1049,   62, 0xe32b1c},
-				{ 1080,  312, 0xeeddcc},
-				{ 1113,  319, 0xfffffe},
-				})then
-			ltap(1113,  319)
-			wwlog("2576 危险区，自动打怪")
-		elseif multi_col({
-				{ 1027,   56, 0xdd2819},
-				{ 1032,   56, 0xf4291b},
-				{ 1029,   51, 0xf42a1c},
-				{ 1080,  312, 0xeeddcc},
-				{ 1113,  312, 0xffffec},
-				}) then
-			ltap(1113,  312)
-			wwlog("2585 危险区，自动打怪")
-		--]]	
+			end			
 		elseif multi_col({
 				{  848,  205, 0x4f1e1d},
 				{  846,  234, 0x4c1d1c},
@@ -2101,7 +2296,7 @@ while (true) do
 				{  761,  402, 0x362720},	
 				})then
 			ltap(834,  403)
-			wwlog("340 完成任务2")
+			wwlog("1651 完成任务2")
 		elseif multi_col({
 				{  507,   85, 0x420a05},
 				{  532,   92, 0xefc58f},
@@ -2181,7 +2376,7 @@ while (true) do
 				{  672,  401, 0x783e1b},
 				}) then
 			ltap(672,  401)
-			wwlog("427 保持流畅模式")
+			wwlog("2181 保持流畅模式")
 		elseif multi_col({
 				{   25,  122, 0xeee089},
 				{   28,  128, 0xfbec95},
@@ -2220,7 +2415,7 @@ while (true) do
 				{  989,  609, 0xfbfbfa},
 				}) then
 			ltap(989,  609)
-			wwlog("257 请点击继续")
+			wwlog("2341 请点击继续")
 			before_game ='N'
 		elseif multi_col({
 				{ 1024,  107, 0x5e1612},
@@ -2230,7 +2425,7 @@ while (true) do
 				{ 1091,  109, 0x531110},
 				}) then
 			ltap(1091,  109)
-			wwlog("452 红色跳过")
+			wwlog("2351 红色跳过")
 		elseif multi_col({
 				{ 1032,  106, 0x6c1a14},
 				{ 1058,  106, 0xe7b987},
@@ -2452,6 +2647,14 @@ while (true) do
 			ltap(1012,   63)
 			wwlog("619 关闭膜拜窗口")
 		elseif multi_col({
+				{  525,  176, 0xe0882e},
+				{  542,  182, 0xcd6d29},
+				{  606,  183, 0xc76725},
+				{  662,  187, 0xaa4d14},
+				}) then
+			ltap(662,  187)
+			wwlog("2571 点击屏幕继续--领取奖励")
+		elseif multi_col({
 				{    9,   73, 0xc09d76},
 				{   14,   75, 0xd4b289},
 				{   12,   78, 0xcda77d},
@@ -2459,10 +2662,29 @@ while (true) do
 				{   14,   82, 0xdeb483},
 				{   10,   85, 0xe7bc89},
 				})then
-			wwlog("2538 30 级了，去交易")
+			wwlog("2572 30 级了，去交易")
 			mmsleep(200)
-			
-			ltap( 1069,   43) --点击右上角地图
+
+			if multi_col({
+					{ 1011,   60, 0x4c1213},
+					{ 1008,   63, 0x401212},
+					{ 1013,   61, 0xcfb781},
+					{ 1007,   67, 0xd19455},
+					})then
+				ltap(1013,   61) --有弹窗，则关闭
+				wwlog("2582 关闭弹窗")
+			end
+			mmsleep(5000)
+			while not multi_col({
+					{  535,   44, 0x501410},
+					{  555,   44, 0xf3ca93},
+					{  580,   53, 0xebc18d},
+					{  581,   38, 0xe9be8a},
+					}) do
+				ltap( 1069,   43) --点击右上角地图
+				wwlog("2592 点击右上角地图")
+				mmsleep(2000)
+			end	
 			mmsleep(1000)
 			ltap(1077,  300) --点击主城
 			mmsleep(1000)
@@ -2472,24 +2694,11 @@ while (true) do
 			mmsleep(15000)
 			ltap( 1069,   43) --点击右上角地图
 			mmsleep(1000)
-			ltap(870,  289) --暂去首饰店老板等待
-			mmsleep(15000)
-			ltap(  284,  516) --点击屏幕左下，
-			
-			--[[
-			ltap( 567,  575) --点击底部中间圆球
-			mmsleep(2000)
-			ltap(968,  573) --点击右侧设置按钮
-			mmsleep(2000)
-			ltap(1058,  528) --点击右侧系统设置
-			mmsleep(2000)
-			ltap(877,  246)  --点击切换账号
-			mmsleep(2000)
-			wwlog("470 成功退出")
-			--]]
-			if v_choose ~= nil then
-				choose_flag = false
-			end
+			--ltap(870,  289) --暂去首饰店老板等待
+			ltap(jy_x,jy_y) --点击输入坐标
+			mmsleep(30000)
+			--ltap(  284,  516) --点击屏幕左下，
+			ltap( 1010,   65) --关闭地图			
 			jiaoyi_flag = 'S'
 			break
 		elseif multi_col({
@@ -2519,6 +2728,15 @@ while (true) do
 				})then
 			ltap(1011,   63)
 			wwlog("575 任务窗口--关闭")
+		elseif multi_col({
+				{  951,   80, 0xf7e08c},
+				{  957,   80, 0x851e1f},
+				{  963,   81, 0xf4e191},
+				{  962,   91, 0xd1874c},
+				{  957,   86, 0xecca7f},
+				}) then
+			ltap(957,   86)
+			wwlog("2244 关闭--传世之路")
 		elseif multi_col({
 				{  735,  440, 0x2e4889},
 				{  762,  322, 0x311813},
@@ -2614,10 +2832,14 @@ while (true) do
 				wwlog("2972 主线模式--长时间没有动--点击左侧第一个任务")
 			end
 		end
+		mmsleep(1000)
+		run_app()
+		mmsleep(1000)
 	end
 
+	--清理背包
 	while (bag_clean == false) do
-		wwlog("2978 准备整理装备")
+		wwlog("2769 准备整理装备")
 		mmsleep(1000)
 		safe_place()
 		mmsleep(100)
@@ -2651,7 +2873,7 @@ while (true) do
 				{  467,  515, 0xeec48e},
 				}) then
 			ltap( 929,  508)
-			wwlog("3012 整理")
+			wwlog("2803 整理")
 			mmsleep(12000)
 			ltap(1011,   64) --关闭装备窗口		
 			bag_clean = true
@@ -2664,8 +2886,10 @@ while (true) do
 	end
 
 
+
+	--领取邮件
 	while (mail_get == false) do
-		wwlog("3026 领取邮件")
+		wwlog("2828 领取邮件")
 		mmsleep(1000)
 		safe_place()
 		mmsleep(100)
@@ -2693,6 +2917,7 @@ while (true) do
 			mmsleep(80)
 			mail_get = true
 			main_task = true
+			bag_clean = false
 			wwlog("3054 一键领取")
 			break
 
@@ -2717,17 +2942,148 @@ while (true) do
 	check_zhuangbei_hongbao()
 	mmsleep(100)
 
-	while(jiaoyi_flag == 'S' ) do 
-		mmsleep(50000)	
-		toast("2702 等待交易......")
+	--领完邮件之后，整理装备,把丹放进仓库
+	while (bag_clean == false) do
+		wwlog("2896 领完邮件之后，整理装备")
+		mmsleep(1000)
+		safe_place()
+		mmsleep(100)
+		if multi_col({
+				{  500,  575, 0xfffe93},
+				{  500,  578, 0xfef9ac},
+				{  500,  597, 0xa77542},
+				{  635,  575, 0xffff92},
+				{  635,  596, 0xa06d43},
+				}) then
+			ltap( 340,  580) --点击背包
+			wwlog("2990 点击背包")
+		elseif multi_col({
+				{  511,  576, 0xf8f8a0},
+				{  507,  579, 0xfef38e},
+				{  510,  598, 0xb9864b},
+				{  624,  575, 0xffff92},
+				{  624,  599, 0xcc994c},
+				}) then
+			ltap(568,  578) --点击圆球
+			mmsleep(2000)
+			ltap( 340,  580) --点击背包
+			wwlog("3001 点击背包")
+
+		elseif multi_col({
+				{  527,   39, 0x5b1a0e},
+				{  555,   47, 0xc4976e},
+				{  557,   38, 0xf5cc94},
+				{  583,   37, 0xf6cd95},
+				{  446,  507, 0x71381c},
+				{  467,  515, 0xeec48e},
+				}) then
+			mmsleep(1000)
+			ltap( 929,  508)
+			wwlog("2977 整理")
+			mmsleep(12000)			
+			--------------------------------------------------------------------------
+			ltap(171,  282)
+			wwlog("2981 点击背包左侧药品")
+			mmsleep(3000)
+			ltap(930,  506)
+			wwlog("2942 点击整理")
+			mmsleep(12000)
+
+
+			ltap(865,  153) --点击第一排第7个格子
+			wwlog("2927 点击第一排第7个格子")
+			mmsleep(3000)
+			ltap( 473,  534) --点击更多
+			mmsleep(2000)
+			ltap(478,  414) --放入仓库 
+			mmsleep(3000)
+			ltap(958,  156) --点击第一排第8个格子
+			wwlog("2988 点击第一排第8个格子")
+			mmsleep(3000)
+			ltap( 473,  534) --点击更多
+			mmsleep(2000)
+			ltap(478,  414) --放入仓库
+
+			mmsleep(10000)
+			ltap( 168,  351) --点击其他tab
+			mmsleep(3000)
+			ltap(290,  155)  --点击第一个格子
+			mmsleep(3000)
+			ltap(479,  534)  --点击更多
+			mmsleep(2000)
+			ltap(478,  414) --放入仓库
+			mmsleep(10000)
+
+			--[[
+			for ii = 1 ,4,1 do
+				mmsleep(1000)
+				local ret11,x11,y11 = get_yappin_position(ii)
+
+			end
+			--]]
+			--------------------------------------------------------------------------
+			ltap(1011,   64) --关闭装备窗口		
+			bag_clean = true
+			break	
+		else
+			ltap(568,  578) --点击圆球			
+			-- body
+		end
+		-- body
 	end
 
-	mmsleep(10000)
 
+	while(jiaoyi_flag == 'S' ) do 
+		mmsleep(50000)	
+		toast("2965 等待交易......")
+		if multi_col({
+				{  524,  545, 0xf4df00},
+				{  552,  548, 0xf3d500},
+				{  587,  544, 0xfbe500},
+				{  612,  547, 0xf4d700},
+				}) then
+			wwlog("2972 交易结束，从新开始选区")
+			sleep_cnt = 1
+			renwu_flag = 1
+
+			level = 1
+			tianlei_flag = 'N'
+			yaoshui_shezhi = 'N' --暂时不进行药水的设置
+			fuli_flag = 'N'
+			in_game = 'N'
+			kuangqu_flag = 'N'
+			buy_3_first = false
+			choose_flag = false 
+			before_game = 'Y'
+			--beibao_flag = 'N'
+			--bag_is_full = false
+			main_task = true
+			mail_get =false
+			bag_clean = false
+			bag_full = false  
+			--luoxia_shua_guai = false
+			jiaoyi_flag ='N'
+			only_once1 = true
+			first_mail = false
+			bag_is_ready = false
+			--flag1 = true
+			mmsleep(10000) 
+			break
+		elseif multi_col({
+				{  525,  176, 0xe0882e},
+				{  542,  182, 0xcd6d29},
+				{  606,  183, 0xc76725},
+				{  662,  187, 0xaa4d14},
+				}) then
+			ltap(662,  187)
+			wwlog("2913 点击屏幕继续--领取奖励")
+		end
+	end
+
+	mmsleep(5000)
 	run_app()
 
-	--长时间没有响应，点击左侧任务栏
-	wwlog("2711 大循环")
+	wwlog("2804 大循环")
 
 end  -- end while
 
@@ -2736,4 +3092,4 @@ if TOUCH_MODE == true1 then
 	close_log(log_file)		
 end	
 
-wwlog("2720 脚本结束")
+wwlog("2813 脚本结束")

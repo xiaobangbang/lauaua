@@ -2,6 +2,7 @@ DEBUG_MODE =false
 TOUCH_MODE= true
 XXT_MODE =false
 XXT_DAQU = 1
+TS_MAIN_VERSION = "1.1.4"
 
 if TOUCH_MODE == true then
 	require("TSLib")
@@ -11,17 +12,11 @@ local sleep_cnt = 1
 local renwu_flag = 1
 
 local level = 1
---local jineng_flag ='N'
 local tianlei_flag = 'N'
 local yaoshui_shezhi = 'N' --暂时不进行药水的设置
 local fuli_flag = 'N'
 local in_game = 'N'
-local kuangqu_flag = 'N'
---local dialog_flag = 'N'
-local buy_3_first = false
-
 local choose_flag = false
-
 local open_app
 local front_app
 local mmsleep
@@ -30,20 +25,15 @@ local init_log
 local wt_log,wx_log
 local log_file = "chuanqishijie"
 local multi_col
---local press
 local before_game = 'Y'
---local beibao_flag = 'N'
---local bag_is_full = false
 local main_task = true
 local mail_get =false
 local bag_clean = false
 local bag_full = false  
---local luoxia_shua_guai = false
 local jiaoyi_flag ='N'
 local only_once1 = true
 local first_mail = false
 local bag_is_ready = false
---local flag1 = true
 
 local tab_cangku = {
 	{  684,  180, 0x7c8a98},
@@ -104,6 +94,8 @@ local tab_line = {
 	{  443,  428, 0x763c1d},
 }
 
+local tab_drug = {{  291,  156, 0xcc0000},{  388,  158, 0x965610},{  485,  157, 0x864507},{  580,  154, 0x8b9aad},{  675,  154, 0x4b4948},{  767,  154, 0x251007},{  863,  153, 0x251007},{  960,  154, 0x251007},{  290,  239, 0x251007},{  385,  239, 0x251007},}
+
 function trim1(s)
 	return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
@@ -162,6 +154,35 @@ end
 function get_yappin_position(j)
 	local ret,x,y
 	for i,v in ipairs(tab_yaopin) do
+		if i == j then
+			ret = true
+			x = v[1]		y = v[2]
+			print(i,x,y)
+			break		
+		end
+	end
+	return ret,x,y
+	-- body
+end
+
+
+function get_drug_position(j)
+	local ret,x,y
+	for i,v in ipairs(tab_drug) do
+		if i == j then
+			ret = true
+			x = v[1]		y = v[2]
+			print(i,x,y)
+			break		
+		end
+	end
+	return ret,x,y
+	-- body
+end
+
+function get_drug_position(j)
+	local ret,x,y
+	for i,v in ipairs(tab_drug) do
 		if i == j then
 			ret = true
 			x = v[1]		y = v[2]
@@ -268,6 +289,7 @@ function run_app_first(...)
 		mmsleep(2000)
 		before_game = 'Y'
 	end
+	wwlog("269 当前脚本的版本："..TS_MAIN_VERSION)
 end
 
 function run_app(...)
@@ -287,6 +309,7 @@ function run_app(...)
 		end
 		mmsleep(1000)
 	end
+	mmsleep(1000)
 end
 local jy_x
 local jy_y
@@ -295,14 +318,14 @@ function check_right_corder(...)
 	local ret = false
 	mmsleep(500)
 	local ret = false
-	wwlog("2490 检查右上角 ，判定角色是否移动")
+	--wwlog("2490 检查右上角 ，判定角色是否移动")
 	x, y = findImageInRegionFuzzy("right_corner.png", 90,  1011,   26,  1129,   64,0,2);
 	if x ~= -1 and y ~= -1 then        --如果在指定区域找到某图片符合条件
 		--ltap( 87,  197) 
 		ret = true
-		wwlog("1639 点击左侧任务栏，让角色动起来 ")   
+		--wwlog("295 点击左侧任务栏，让角色动起来 ")   
 	else                               --如果找不到符合条件的图片
-		wwlog("1641 任务-跑腿中")   
+		wwlog("297 任务-跑腿中")   
 	end
 	return ret
 	-- body
@@ -317,7 +340,7 @@ function choose_fuwuqi(...)
   "width": ]]..w..[[,
   "height": ]]..h..[[,
   "config": "save_111.dat",
-  "timer": 20,
+  "timer": 300,
   "views": [
     {
       "type": "Label",
@@ -599,6 +622,13 @@ function  get_tianlei_flag(...)
 			})then
 		ret = 'Y'
 	elseif multi_col({
+			{  912,  603, 0xfdfc60},
+			{  911,  607, 0xf7df14},
+			{  930,  605, 0xfefb40},
+			{  949,  606, 0xfcf755},
+			})then
+		ret = 'Y'
+	elseif multi_col({
 			{  927,  569, 0xc2d2fa},
 			{  928,  579, 0xfffef5},
 			{  930,  606, 0xfcf34a},
@@ -698,7 +728,16 @@ function is_in_game(...)
 			{   65,  136, 0xb63232},
 			}) then
 		ret = 'Y'
-		wwlog("650 is in game")
+		wwlog("701 is in game")
+	elseif multi_col({
+			{ 1083,   12, 0x30c530},
+			{ 1083,   15, 0x30c530},
+			{ 1083,   20, 0x30c530},
+			{ 1079,   20, 0xffeedd},
+			{ 1080,   14, 0xffeedd},
+			})then
+		ret = 'Y'
+		wwlog("710 is in game")
 	end
 	return  ret
 	-- body
@@ -750,7 +789,7 @@ function check_bag2(...)
 			break
 		end
 		mmsleep(100)
-		ltap(1010,   64)
+		ltap(1010,   64) --关闭弹窗
 	end
 	return ret
 end
@@ -821,9 +860,7 @@ function fenjie_1(...)
 	ltap(865,  530) --开始分解
 	mmsleep(3000)			
 	ltap(953,   80) --点击关闭分解窗口
-	mmsleep(1000)
-	--ltap(928,  507) --点击背包的整理按钮----
-	--mmsleep(1000)
+	mmsleep(1000)	
 	ltap(1010,65 ) --关闭背包对话框
 	mmsleep(2000)
 	-- body
@@ -832,39 +869,28 @@ end
 function change_line(...)
 	mmsleep(1000)
 	wwlog("757 换线")
-	local cnt_1 = 0
-	while (not multi_col({
-				{  315,  123, 0xdfba87},
-				{  289,  125, 0xf1c993},
-				{  342,  126, 0xf1c992},
-				{  365,  133, 0xc9a779},
-				})) do
-		-- body
-		mmsleep(1000)
-		if multi_col({
-				{  212,   80, 0xb7ae98},
-				{  212,   83, 0xb5ad98},
-				{  212,   87, 0xb5ad98},
-				{  237,   77, 0xc0b8a1},
-				}) then
-			ltap(212,   80)
-			wwlog("847 点击换线")
+	local tab1 = {
+		{  212,   80, 0xb7ae98},
+		{  212,   83, 0xb5ad98},
+		{  212,   87, 0xb5ad98},
+		{  237,   77, 0xc0b8a1},
+	}
+	local x_tap,y_tap = 212,   80
+	local tips = "点击换线"								
+	local ret1 = mttap(tab1,x_tap,y_tap,tips,10) 
+	if ret1 == false then	
+		ltap(  x_tap,y_tap) 
+		wwlog("884 不用颜色判断，"..tips)		
+	else
+		wwlog("886 "..tips.."成功")	
+	end	
 
-		end
-		mmsleep(500)
-		cnt_1 =cnt_1 +1
-		if cnt_1 >10 then
-			ltap(212,   80) --点击换线
-			wwlog("854 点击换线")
-			break
-		end
-	end
-	mmsleep(3000)
+	mmsleep(2000)
 	local ret, x_line,y_line = get_line_xy(tonumber(line))
 	--ltap(426,  130) --点击推荐线路
 	ltap(x_line,y_line)
 	--wwlog("787 点击推荐线路")
-	wwlog("863 点击所选线路")
+	wwlog("894 点击所选线路")
 	mmsleep(200)
 end
 
@@ -925,7 +951,7 @@ function login(...)
 			{  449,  374, 0xd5daec},
 			})then
 		ltap(449,  374)
-		wwlog("1330 打开微信")
+		wwlog("928 打开微信")
 	elseif multi_col({
 			{  664,  476, 0xf5c26a},
 			{  684,  479, 0xf4b75e},
@@ -1042,6 +1068,103 @@ function login(...)
 	-- body
 end
 
+
+function pack_my_bag(...)	
+	local zhengli_flag = false
+	local cnt1 = 0
+	while (not multi_col({
+				{  879,  499, 0x414141},
+				{  877,  510, 0x313131},
+				{  877,  517, 0x2d2d2d},
+				{  871,  509, 0x2d2d2d},
+				})) do
+		mmsleep(100)
+		if multi_col({
+				{  915,  503, 0xf1c690},
+				{  917,  500, 0xe3b47f},
+				{  919,  513, 0xf2c992},
+				{  950,  514, 0xefc792},
+				}) then
+			ltap( 928,  510) --点击整理
+			zhengli_flag = true
+			mmsleep(12000)
+			break
+		end	
+		cnt1 = cnt1 +1
+		if cnt1 >60 then
+			break
+		end
+		mmsleep(500)
+	end
+	if zhengli_flag == false then
+		ltap( 928,  510) --点击整理
+		zhengli_flag = true
+	end
+	-- body
+	return zhengli_flag
+end
+
+function mttap(p_tab1,p_x_tap,p_y_tap,p_tips,p_check_cnt)	
+	local cnt = 0
+	local yy = false
+	local ret= false
+	local check_cnt = p_check_cnt or 30
+	wwlog("1085 通过颜色判断，点击坐标:"..tostring(p_x_tap)..tostring(p_y_tap))
+	repeat
+		mmsleep(500)
+		local yy = multi_col(p_tab1)
+		mmsleep(200)--2017-09-05
+		if yy then
+			ltap( p_x_tap,   p_y_tap) 
+			wwlog("mttap "..p_tips.."成功")
+			ret= true
+			break
+		end
+		cnt = cnt +1
+		if cnt > check_cnt then		
+			wwlog("mttap "..p_tips.."超时，强制退出")
+			break
+		end
+		--mmsleep(500)
+		wwlog("mttap "..p_tips.."等待")	
+	until (yy)
+	return ret
+end
+
+function put_lian_to_cangku(...)
+
+	for i = 1 ,10 ,1 do
+		local ret,x,y = get_drug_position(i)
+		ltap(x,y) --点击格子
+		mmsleep(3000)
+		if multi_col({{  535,  390, 0xb38665},{  543,  390, 0xb38665},{  538,  395, 0x987256},{  560,  392, 0xa0785a},{  579,  395, 0xad8262},{  600,  392, 0xbc8d6a},}) then
+			mmsleep(200)
+			ltap( 477,  535) --点击更多
+			mmsleep(1500)
+			ltap( 480,  415)  --点击放仓库
+		end
+		mmsleep(500)
+	end
+	-- body
+end
+
+function put_dan_to_cangku(...)
+
+	for i = 1 ,2 ,1 do
+		local ret,x,y = get_qita_position(i)
+		ltap(x,y) --点击格子
+		mmsleep(3000)
+		if multi_col({{  537,  369, 0x9d7659},{  540,  364, 0xab8061},{  541,  375, 0xbb8d6a},{  555,  365, 0xa1795b},{  556,  369, 0xab8060},{  558,  373, 0xbb8d6a},{  561,  379, 0xab8161},}) then
+			mmsleep(200)
+			ltap( 477,  535) --点击更多
+			mmsleep(1500)
+			ltap( 480,  415)  --点击放仓库		
+		end
+		mmsleep(500)
+	end
+	-- body
+end
+
 run_app_first()
 
 
@@ -1051,23 +1174,18 @@ run_app_first()
 while (true) do 
 	renwu_flag = renwu_flag +1
 	mmsleep(500)
-	resethome()
+	--resethome()
 	mmsleep(500)
 	--level =getcurlevel()
 	mmsleep(500)
 	in_game = is_in_game()
 	mmsleep(500)
-
-	--[[
 	if tianlei_flag =='N' then
 		tianlei_flag =get_tianlei_flag()
 	end
-	--]]
-
 	if  in_game =='Y' then
 		before_game = 'N'
 	end 	
-
 	if before_game =='N' then
 		if check_bag2() then
 			tianlei_flag ='Y'
@@ -1080,7 +1198,7 @@ while (true) do
 		end
 	end
 
-	mmsleep(200)
+	mmsleep(1000)
 
 	while (before_game == 'Y') do
 		if login() then
@@ -1089,22 +1207,24 @@ while (true) do
 	end
 	-----------------------------------------------------------------------------------------------------
 	-----------------------------------------------------------------------------------------------------
-	mmsleep(2000)
-	local v_cnt1 = 0
-	while (not multi_col({
-				{ 1039,   37, 0x66332e},
-				{ 1053,   31, 0xf3c892},
-				{ 1030,   51, 0x63d25b},
-				}) ) do
-		wwlog("1038 等待游戏主界面")
-		mmsleep(1000)
-		v_cnt1 = v_cnt1 +1
+	if in_game =='N' then
+		mmsleep(2000)
+		local v_cnt1 = 0
+		while (not multi_col({
+					{ 1039,   37, 0x66332e},
+					{ 1053,   31, 0xf3c892},
+					{ 1030,   51, 0x63d25b},
+					}) ) do
+			wwlog("1038 等待游戏主界面")
+			mmsleep(1000)
+			v_cnt1 = v_cnt1 +1
 
-		if v_cnt1 >30 then
-			-- body			
-			break
-		end	
-	end
+			if v_cnt1 >30 then
+				-- body			
+				break
+			end	
+		end
+	end 
 
 
 	function before_tianlei(...)
@@ -1118,13 +1238,13 @@ while (true) do
 		snapshot("right_corner.png", 1036,   29,  1125,   59)
 		mmsleep(1000)
 		if only_once1 ==true then
-			mmsleep(5000)
+			--mmsleep(5000)
 			ltap(79,  196) --第一次点击任务
 			wwlog("1060 第一次点击任务")
 			only_once1 = false
-		end
-		mmsleep(1000)
-		if multi_col({
+			--end
+			--mmsleep(1000)
+		elseif multi_col({
 				{  928,  249, 0x1b1f33},
 				{  938,  261, 0x222251},
 				{  933,  290, 0x538bda},
@@ -1217,7 +1337,6 @@ while (true) do
 				}) then
 			ltap(989,  609)
 			wwlog("1147 请点击继续")			
-
 		elseif multi_col({
 				{  521,   58, 0x7f2314},
 				{  547,   58, 0x7e2214},
@@ -1226,10 +1345,19 @@ while (true) do
 				{  566,   71, 0x651414},
 				})then
 			ltap(566,   71) --跳过引导
-			mmsleep(200)
+			mmsleep(1000)
 			ltap(  932,  401) --点击天雷咒
-			mmsleep(200)
-			wwlog("309 跳过引导")
+			mmsleep(1000)
+			wwlog("1232 跳过引导")
+		elseif multi_col({
+				{  506,   47, 0x4f1511},
+				{  534,   47, 0xf5cd95},
+				{  580,   44, 0xeabf8b},
+				{ 1006,   63, 0x591618},
+				{ 1011,   64, 0xab7c4d},
+				})then
+			ltap(1011,   64)
+			wwlog("1241 活动大厅，关闭")
 		elseif multi_col({
 				{ 1035,  192, 0xdbaf6e},
 				{  870,  243, 0x34100d},
@@ -1238,7 +1366,7 @@ while (true) do
 				{  881,  203, 0x562120},
 				}) then
 			ltap(933,  400)
-			wwlog("833 立即装备")
+			wwlog("1250 立即装备")
 		elseif multi_col({
 				{  848,  205, 0x4f1e1d},
 				{  846,  234, 0x4c1d1c},
@@ -1250,15 +1378,15 @@ while (true) do
 				{ 1013,  393, 0x461a19},
 				})then
 			ltap(938,  398)
-			wwlog("1061 立即装备")
+			wwlog("1262 立即装备")
 		elseif multi_col({
 				{  475,  381, 0xc3bcb7},
 				{  495,  382, 0xeadb6f},
 				{  511,  372, 0xf2e473},
 				{  532,  375, 0xebdc70},
 				}) then
-			wwlog("1068 第一次出现任务面板")
-			ltap(123,  191)
+			wwlog("1269 第一次出现任务面板")
+			ltap(123,  191)		
 		elseif multi_col({
 				{   24,  190, 0xd5b381},
 				{   24,  200, 0xd2b07f},
@@ -1266,24 +1394,29 @@ while (true) do
 				{   94,  194, 0xf1f1f1},
 				{   84,  193, 0xe2e2e1},
 				})  then
-			mmsleep(5000)
+			--mmsleep(5000)
 			ltap(83,  197)
-			wwlog("1079 第一次点击任务面板--对话村长")
-			mmsleep(5000)
-			--flag1 = false			
-		end	
-		mmsleep(200)
-		if run_cnt1%5 ==0 and check_right_corder() then			
+			wwlog("1280 第一次点击任务面板--对话村长")
+			--mmsleep(5000)			
+			--end	
+			--mmsleep(1000)
+		elseif run_cnt1%5 ==0 and check_right_corder() then			
 			ltap(60,  195)
-			wwlog("1205 别傻站着，点击左侧第一个任务")
-		end		
+			wwlog("1296 别傻站着，点击左侧第一个任务")
+			--end	
+			--mmsleep(1000)
+		elseif run_cnt1%11 ==0  then
+			ltap(60,  195)
+			wwlog("1300 别傻站着2，点击左侧第一个任务")
+		end	
+
 		mmsleep(1000)
 		run_app()
-		mmsleep(1000)
-		
+		--mmsleep(1000)
+
 	end
 
-	resethome()
+	--resethome()
 	function set_up_first(...)
 		-- body
 	end
@@ -1334,75 +1467,7 @@ while (true) do
 
 			ltap( 1011,   63) --关闭设置窗口
 			yaoshui_shezhi = 'Y'
-			--[[
-		elseif multi_col({
-				{  184,  178, 0xc48a53},
-				{  178,  189, 0xbf7f49},
-				{  164,  192, 0xd19d62},
-				{  181,  566, 0xc0844e},
-				{  173,  575, 0xbc834e},
-				{ 1011,   64, 0xab7c4d},
-				}) then
-			ltap(1011,   64)
-			wwlog("621 关闭设置窗口")
-			yaoshui_shezhi = 'Y'
-			--dialog_flag = 'N'
-			break
-			--]]	
-			--[[
-		elseif multi_col({
-				{ 1049,  157, 0x4e0b05},
-				{ 1057,  170, 0xeaba87},
-				{  903,  182, 0xb68a5c},
-				{  902,  191, 0x6d4d37},
-				{  838,  186, 0x546722},
-				}) then
-			ltap(835,  188)
-			wwlog("1579 关闭红色药水")
-		elseif multi_col({
-				{ 1054,  159, 0x650904},
-				{ 1063,  197, 0xf7ce96},
-				{  904,  481, 0xc09564},
-				{  898,  491, 0x6f4e39},
-				{  836,  487, 0x546722},
-				}) then
-			ltap(837,  484)
-			wwlog("1588 关闭蓝色药水")
-			mmsleep(500)
-			ltap(1011,   64)
-			wwlog("621 关闭设置窗口")
-			yaoshui_shezhi = 'Y'
-			break
-			--]]	
-			--[[
-		elseif multi_col({
-				{  845,  191, 0x444444},
-				{  900,  190, 0x201410},
-				{  845,  487, 0x545454},
-				{  909,  485, 0x20140f},
-				{ 1058,  299, 0x3f251c},
-				}) then
-			ltap(1058,  299)
-			wwlog("638 药水设置完毕，点击拾取设置")
-		elseif multi_col({
-				{ 1049,  263, 0x4b0b05},
-				{ 1058,  292, 0xf1c58f},
-				{  168,  194, 0x130b07},
-				{  174,  191, 0x130a06},
-				{  177,  183, 0x130a06},
-				}) then
-			ltap(168,  183)
-			wwlog("647 自动拾取白色药水")
-		elseif multi_col({
-				{  164,  565, 0x130c08},
-				{  194,  565, 0x362720},
-				{  193,  574, 0x362923},
-				{  145,  568, 0x362821},
-				{  171,  568, 0x130c08},
-				}) then
-			ltap(171,  568)
-			wwlog("656 自动拾取金币")
-			--]]	
+
 		elseif multi_col({
 				{  507,  583, 0xeece79},
 				{  507,  593, 0x784827},
@@ -1421,21 +1486,9 @@ while (true) do
 	mmsleep(1000)
 	local yaoshui_cnt =0
 	while (fuli_flag =='N' ) do
-		wwlog("1330 领取福利")
+		wwlog("1433 领取福利")
 		yaoshui_cnt = yaoshui_cnt +1
-		mmsleep(500)
-		--[[
-		if not multi_col({
-				{  896,   11, 0xce4422},
-				{  902,    9, 0xdf4422},
-				{  897,   18, 0xb91101},
-				{  902,   18, 0xb91202},
-				}) then
-			wwlog("752 没有福利可以领取")
-			fuli_flag = 'Y'
-			break
-		end
-		]]--
+		mmsleep(500)		
 		mmsleep(500)
 		if multi_col({
 				{  894,   13, 0xbe3322},
@@ -1461,6 +1514,7 @@ while (true) do
 				ltap(401,  173)
 				wwlog("731 签到领取5w金币")
 			end	
+			--[[
 		elseif multi_col({
 				{  264,  348, 0x6a4519},
 				{  282,  335, 0xb11600},
@@ -1471,6 +1525,7 @@ while (true) do
 			mmsleep(1000)
 			ltap(931,  220)
 			wwlog("739 领取七日盛典第一天的礼包")
+
 		elseif multi_col({
 				{  227,  339, 0x594a3b},
 				{  284,  334, 0xaf1600},
@@ -1478,13 +1533,14 @@ while (true) do
 				}) then
 			ltap(259,  356)
 			wwlog("746 点击七日盛典")
+			--]]
 		elseif multi_col({
 				{  532,   47, 0x4c1311},
 				{  281,  192, 0xc73216},
 				{  209,  217, 0x473a30},
 				}) then
 			ltap(209,  217)
-			wwlog("754 点击在线礼包")
+			wwlog("1499 点击在线礼包")
 		elseif multi_col({
 				{  522,   49, 0x4a1414},
 				{  228,  197, 0x976729},
@@ -1493,7 +1549,12 @@ while (true) do
 				{  928,  370, 0x603019},
 				}) then
 			ltap(928,  370)
-			wwlog("740 领取第一个在线礼包")
+			wwlog("1508 领取第一个在线礼包")
+			mmsleep(5000)
+			ltap(1011,   64)
+			wwlog("771 关闭福利窗口")
+			fuli_flag = 'Y'
+			break
 		elseif multi_col({
 				{  527,   41, 0x58180e},
 				{  555,   42, 0xf3c992},
@@ -1509,27 +1570,22 @@ while (true) do
 				{  906,  371, 0x5e2f18},
 				}) then
 			ltap(928,  370)
-			wwlog("779 领取第一个在线礼包")
-			--break
+			wwlog("1525 领取第一个在线礼包")
 		elseif multi_col({
-				{  533,   42, 0x57170e},
-				{  568,   43, 0x51140f},
-				{  286,  332, 0x744e20},
-				{ 1011,   64, 0xab7c4d},
-				}) or multi_col({
-				{  285,  331, 0x4a4131},
-				{  286,  193, 0x734c1e},
-				{  533,   45, 0x4f130f},
-				{ 1012,   64, 0xb88551},
+				{  283,  124, 0x4a4131},
+				{  283,  194, 0x734c1d},
+				{  280,  199, 0x62411a},
+				{ 1011,   63, 0xe9c77d},
 				}) then
 			ltap(1011,   64)
 			wwlog("771 关闭福利窗口")
 			fuli_flag = 'Y'
+			break
 		elseif multi_col({
-				{  523,   39, 0x58180e},
-				{  287,  123, 0x744e1e},
-				{  286,  192, 0x4a4131},
-				{  285,  332, 0x4a4131},	
+				{  283,  123, 0x764e1f},
+				{  282,  127, 0x5e3f1a},
+				{  284,  194, 0x4a4130},
+				{  279,  193, 0x41382a},
 				}) then
 			ltap(1011,   64)
 			wwlog("771 关闭福利窗口")
@@ -1566,7 +1622,6 @@ while (true) do
 			yaoshui_cnt = 0
 			break
 		end
-
 	end
 
 	function get_first_mail(...)
@@ -1574,10 +1629,9 @@ while (true) do
 	end
 
 	while first_mail == false do	
-		wwlog("3026 领取邮件")
+		wwlog("1601 领取邮件")
 		mmsleep(1000)
 		--safe_place()
-		mmsleep(100)
 		if multi_col({
 				{  500,  575, 0xfffe93},
 				{  500,  578, 0xfef9ac},
@@ -1587,7 +1641,17 @@ while (true) do
 				}) then
 			ltap( 793,  572) --点击社交
 			mmsleep(2000)
-			ltap(879,  476) --点击邮件
+			if multi_col({
+					{  955,  509, 0xeee0ca},
+					{  955,  503, 0xebe3db},
+					{  962,  507, 0xf4e3d2},
+					{  976,  506, 0xe4ddd3},
+					{  991,  510, 0xfcebd3},
+					}) then
+				ltap(970,  478)  --点击邮件
+			else
+				ltap(879,  476) --点击邮件
+			end	
 		elseif multi_col({
 				{  535,   82, 0x540905},
 				{  548,   82, 0xf2c891},
@@ -1616,23 +1680,31 @@ while (true) do
 			mmsleep(2000)
 			ltap( 793,  572) --点击社交
 			mmsleep(2000)
-			ltap(876,  477) --点击邮件
+			if multi_col({
+					{  955,  509, 0xeee0ca},
+					{  955,  503, 0xebe3db},
+					{  962,  507, 0xf4e3d2},
+					{  976,  506, 0xe4ddd3},
+					{  991,  510, 0xfcebd3},
+					}) then
+				ltap(970,  478)  --点击邮件
+			else
+				ltap(879,  476) --点击邮件
+			end	
 		else
 			ltap(568,  578) --点击圆球			
 			-- body
 		end		
 	end
 
-
-
 	function init_bag(...)
 		-- body
 	end
 	--整理背包
 	local flag2 = true
+	local init_bag_cnt = 0
 	while(bag_is_ready == false) do
 		mmsleep(1000)
-
 		if flag2 == true then
 			resethome()
 			mmsleep(1000)
@@ -1642,9 +1714,7 @@ while (true) do
 			mmsleep(1000)
 			flag2 = false
 		end
-
-		wwlog("1237 整理背包，打开新兵礼包")		
-
+		wwlog("1690 整理背包，打开新兵礼包")		
 		if multi_col({
 				{  510,  575, 0xfff798},
 				{  510,  578, 0xf9e28e},
@@ -1663,41 +1733,158 @@ while (true) do
 				})then
 			wwlog("1471 按钮栏为展开状态，点击背包")
 			ltap(338,  576) --点击背包
-			mmsleep(2000)
-			ltap( 928,  510) --点击整理
-			mmsleep(12000)
+			mmsleep(500)
+			if pack_my_bag() == false then
+				ltap( 928,  510) --点击整理				
+			end						
 		elseif multi_col({
 				{  291,  152, 0xdd1121},
 				{  299,  153, 0xd52122},
 				}) then
 			ltap(299,  153) --点击新兵礼包
-			wwlog("1488 点击新兵礼包")	
+			wwlog("1770 点击新兵礼包")	
 			mmsleep(2000)
 			ltap(649,  536) --点击使用
-			mmsleep(3000)
-			ltap(931,  506) --点击整理背包
-			mmsleep(12000)
+			mmsleep(1000)
+			if pack_my_bag() == false then
+				ltap( 928,  510) --点击整理				
+			end						
+			mmsleep(1000)
+			tab1 = {
+				{  892,  500, 0x77371a},
+				{  809,  509, 0x61311a},
+				{  502,  507, 0x71381d},
+				{  289,  506, 0x6c351b},
+				{  292,  413, 0x251007},
+			}
+			x_tap,y_tap = 291,  151
+			tips = "点击背包第一个格子--太阳药水"								
+			ret1 = mttap(tab1,x_tap,y_tap,tips) 
+			if ret1 == false then	
+				ltap(  x_tap,y_tap) 
+				wwlog("1789 不用颜色判断，"..tips)		
+			else
+				wwlog("1791 "..tips.."成功")	
+			end		
 
-			ltap(  293,  154) --点击第一个格子--邮件赠送的太阳药水
-			mmsleep(3000)
+			mmsleep(1000)
+			tab1 = {
+				{  566,  399, 0xbd8e6b},
+				{  559,  391, 0xb78a68},
+				{  579,  395, 0xb18564},
+				{  585,  401, 0xae8362},
+			}
+			x_tap,y_tap =  564,  386	
+			tips = "点击药店"
+			ret1 = mttap(tab1,x_tap,y_tap,tips) 
+			if ret1 == false then	
+				ltap(  x_tap,y_tap) 
+				wwlog("1807 不用颜色判断，"..tips)		
+			else
+				wwlog("1809 "..tips.."成功")	
+			end	
 
-			ltap(568,  373) --点击药店
-			mmsleep(5000)
+			mmsleep(1000)
+			tab1 = {
+				{  325,  513, 0xc69264},
+				{  346,  520, 0xcb9768},
+				{  334,  533, 0x955e42},
+				{  388,  521, 0x8a553d},
+			}
+			x_tap,y_tap = 615,  160
+			tips = "点击药店第一个红药水"		
+			ret1 = mttap(tab1,x_tap,y_tap,tips) 
+			if ret1 == false then	
+				ltap(  x_tap,y_tap) 
+				wwlog("2039 不用颜色判断，"..tips)		
+			else
+				wwlog("2041 "..tips.."成功")	
+			end		
+			mmsleep(1000)
 
-			ltap(  596,  160) --点击第一个红药水
-			mmsleep(5000)
-			ltap(656,  543) --点击确定--购买
-			mmsleep(10000)
-			ltap(  783,  163) --点击第二个蓝药水
-			mmsleep(5000) 
-			ltap(656,  543) --点击确定--购买
-			mmsleep(10000)
-			ltap( 1011,   65) --点击关闭药店
-			mmsleep(3000)
-			ltap(931,  506) --点击整理背包
-			mmsleep(10000)
+			tab1 = {
+				{  687,  355, 0xefbe5c},
+				{  691,  373, 0xb9713d},
+				{  688,  366, 0x971b19},
+				{  698,  365, 0xd2a367},
+			}
+
+			x_tap,y_tap =  656,  543
+			tips="点击购买单个药品"	
+			ret1 = mttap(tab1,x_tap,y_tap,tips) 
+			if ret1 == false then	
+				ltap(  x_tap,y_tap) 
+				wwlog("2039 不用颜色判断，"..tips)		
+			else
+				wwlog("2041 "..tips.."成功")	
+			end		
+
+			mmsleep(1000)
+
+			tab1 = {
+				{  325,  513, 0xc69264},
+				{  346,  520, 0xcb9768},
+				{  334,  533, 0x955e42},
+				{  388,  521, 0x8a553d},
+			}
+			x_tap,y_tap =  783,  163
+			tips = "点击药店第二个蓝药水"		
+			ret1 = mttap(tab1,x_tap,y_tap,tips) 
+			if ret1 == false then	
+				ltap(  x_tap,y_tap) 
+				wwlog("2039 不用颜色判断，"..tips)		
+			else
+				wwlog("2041 "..tips.."成功")	
+			end		
+
+			mmsleep(1000)
+
+			tab1 = {
+				{  687,  355, 0xefbe5c},
+				{  691,  373, 0xb9713d},
+				{  688,  366, 0x971b19},
+				{  698,  365, 0xd2a367},
+			}
+
+			x_tap,y_tap =  656,  543
+			tips="点击购买单个药品"	
+			ret1 = mttap(tab1,x_tap,y_tap,tips) 
+			if ret1 == false then	
+				ltap(  x_tap,y_tap) 
+				wwlog("2039 不用颜色判断，"..tips)		
+			else
+				wwlog("2041 "..tips.."成功")	
+			end		
+			mmsleep(1000)
+			tab1 = {
+				{  526,   36, 0xf7ce96},
+				{  553,   35, 0xf6cd95},
+				{  575,   36, 0xf6cc94},
+				{ 1011,   63, 0xe9c77d},
+				{ 1015,   60, 0xe6d490},
+			}
+
+			x_tap,y_tap =1011,   65
+			tips= "关闭药店"
+			ret1 = mttap(tab1,x_tap,y_tap,tips) 
+			if ret1 == false then	
+				ltap(x_tap,y_tap)
+				wwlog("2091 "..tips.."失败")	
+			else
+				wwlog("2093 "..tips.."成功")	
+			end				
+			mmsleep(1000)
+
+			if pack_my_bag() == false then
+				ltap( 928,  510) --点击整理				
+			end	
+			mmsleep(1000)
 			ltap(1010,65 ) --关闭背包									
 			bag_is_ready = true
+		end
+		init_bag_cnt = init_bag_cnt +1
+		if init_bag_cnt >10 then
+			break
 		end
 	end
 
@@ -1731,21 +1918,27 @@ while (true) do
 		for j = 1 ,3,1 do --1  开发测试阶段暂时只处理红色药水
 			local var_cnt = 30
 			local var_cnt1 = 30
+			local tab1 = {}
+			local tips=""		
+			local cnt3 = 0
+			local yy = false	
+			local ret1 = false
 			if j==3 then
 				var_cnt = 20
 				var_cnt1 = 20
 			end
-			mmsleep(500)
+			mmsleep(1000)
 			wwlog(j)
 			if multi_col({
-					{ 1005,   57, 0xfae18b},
-					{ 1017,   58, 0xf5e392},
-					{ 1007,   67, 0xd19455},
+					{ 1078,  168, 0x500b05},
+					{ 1077,  201, 0x520b05},
+					{  896,  496, 0x8e4621},
 					{ 1011,   63, 0xe9c77d},
 					}) then
 				ltap(1010,65) --背包忘关的话，赶紧关了
+				wwlog("1852 --背包忘关的话，赶紧关了")
 			end
-			mmsleep(200)
+			mmsleep(500)
 			ltap(338,  576) --点击背包
 			mmsleep(1000)
 			ltap( 1078,  297) --点击仓库
@@ -1753,7 +1946,7 @@ while (true) do
 			--snapshot("abc"..tostring(j)..".png", 0, 0, 1135, 639)						
 			local i = 0
 			repeat
-				mmsleep(200)
+				mmsleep(500)
 				local cang_ku_in_flag = false
 				--local get_unlocked ,get_locked				
 				if multi_col({
@@ -1765,7 +1958,7 @@ while (true) do
 						}) then
 					ltap(667,  413)
 					wwlog("1586 点击我知道了")
-					mmsleep(500)
+					--mmsleep(500)
 				elseif multi_col({
 						{  426,  352, 0x130b07},
 						{  438,  352, 0x130b07},
@@ -1783,189 +1976,84 @@ while (true) do
 					ltap(672,  401)
 					wwlog("1602 保持流畅模式")			
 				end
-				mmsleep(200)
-				local cnt5 = 0
-				while (not multi_col({
-							{  614,  342, 0x372217},
-							{  613,  386, 0x3b2418},
-							{  612,  452, 0x3d2418},
-							{  629,  390, 0x180f0b},
-							})) do
-					wwlog("1583 等待出现仓库主界面")
-					mmsleep(500)
-					cnt5 = cnt5 +1
-					if cnt5 >20 then
-						wwlog("1588 等待出现仓库主界面 延迟，强制退出")
-						break			
-					end
-					mmsleep(500)
-					-- body
-				end
-				if j == 1 then
-					if multi_col({
-							{  208,  193, 0x57e459},
-							{  214,  193, 0x54dc56},
-							{  215,  190, 0x50d552},
-							})then
-						ltap(183,  164) --点击第一个格子--太阳药水
-						wwlog("1584 点击背包第一个格子--太阳药水")
-					end
+				mmsleep(1000)
+
+				tab1 = {
+					{  614,  342, 0x372217},
+					{  613,  386, 0x3b2418},
+					{  612,  452, 0x3d2418},
+					{  629,  390, 0x180f0b},
+				}
+				--x_tap,y_tap = 0,0		
+				--tips = ""
+				if j == 1 then					
+					x_tap,y_tap = 183,  164
+					tips = "点击背包第一个格子--太阳药水"				
 				elseif j == 2 then
-					if multi_col({
-							{  208,  193, 0x57e459},
-							{  214,  193, 0x54dc56},
-							{  215,  190, 0x50d552},
-							}) then
-						ltap(183,  164)--点击第一个格子--太阳药水
-						wwlog("1584 点击背包第一个格子--太阳药水")
-					end	
+					x_tap,y_tap = 183,  164
+					tips = "点击背包第一个格子--太阳药水"						
 				elseif j == 3 then
-					if multi_col({
-							{  304,  193, 0xdedede},
-							{  309,  193, 0xd8d8d8},
-							{  310,  190, 0xc6c6c6},
-							}) then 
-						ltap( 281,  169)--点击第二个格子--蓝药水
-						wwlog("1584 点击背包第二个格子--蓝药水")
-					end
+					x_tap,y_tap = 281,  169
+					tips = "点击背包第二个格子--蓝药水"							
 				end	
+				ret1 = mttap(tab1,x_tap,y_tap,tips) 
+				if ret1 == false then	
+					ltap(  x_tap,y_tap) 
+					wwlog("1909 不用颜色判断，"..tips)		
+				else
+					wwlog("1911 "..tips.."成功")	
+				end		
+
 				---------------------------------------------------------------------------
-				mmsleep(2000)
-				local cnt2= 0
-				while (not multi_col({
-							{  552,  536, 0xedc38e},
-							{  555,  539, 0xf3ca92},
-							{  563,  532, 0xeec38d},
-							{  562,  541, 0xf6cd95},
-							})) do
-					cnt2 = cnt2 +1
-					wwlog("1613 等待放入按钮出现")
-					mmsleep(1000)
-					if cnt2>20 then
-						wwlog("1618  等待放入按钮出现延迟，强制退出")
-						break
-					end
-				end
-				mmsleep(500)
-				if multi_col({
-						{  545,  369, 0x4d3a2b},
-						{  566,  372, 0xbd8e6b},
-						{  562,  370, 0xa77e5e},
-						{  572,  370, 0xbc8d6a},
-						{  578,  373, 0xad8262},
-						})  then
-					ltap(568,  373) --点击药店
-					wwlog("1649 红蓝药水-->点击药店")
-				elseif multi_col({
-						{  553,  391, 0xb78a68},
-						{  562,  392, 0xbd8e6b},
-						{  566,  400, 0xbd8e6b},
-						{  580,  399, 0xba8b69},
-						})then
-					ltap(568,  373) --点击药店
-					wwlog("1649 太阳药水-->点击药店")
-				end	
+				mmsleep(1000)
+				tab1 = {
+					{  481,  523, 0x705540},
+					{  524,  530, 0x6b341a},
+					{  554,  536, 0xf2c992},
+					{  579,  533, 0xf7ce96},
+					{  585,  534, 0x68311b},
+				}
+				x_tap,y_tap =  564,  386	
+				tips = "点击药店"
+				ret1 = mttap(tab1,x_tap,y_tap,tips) 
+				if ret1 == false then	
+					ltap(  x_tap,y_tap) 
+					wwlog("1974 不用颜色判断，"..tips)		
+				else
+					wwlog("1976 "..tips.."成功")	
+				end		
 
 				----------------------------------------------------------------------------
+				mmsleep(1000)
+				tab1 = {
+					{  325,  513, 0xc69264},
+					{  346,  520, 0xcb9768},
+					{  334,  533, 0x955e42},
+					{  388,  521, 0x8a553d},
+				}
 
-				mmsleep(1000) --进入药店的延迟等待
-				local loop_cnt1 = 0
-				while not multi_col({
-						{  494,  296, 0x5aeb5c},
-						{  501,  297, 0x4ecd50},
-						{  535,  292, 0x4fb450},
-						}) do
-					wwlog("1651 进入药品商城出现延迟")
-					mmsleep(1000)
-					loop_cnt1 = loop_cnt1 + 1
-					if loop_cnt1 >10 then
-						wwlog("1673 进入药品商城延迟10秒")
-						break
-					end
-				end
+				--x_tap,y_tap =  0,  0	
+				--tips = ""
+				if j == 1 then					
+					x_tap,y_tap = 615,  160
+					tips = "点击药店第一个红药水"				
+				elseif j == 2 then
+					x_tap,y_tap =  783,  163
+					tips = "点击药店第二个蓝药水"						
+				elseif j == 3 then
+					x_tap,y_tap = 615,  268
+					tips = "点击药店第三个太阳神水"							
+				end	
 
-				mmsleep(1000)
-				if j ==1 then
-					if multi_col({
-							{  526,  191, 0xdedede},
-							{  534,  191, 0xc4c4c4},
-							{  534,  183, 0xc3c3c3},
-							{  529,  190, 0x7a7775},
-							}) then
-						ltap(  615,  160) --点击第一个红药水
-						wwlog("1712 点击药店第一个红药水")
-					end
-				elseif j ==2 then
-					if multi_col({
-							{  815,  186, 0xc9c9c9},
-							{  814,  192, 0xc1c1c1},
-							{  813,  190, 0x8c8887},
-							{  809,  191, 0xdcdcdc},
-							} ) then
-						ltap(  783,  163) --点击第二个蓝药水
-						wwlog("1722 点击药店第二个蓝药水")
-					end 
-				elseif j ==3 then
-					if multi_col({
-							{  530,  296, 0x58e55a},
-							{  532,  296, 0x56e058},
-							{  533,  294, 0x51d653},
-							{  534,  293, 0x4dcc4f},
-							}) then
-						ltap(615,  268) --点击第三个太阳神水
-						wwlog("1732 点击药店第三个太阳神水")
-					end
-				end
-				mmsleep(1000)
-				-----------------------------------------------------------------------------
-				local cnt6 = 0
-				while (not multi_col({
-							{  689,  355, 0xefbe5c},
-							{  690,  373, 0xb9713d},
-							{  439,  358, 0xffed9a},
-							{  439,  373, 0xb9713c},
-							})) do
-					wwlog("1813 等待购买药水界面")
-					mmsleep(1000)
-					cnt6 =cnt6 +1
-					if cnt6 >15 then
-						wwlog("1747 等待购买药水界面 出现延迟")						
-						if j ==1 then					
-							ltap(  615,  160) --点击第一个红药水
-							wwlog("1712 点击药店第一个红药水")					
-						elseif j ==2 then					
-							ltap(  783,  163) --点击第二个蓝药水
-							wwlog("1640 点击药店第二个蓝药水")					
-						elseif j ==3 then					
-							ltap(615,  268) --点击第三个太阳神水
-							wwlog("1650 点击药店第三个太阳神水")					
-						end
-						--break
-					end
-					if cnt6 >20 then
-						break
-					end
-				end
-				mmsleep(1000)
-				local cnt4 = 0
-				--[[
-				while (not multi_col({
-							{  689,  355, 0xefbe5c},
-							{  690,  373, 0xb9713d},
-							{  439,  358, 0xffed9a},
-							{  439,  373, 0xb9713c},
-							})) do
-					-- body
-					wwlog("1710 等待出现购买物品弹窗")
-					mmsleep(500)
-					cnt4 = cnt4 + 1
-					if cnt4 > 20 then
-						wwlog("1715 等待出现购买物品弹窗 出现延迟，强制退出")
-						break
-					end
-				end
-				--]]
-				mmsleep(500)	
+				ret1 = mttap(tab1,x_tap,y_tap,tips) 
+				if ret1 == false then	
+					ltap(  x_tap,y_tap) 
+					wwlog("2039 不用颜色判断，"..tips)		
+				else
+					wwlog("2041 "..tips.."成功")	
+				end							
+
+				mmsleep(1000)					
 				local buy_cnt =1
 				if j ==1 then
 					buy_cnt = 4
@@ -1973,123 +2061,117 @@ while (true) do
 					buy_cnt = 2
 				elseif j ==3 then
 					buy_cnt = 3 
-				end
-				if multi_col({
-						{  687,  355, 0xefbe5c},
-						{  691,  373, 0xb9713d},
-						{  688,  366, 0x971b19},
-						{  698,  365, 0xd2a367},
-						}) then
-					for i=1,buy_cnt,1 do 
-						mmsleep(200)
-						ltap(690,  366)
-					end	
-					wwlog("1666 点击购买多个药品")
-				end
-				-----------------------------------------------------------------------------
-				--end
-				mmsleep(500)
-				local break1 = 0
-				while not multi_col({
-						{  468,  185, 0xc2c2c2},
-						{  468,  191, 0xc3c3c3},
-						{  471,  191, 0xd9d9d9},
-						{  468,  132, 0xc3c3c3},
-						}) do
-					ltap(656,  543) --点击确定--购买
-					mmsleep(2000)
-					break1 = break1 +1
-					if break1 >5 then
-						wwlog("1721 购买延迟")
-						break
-					end
 				end	
-				mmsleep(500)
-				local cnt3 = 0
-				while (not multi_col({
-							{  526,   36, 0xf7ce96},
-							{  553,   35, 0xf6cd95},
-							{  575,   36, 0xf6cc94},
-							{ 1011,   63, 0xe9c77d},
-							{ 1015,   60, 0xe6d490},
-							})) do
-					wwlog("1741 等待购买完成")
+				tab1 = {
+					{  687,  355, 0xefbe5c},
+					{  691,  373, 0xb9713d},
+					{  688,  366, 0x971b19},
+					{  698,  365, 0xd2a367},
+				}
+				tips="点击购买多个药品"		
+				cnt3 = 0
+				yy = false	
+				--local check_cnt = check_cnt or 20
+				repeat
 					mmsleep(500)
-					cnt3 = cnt3 +1
-					if cnt3 >20 then
-						wwlog("1747 购买药品出现延迟，强制退出")
+					local yy = multi_col(tab1)
+					if yy then
+						for i=1,buy_cnt,1 do 
+							mmsleep(200)
+							ltap(690,  366)
+						end	
+
+						mmsleep(200)
+						ltap(656,  543) --点击确定--购买					
+						wwlog("2180 "..tips)
 						break
 					end
+					cnt3 = cnt3 +1
+					if cnt3 >50 then		
+						wwlog("mttap 2184 "..tips.."超时，强制退出")
+						break
+					end
+					--mmsleep(200)
+					wwlog("mttap 2187 "..tips.."等待")	
+				until (yy)
 
-					-- body
-				end
-				-----------------------------------------------------------------------------
-				--mmsleep(1000) --购买药水的延迟
-				if multi_col({
-						{  526,   36, 0xf7ce96},
-						{  553,   35, 0xf6cd95},
-						{  575,   36, 0xf6cc94},
-						{ 1011,   63, 0xe9c77d},
-						{ 1015,   60, 0xe6d490},
-						}) then
-					ltap( 1011,   65) --点击关闭药店
-					wwlog("1718 关闭药店")
-				end
-				-----------------------------------------------------------------------------
-				mmsleep(500)
+				mmsleep(1000)
+				tab1 = {
+					{  526,   36, 0xf7ce96},
+					{  553,   35, 0xf6cd95},
+					{  575,   36, 0xf6cc94},
+					{ 1011,   63, 0xe9c77d},
+					{ 1015,   60, 0xe6d490},
+				}
+				x_tap,y_tap =1011,   65
+				tips= "关闭药店"
+				ret1 = mttap(tab1,x_tap,y_tap,tips) 
+				if ret1 == false then	
+					ltap(x_tap,y_tap)
+					wwlog("2091 "..tips.."失败")	
+				else
+					wwlog("2093 "..tips.."成功")	
+				end				
+
+				mmsleep(1000)
+				tab1={
+					{ 1078,  282, 0x4f0c06},
+					{ 1078,  310, 0x4f0c06},
+					{  199,  492, 0x523221},
+					{  270,  494, 0x513120},
+					{  347,  493, 0x513221},
+				}
+				x_tap,y_tap =0,  0
+				tips= ""
 				if j == 1 then
-					if multi_col({
-							{  400,  193, 0xdbdbdb},
-							{  404,  193, 0xd8d8d8},
-							{  406,  190, 0xc6c6c6},
-							})then
-						ltap(376,  166)  --点击第三个格子--红药水
-						wwlog("点击背包第三个格子--红药水")
-					end	
+					x_tap,y_tap =376,  166
+					tips ="点击背包第三个格子--红药水"
 				elseif j ==2 then
-					if multi_col({
-							{  304,  193, 0xdedede},
-							{  308,  193, 0xd8d8d8},
-							{  310,  189, 0xc8c8c8},
-							}) then
-						ltap( 281,  166)  --点击第二个格子--蓝药水
-						wwlog("1737 点击背包第二个格子--蓝药水")
-					end
-				elseif j ==3 then
-					if multi_col({
-							{  211,  193, 0x56e158},
-							{  214,  193, 0x54dc56},
-							{  215,  188, 0x52d854},
-							})then
-						ltap(184,  166) --点击第一个格子--太阳神水
-						wwlog("1745 点击背包第一个格子--太阳神水")
-					end
-				end	
+					x_tap,y_tap =281,  166
+					tips ="点击背包第三个格子--蓝药水"
+				elseif j==3 then
+					x_tap,y_tap =184,  166
+					tips ="点击背包第三个格子--太阳神水"
+				end					
+				ret1 = mttap(tab1,x_tap,y_tap,tips) 
+				if ret1 == false then	
+					ltap(  x_tap,y_tap)
+					wwlog("2233 不用颜色判断，"..tips)		
+				else
+					wwlog("2235 "..tips.."成功")	
+				end		
+
 				-----------------------------------------------------------------------------
 				mmsleep(1000)
-				if multi_col({
-						{  546,  529, 0x6a341a},
-						{  550,  534, 0xf5cb94},
-						{  555,  539, 0xf3ca92},
-						{  579,  533, 0xf7ce96},
-						}) then
-					ltap(564,  534) --点击放入仓库
-					wwlog("1756 点击放入仓库")
+				tab1={
+					{  546,  529, 0x6a341a},
+					{  550,  534, 0xf5cb94},
+					{  555,  539, 0xf3ca92},
+					{  579,  533, 0xf7ce96},
+				}
+				x_tap,y_tap =564,  534
+				tips= "点击放入仓库"
+				ret1 = mttap(tab1,x_tap,y_tap,tips) 
+				--mmsleep(100)
+				if ret1 == false then	
+					ltap(  x_tap,y_tap) 
+					wwlog("2251 不用颜色判断，"..tips)		
+				else
+					wwlog("2253 "..tips.."成功")
 					cang_ku_in_flag = true
 				end
-				-----------------------------------------------------------------------------
-				mmsleep(500)	
+
 				if cang_ku_in_flag == false then
 					var_cnt = var_cnt +1
 				end
 
 				i = i+1
 				if i >90 then
-					wwlog("1719 循环超过60次，延迟非常严重")
+					wwlog("1719 循环超过90次，延迟非常严重")
 					break
 				end						
 			until (i >=var_cnt )
-			mmsleep(3000)
+			mmsleep(1000)
 			wwlog("1909 开始从仓库取药水")
 			for i= 1,var_cnt1,1 do 
 				local out_flag = false
@@ -2114,81 +2196,71 @@ while (true) do
 					wwlog("1886 打开红包")			
 				end		
 
-				--mmsleep(1000)
 				if i ==17 then
-					mmsleep(3000)
+					mmsleep(1000)
 					moveTo(968,  500, 968,  125,1)
-					mmsleep(3000)
+					mmsleep(1000)
 				end	
 				local ret ,x,y = get_cangku_position(i)
-
-				--if ret ==  true  then
 				mmsleep(1000)
-				local flag3 = false
-				if multi_col({
-						{  600,   43, 0x50130f},
-						{ 1077,  297, 0x560b05},
-						{  818,  550, 0x763f1b},
-						{  686,  548, 0x433429},
-						}) then
-					wwlog("2012 判断仓库，开始点击药水")
-					mmsleep(200)
-					if (not isColor( x,  y, 0x251007, 100)) then
-						ltap(x,y) --点击药水									
-						wwlog("2013 点击仓库药水")
-						flag3 = true
-					else
-						wwlog("2015 仓库颜色没有匹配到,无法取出")
-					end
-				end	
-
-				if flag3 == false then
-					mmsleep(1000)
-					ltap(x,y) --点击药水									
-					wwlog("2024 颜色判断失败，直接点击仓库药水")
+				tab1={
+					{  600,   43, 0x50130f},
+					{ 1077,  297, 0x560b05},
+					{  818,  550, 0x763f1b},
+					{  686,  548, 0x433429},
+				}
+				x_tap,y_tap =x,  y
+				tips= "点击仓库药水"
+				ret1 = mttap(tab1,x_tap,y_tap,tips,10) 
+				if ret1 == false then	
+					ltap(  x_tap,y_tap) 
+					wwlog("2123 不用颜色判断，"..tips)		
+				else
+					wwlog("2125 "..tips.."成功")					
 				end
+
 				-----------------------------------------------------------------------------
-				mmsleep(2000)
-				local cnt1 = 0
-				while not multi_col({
-						{  551,  529, 0xecc28c},
-						{  555,  537, 0xf2c992},
-						{  578,  536, 0xf4cb93},
-						}) do
-					wwlog("2024 等待取出按钮")
-					mmsleep(1000)
-					cnt1 =cnt1 +1
-					if cnt1 >10 then
-						wwlog("2028 取药延迟强制退出")
-						break
-					end
-				end
 				mmsleep(1000)
-				if multi_col({
-						{  537,  522, 0x8e4f23},
-						{  563,  522, 0x7f431e},
-						{  555,  536, 0xf2c992},
-						{  578,  536, 0xf4cb93},
-						}) then --判定取出按钮
-					ltap( 563,  533) --点击取出
-					wwlog("2040 从仓库取出药水")
-					out_flag = true						
-					-----------------------------------------------------------------------------
-				end				
-				--end	
-				--[[
-				if out_flag  == false then
-					var_cnt = var_cnt +1
-				end
-				--]]
+				tab1={
+					{  537,  522, 0x8e4f23},
+					{  563,  522, 0x7f431e},
+					{  555,  536, 0xf2c992},
+					{  578,  536, 0xf4cb93},
+				}
+				x_tap,y_tap =563,  533
+				tips= "从仓库取出药水"
+				ret1 = mttap(tab1,x_tap,y_tap,tips) 
+				if ret1 == false then	
+					ltap(  x_tap,y_tap) 
+					wwlog("2169 不用颜色判断，"..tips)		
+				else
+					wwlog("2171 "..tips.."成功")					
+				end								
 			end	--end for
+
+			tab1={
+				{  421,  488, 0x543322},
+				{  419,  429, 0x563422},
+				{  609,  492, 0x3c2418},
+				{ 1064,  322, 0x770904},
+				{ 1011,   62, 0xa78f5f},
+			}
+			x_tap,y_tap =1011,   62
+			tips= "关闭仓库"
+			ret1 = mttap(tab1,x_tap,y_tap,tips,5) 
+			if ret1 == false then	
+				--ltap(  x_tap,y_tap) 
+				wwlog("2167 不用颜色判断，"..tips)		
+			else
+				wwlog("2169 "..tips.."成功")					
+			end								
 		end
 		--if check_bag2() ==true then
 		bag_full = true
 		--end
 	end
 
-	resethome()	
+	--resethome()	
 
 	renwu_flag = 1
 	local auto_click = false
@@ -2828,6 +2900,11 @@ while (true) do
 				ltap(60,  195)
 				wwlog("3132 非主线模式--点击左侧第一个任务")
 			elseif renwu_flag %6 ==0 then
+				if multi_col({{ 1049,   33, 0xcc9270},{ 1049,   41, 0xcc9270},{ 1054,   38, 0xf3c892},{ 1072,   34, 0xf4ca93},{ 1071,   41, 0xf5cc94},}) then
+					ltap(394,  267) --点击屏幕一点					
+					wwlog("2917 将军坟 卡屏处理")
+					mmsleep(100)
+				end
 				ltap(60,  195)
 				wwlog("2972 主线模式--长时间没有动--点击左侧第一个任务")
 			end
@@ -2863,7 +2940,6 @@ while (true) do
 			mmsleep(2000)
 			ltap( 340,  580) --点击背包
 			wwlog("3001 点击背包")
-
 		elseif multi_col({
 				{  527,   39, 0x5b1a0e},
 				{  555,   47, 0xc4976e},
@@ -2872,20 +2948,16 @@ while (true) do
 				{  446,  507, 0x71381c},
 				{  467,  515, 0xeec48e},
 				}) then
-			ltap( 929,  508)
-			wwlog("2803 整理")
-			mmsleep(12000)
+			if pack_my_bag() == false then
+				ltap( 928,  510) --点击整理				
+			end		
 			ltap(1011,   64) --关闭装备窗口		
 			bag_clean = true
 			break	
 		else
-			ltap(568,  578) --点击圆球			
-			-- body
-		end
-		-- body
+			ltap(568,  578) --点击圆球						
+		end		
 	end
-
-
 
 	--领取邮件
 	while (mail_get == false) do
@@ -2978,49 +3050,25 @@ while (true) do
 				{  467,  515, 0xeec48e},
 				}) then
 			mmsleep(1000)
-			ltap( 929,  508)
-			wwlog("2977 整理")
-			mmsleep(12000)			
+			if pack_my_bag() == false then
+				ltap( 928,  510) --点击整理				
+			end			
 			--------------------------------------------------------------------------
 			ltap(171,  282)
 			wwlog("2981 点击背包左侧药品")
 			mmsleep(3000)
-			ltap(930,  506)
-			wwlog("2942 点击整理")
-			mmsleep(12000)
-
-
-			ltap(865,  153) --点击第一排第7个格子
-			wwlog("2927 点击第一排第7个格子")
-			mmsleep(3000)
-			ltap( 473,  534) --点击更多
-			mmsleep(2000)
-			ltap(478,  414) --放入仓库 
-			mmsleep(3000)
-			ltap(958,  156) --点击第一排第8个格子
-			wwlog("2988 点击第一排第8个格子")
-			mmsleep(3000)
-			ltap( 473,  534) --点击更多
-			mmsleep(2000)
-			ltap(478,  414) --放入仓库
-
-			mmsleep(10000)
+			--[[
+			if pack_my_bag() == false then
+				ltap( 928,  510) --点击整理	
+			end				
+			--]]
+			put_lian_to_cangku()
+			mmsleep(1000)
 			ltap( 168,  351) --点击其他tab
 			mmsleep(3000)
-			ltap(290,  155)  --点击第一个格子
-			mmsleep(3000)
-			ltap(479,  534)  --点击更多
-			mmsleep(2000)
-			ltap(478,  414) --放入仓库
-			mmsleep(10000)
+			put_dan_to_cangku()
+			mmsleep(1000)
 
-			--[[
-			for ii = 1 ,4,1 do
-				mmsleep(1000)
-				local ret11,x11,y11 = get_yappin_position(ii)
-
-			end
-			--]]
 			--------------------------------------------------------------------------
 			ltap(1011,   64) --关闭装备窗口		
 			bag_clean = true
@@ -3032,42 +3080,73 @@ while (true) do
 		-- body
 	end
 
-
+	local del_flag = false
 	while(jiaoyi_flag == 'S' ) do 
 		mmsleep(50000)	
-		toast("2965 等待交易......")
+		toast("3038 等待交易......")
+
 		if multi_col({
-				{  524,  545, 0xf4df00},
-				{  552,  548, 0xf3d500},
-				{  587,  544, 0xfbe500},
-				{  612,  547, 0xf4d700},
-				}) then
-			wwlog("2972 交易结束，从新开始选区")
+				{  703,  577, 0xc79058},
+				{  697,  576, 0xca965c},
+				{  703,  566, 0xfff5c0},
+				{  704,  561, 0xf2ce5a},
+				{  702,  590, 0xe28e3c},
+				}) and del_flag == false then
+			ltap( 703,  579)
+			wwlog("3080 角色选择界面，准备删除角色")
+			mmsleep(5000)
+			if multi_col({
+					{  534,  287, 0xeec690},
+					{  534,  294, 0xefc791},
+					{  542,  285, 0xf1c992},
+					{  539,  285, 0xe1bb89},
+					{  545,  291, 0xf2c993},
+					{  686,  418, 0xddb482},
+					}) then
+				ltap(686,  418)
+				wwlog("3081 点击确定删除角色")
+			end
+			mmsleep(5000)
+			if multi_col({
+					{  537,  297, 0xe1bb89},
+					{  537,  306, 0xe1bb89},
+					{  532,  301, 0xf7ce96},
+					{  558,  300, 0xf7ce96},
+					{  558,  307, 0xf6cd95},
+					{  669,  421, 0xecc28d},
+					}) then
+				ltap(669,  421)
+				wwlog("3081 第二次确定删除角色！！！！！！")
+			end 
+			mmsleep(5000)
+			if multi_col({
+					{  678,  571, 0x262a00},
+					{  678,  581, 0x2c3302},
+					{  686,  578, 0xaa7c00},
+					{  696,  568, 0xa66d01},
+					{  690,  583, 0xcc9310},
+					}) then
+				ltap(204,  572)
+				wwlog("3081 删除角色后返回游戏选区主界面")
+			end
 			sleep_cnt = 1
 			renwu_flag = 1
-
 			level = 1
 			tianlei_flag = 'N'
-			yaoshui_shezhi = 'N' --暂时不进行药水的设置
+			yaoshui_shezhi = 'N' 
 			fuli_flag = 'N'
-			in_game = 'N'
-			kuangqu_flag = 'N'
-			buy_3_first = false
+			in_game = 'N'								
 			choose_flag = false 
-			before_game = 'Y'
-			--beibao_flag = 'N'
-			--bag_is_full = false
+			before_game = 'Y'		
 			main_task = true
 			mail_get =false
 			bag_clean = false
-			bag_full = false  
-			--luoxia_shua_guai = false
-			jiaoyi_flag ='N'
+			bag_full = false  							
 			only_once1 = true
 			first_mail = false
 			bag_is_ready = false
-			--flag1 = true
-			mmsleep(10000) 
+			jiaoyi_flag = 'N'
+			del_flag = true
 			break
 		elseif multi_col({
 				{  525,  176, 0xe0882e},
@@ -3079,13 +3158,17 @@ while (true) do
 			wwlog("2913 点击屏幕继续--领取奖励")
 		end
 	end
-
-	mmsleep(5000)
+	mmsleep(1000)
+	change_line()
+	mmsleep(1000)
 	run_app()
 
 	wwlog("2804 大循环")
 
 end  -- end while
+
+
+
 
 
 if TOUCH_MODE == true1 then
